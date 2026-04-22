@@ -35,7 +35,7 @@ class RecintoController extends Controller
 
     
     
-    public function listar_recintos_habilitados()
+    public function validarCamposRecinto()
     {
         $model = new RecintoModel();
 

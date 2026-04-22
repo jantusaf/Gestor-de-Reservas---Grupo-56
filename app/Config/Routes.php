@@ -52,7 +52,7 @@ $routes->get('/cliente/listar', 'ClienteController::listar_clientes');    // mue
 // RECINTOS
 $routes->get('/recinto', 'RecintoController::index');          // listado de recintos
 $routes->get('/recinto/crear', 'RecintoController::crear');    // muestra el formulario de creación
-$routes->post('/recinto/save', 'RecintoController::listar_recintos_habilitados');     // procesa el formulario de creación
+$routes->post('/recinto/save', 'RecintoController::validarCamposRecinto');     // procesa el formulario de creación
 $routes->get('/recinto/eliminar/(:num)', 'RecintoController::eliminar/$1'); // elimina un recinto
 $routes->get('/recintos-eliminados', 'RecintoController::eliminados'); // listado de recintos deshabilitados
 $routes->get('/recinto/activar/(:num)', 'RecintoController::activar/$1'); // restaura un recinto
