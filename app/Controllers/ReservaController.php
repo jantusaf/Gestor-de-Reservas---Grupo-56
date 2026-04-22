@@ -51,7 +51,7 @@ class ReservaController extends Controller
 
 
     // GUARDAR RESERVA
-    public function save()
+    public function AgregarReserva()
     {
         $model = new ReservaModel();
 

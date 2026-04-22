@@ -64,7 +64,7 @@ public function guardar()
 
 
     // Listar clientes
-    public function listar()
+    public function listar_clientes()
     {
         $clienteModel = new ClienteModel();
         $data['clientes'] = $clienteModel->findAll();

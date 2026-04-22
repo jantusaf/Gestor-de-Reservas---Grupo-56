@@ -46,13 +46,13 @@ $routes->post('/registrarse/save', 'UsuarioController::save');    // procesa el 
 // CLIENTES
 $routes->get('/cliente/alta', 'ClienteController::alta');       // muestra el formulario de alta
 $routes->post('/cliente/guardar', 'ClienteController::guardar'); // procesa el alta
-$routes->get('/cliente/listar', 'ClienteController::listar');    // muestra listado de clientes
+$routes->get('/cliente/listar', 'ClienteController::listar_clientes');    // muestra listado de clientes
 
 
 // RECINTOS
 $routes->get('/recinto', 'RecintoController::index');          // listado de recintos
 $routes->get('/recinto/crear', 'RecintoController::crear');    // muestra el formulario de creación
-$routes->post('/recinto/save', 'RecintoController::save');     // procesa el formulario de creación
+$routes->post('/recinto/save', 'RecintoController::listar_recintos_habilitados');     // procesa el formulario de creación
 $routes->get('/recinto/eliminar/(:num)', 'RecintoController::eliminar/$1'); // elimina un recinto
 $routes->get('/recintos-eliminados', 'RecintoController::eliminados'); // listado de recintos deshabilitados
 $routes->get('/recinto/activar/(:num)', 'RecintoController::activar/$1'); // restaura un recinto
@@ -61,7 +61,7 @@ $routes->post('/recinto/update/(:num)', 'RecintoController::update/$1');    // n
 
 //RESERVAS
 $routes->get('/reserva/crear', 'ReservaController::crear');
-$routes->post('/reserva/save', 'ReservaController::save');
+$routes->post('/reserva/save', 'ReservaController::AgregarReserva');
 $routes->post('/reserva/horasDisponibles', 'ReservaController::horasDisponibles');
 
 

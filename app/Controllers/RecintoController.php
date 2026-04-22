@@ -34,8 +34,8 @@ class RecintoController extends Controller
     }
 
     
-    // GUARDAR NUEVO RECINTO
-    public function save()
+    
+    public function listar_recintos_habilitados()
     {
         $model = new RecintoModel();
 
