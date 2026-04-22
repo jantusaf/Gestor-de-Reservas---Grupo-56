@@ -1,0 +1,392 @@
+CRITICAL - 2026-04-18 07:28:02 --> Invalid file: "head.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('head.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('head', [], true)
+ 3 APPPATH\Controllers\Home.php(10): view('head', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Home->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 07:28:13 --> Invalid file: "head.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('head.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('head', [], true)
+ 3 APPPATH\Controllers\Home.php(10): view('head', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Home->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 07:35:22 --> Invalid file: "head.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('head.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('head', [], true)
+ 3 APPPATH\Controllers\Home.php(10): view('head', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Home->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 07:40:25 --> Invalid file: "head.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('head.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('head', [], true)
+ 3 APPPATH\Controllers\Home.php(10): view('head', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Home->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 07:40:38 --> Invalid file: "head.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('head.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('head', [], true)
+ 3 APPPATH\Controllers\Home.php(10): view('head', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Home->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 07:40:44 --> Invalid file: "head.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('head.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('head', [], true)
+ 3 APPPATH\Controllers\Home.php(10): view('head', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Home->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 07:49:50 --> syntax error, unexpected 'echo' (T_ECHO)
+in APPPATH\Views\plantillas\head.php on line 8.
+ 1 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('plantillas/head', [], true)
+ 3 APPPATH\Controllers\Home.php(10): view('plantillas/head', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Home->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 07:49:56 --> syntax error, unexpected 'echo' (T_ECHO)
+in APPPATH\Views\plantillas\head.php on line 8.
+ 1 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('plantillas/head', [], true)
+ 3 APPPATH\Controllers\Home.php(10): view('plantillas/head', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Home->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 07:49:56 --> syntax error, unexpected 'echo' (T_ECHO)
+in APPPATH\Views\plantillas\head.php on line 8.
+ 1 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('plantillas/head', [], true)
+ 3 APPPATH\Controllers\Home.php(10): view('plantillas/head', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Home->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 09:18:03 --> Invalid file: "login.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('login.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('login', [], true)
+ 3 APPPATH\Controllers\LoginController.php(11): view('login')
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\LoginController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LoginController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 09:18:21 --> Invalid file: "login.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('login.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('login', [], true)
+ 3 APPPATH\Controllers\LoginController.php(11): view('login')
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\LoginController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LoginController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 09:18:26 --> Invalid file: "login.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('login.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('login', [], true)
+ 3 APPPATH\Controllers\LoginController.php(11): view('login')
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\LoginController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LoginController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 09:19:43 --> Invalid file: "login.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('login.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('login', [], true)
+ 3 APPPATH\Controllers\LoginController.php(11): view('login')
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\LoginController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LoginController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 09:19:52 --> Invalid file: "login.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('login.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('login', [], true)
+ 3 APPPATH\Controllers\LoginController.php(11): view('login')
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\LoginController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LoginController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 09:20:05 --> Invalid file: "login.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('login.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('login', [], true)
+ 3 APPPATH\Controllers\LoginController.php(11): view('login')
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\LoginController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LoginController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ERROR - 2026-04-18 09:36:47 --> mysqli_sql_exception: Table 'tdc_grupo_56.tdc_grupo_56_usuario' doesn't exist in C:\xampp\htdocs\TDC_grupo_56\system\Database\MySQLi\Connection.php:295
+Stack trace:
+#0 C:\xampp\htdocs\TDC_grupo_56\system\Database\MySQLi\Connection.php(295): mysqli->query('SELECT 1\nFROM `...', 0)
+#1 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseConnection.php(691): CodeIgniter\Database\MySQLi\Connection->execute('SELECT 1\nFROM `...')
+#2 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseConnection.php(605): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT 1\nFROM `...')
+#3 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseBuilder.php(1616): CodeIgniter\Database\BaseConnection->query('SELECT 1\nFROM `...', Array, false)
+#4 C:\xampp\htdocs\TDC_grupo_56\system\Validation\StrictRules\Rules.php(206): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\TDC_grupo_56\system\Validation\Validation.php(312): CodeIgniter\Validation\StrictRules\Rules->is_unique('424321872', 'DNI_Usuario', Array, NULL, 'dni')
+#6 C:\xampp\htdocs\TDC_grupo_56\system\Validation\Validation.php(170): CodeIgniter\Validation\Validation->processRules('dni', 'dni', '424321872', Array, Array)
+#7 C:\xampp\htdocs\TDC_grupo_56\system\Controller.php(140): CodeIgniter\Validation\Validation->run()
+#8 C:\xampp\htdocs\TDC_grupo_56\app\Controllers\UsuarioController.php(29): CodeIgniter\Controller->validate(Array)
+#9 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(934): App\Controllers\UsuarioController->save()
+#10 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\UsuarioController))
+#11 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#12 C:\xampp\htdocs\TDC_grupo_56\public\index.php(67): CodeIgniter\CodeIgniter->run()
+#13 {main}
+CRITICAL - 2026-04-18 09:36:47 --> Table 'tdc_grupo_56.tdc_grupo_56_usuario' doesn't exist
+in SYSTEMPATH\Database\BaseConnection.php on line 645.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1616): CodeIgniter\Database\BaseConnection->query('SELECT 1
+FROM `tdc_grupo_56_usuario`
+WHERE `DNI_Usuario` = :DNI_Usuario:
+ LIMIT 1', [...], false)
+ 2 SYSTEMPATH\Validation\StrictRules\Rules.php(206): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\Validation\Validation.php(312): CodeIgniter\Validation\StrictRules\Rules->is_unique('424321872', 'DNI_Usuario', [...], null, 'dni')
+ 4 SYSTEMPATH\Validation\Validation.php(170): CodeIgniter\Validation\Validation->processRules('dni', 'dni', '424321872', [...], [...])
+ 5 SYSTEMPATH\Controller.php(140): CodeIgniter\Validation\Validation->run()
+ 6 APPPATH\Controllers\UsuarioController.php(29): CodeIgniter\Controller->validate([...])
+ 7 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\UsuarioController->save()
+ 8 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\UsuarioController))
+ 9 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ERROR - 2026-04-18 09:42:16 --> mysqli_sql_exception: Table 'tdc_grupo_56.tdc_grupo_56_usuario' doesn't exist in C:\xampp\htdocs\TDC_grupo_56\system\Database\MySQLi\Connection.php:295
+Stack trace:
+#0 C:\xampp\htdocs\TDC_grupo_56\system\Database\MySQLi\Connection.php(295): mysqli->query('SELECT 1\nFROM `...', 0)
+#1 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseConnection.php(691): CodeIgniter\Database\MySQLi\Connection->execute('SELECT 1\nFROM `...')
+#2 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseConnection.php(605): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT 1\nFROM `...')
+#3 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseBuilder.php(1616): CodeIgniter\Database\BaseConnection->query('SELECT 1\nFROM `...', Array, false)
+#4 C:\xampp\htdocs\TDC_grupo_56\system\Validation\StrictRules\Rules.php(206): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\TDC_grupo_56\system\Validation\Validation.php(312): CodeIgniter\Validation\StrictRules\Rules->is_unique('424321872', 'DNI_Usuario', Array, NULL, 'dni')
+#6 C:\xampp\htdocs\TDC_grupo_56\system\Validation\Validation.php(170): CodeIgniter\Validation\Validation->processRules('dni', 'dni', '424321872', Array, Array)
+#7 C:\xampp\htdocs\TDC_grupo_56\system\Controller.php(140): CodeIgniter\Validation\Validation->run()
+#8 C:\xampp\htdocs\TDC_grupo_56\app\Controllers\UsuarioController.php(29): CodeIgniter\Controller->validate(Array)
+#9 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(934): App\Controllers\UsuarioController->save()
+#10 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\UsuarioController))
+#11 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#12 C:\xampp\htdocs\TDC_grupo_56\public\index.php(67): CodeIgniter\CodeIgniter->run()
+#13 {main}
+CRITICAL - 2026-04-18 09:42:16 --> Table 'tdc_grupo_56.tdc_grupo_56_usuario' doesn't exist
+in SYSTEMPATH\Database\BaseConnection.php on line 645.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1616): CodeIgniter\Database\BaseConnection->query('SELECT 1
+FROM `tdc_grupo_56_usuario`
+WHERE `DNI_Usuario` = :DNI_Usuario:
+ LIMIT 1', [...], false)
+ 2 SYSTEMPATH\Validation\StrictRules\Rules.php(206): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\Validation\Validation.php(312): CodeIgniter\Validation\StrictRules\Rules->is_unique('424321872', 'DNI_Usuario', [...], null, 'dni')
+ 4 SYSTEMPATH\Validation\Validation.php(170): CodeIgniter\Validation\Validation->processRules('dni', 'dni', '424321872', [...], [...])
+ 5 SYSTEMPATH\Controller.php(140): CodeIgniter\Validation\Validation->run()
+ 6 APPPATH\Controllers\UsuarioController.php(29): CodeIgniter\Controller->validate([...])
+ 7 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\UsuarioController->save()
+ 8 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\UsuarioController))
+ 9 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ERROR - 2026-04-18 10:23:49 --> mysqli_sql_exception: Unknown column 'DNI_Usuario' in 'where clause' in C:\xampp\htdocs\TDC_grupo_56\system\Database\MySQLi\Connection.php:295
+Stack trace:
+#0 C:\xampp\htdocs\TDC_grupo_56\system\Database\MySQLi\Connection.php(295): mysqli->query('SELECT *\nFROM `...', 0)
+#1 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseConnection.php(691): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
+#2 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseConnection.php(605): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
+#3 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseBuilder.php(1616): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 C:\xampp\htdocs\TDC_grupo_56\system\Model.php(268): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\TDC_grupo_56\system\BaseModel.php(656): CodeIgniter\Model->doFirst()
+#6 C:\xampp\htdocs\TDC_grupo_56\app\Controllers\LoginController.php(27): CodeIgniter\BaseModel->first()
+#7 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(934): App\Controllers\LoginController->auth()
+#8 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LoginController))
+#9 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 C:\xampp\htdocs\TDC_grupo_56\public\index.php(67): CodeIgniter\CodeIgniter->run()
+#11 {main}
+CRITICAL - 2026-04-18 10:23:49 --> Unknown column 'DNI_Usuario' in 'where clause'
+in SYSTEMPATH\Database\BaseConnection.php on line 645.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1616): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `cliente`
+WHERE `DNI_Usuario` = :DNI_Usuario:
+ LIMIT 1', [...], false)
+ 2 SYSTEMPATH\Model.php(268): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(656): CodeIgniter\Model->doFirst()
+ 4 APPPATH\Controllers\LoginController.php(27): CodeIgniter\BaseModel->first()
+ 5 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\LoginController->auth()
+ 6 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\LoginController))
+ 7 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ERROR - 2026-04-18 11:41:08 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`tdc_grupo_56`.`usuario`, CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`Id_Tipo`) REFERENCES `tipo_usuario` (`Id_Tipo`)) in C:\xampp\htdocs\TDC_grupo_56\system\Database\MySQLi\Connection.php:295
+Stack trace:
+#0 C:\xampp\htdocs\TDC_grupo_56\system\Database\MySQLi\Connection.php(295): mysqli->query('INSERT INTO `us...', 0)
+#1 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseConnection.php(691): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `us...')
+#2 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseConnection.php(605): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `us...')
+#3 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseBuilder.php(2309): CodeIgniter\Database\BaseConnection->query('INSERT INTO `us...', Array, false)
+#4 C:\xampp\htdocs\TDC_grupo_56\system\Model.php(330): CodeIgniter\Database\BaseBuilder->insert()
+#5 C:\xampp\htdocs\TDC_grupo_56\system\BaseModel.php(782): CodeIgniter\Model->doInsert(Array)
+#6 C:\xampp\htdocs\TDC_grupo_56\system\Model.php(730): CodeIgniter\BaseModel->insert(Array, true)
+#7 C:\xampp\htdocs\TDC_grupo_56\app\Controllers\UsuarioController.php(59): CodeIgniter\Model->insert(Array)
+#8 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(934): App\Controllers\UsuarioController->save()
+#9 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\UsuarioController))
+#10 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 C:\xampp\htdocs\TDC_grupo_56\public\index.php(67): CodeIgniter\CodeIgniter->run()
+#12 {main}
+CRITICAL - 2026-04-18 11:41:08 --> Cannot add or update a child row: a foreign key constraint fails (`tdc_grupo_56`.`usuario`, CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`Id_Tipo`) REFERENCES `tipo_usuario` (`Id_Tipo`))
+in SYSTEMPATH\Database\BaseConnection.php on line 645.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2309): CodeIgniter\Database\BaseConnection->query('INSERT INTO `usuario` (`DNI_Usuario`, `Nombre_Usuario`, `Apellido_Usuario`, `Fecha_Ingreso`, `Fecha_Nacimiento`, `telefono`, `Sexo_Usuario`, `pass`, `Id_Tipo`, `estado_usuario`) VALUES (:DNI_Usuario:, :Nombre_Usuario:, :Apellido_Usuario:, :Fecha_Ingreso:, :Fecha_Nacimiento:, :telefono:, :Sexo_Usuario:, :pass:, :Id_Tipo:, :estado_usuario:)', [...], false)
+ 2 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->insert()
+ 3 SYSTEMPATH\BaseModel.php(782): CodeIgniter\Model->doInsert([...])
+ 4 SYSTEMPATH\Model.php(730): CodeIgniter\BaseModel->insert([...], true)
+ 5 APPPATH\Controllers\UsuarioController.php(59): CodeIgniter\Model->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\UsuarioController->save()
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\UsuarioController))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ERROR - 2026-04-18 11:41:14 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`tdc_grupo_56`.`usuario`, CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`Id_Tipo`) REFERENCES `tipo_usuario` (`Id_Tipo`)) in C:\xampp\htdocs\TDC_grupo_56\system\Database\MySQLi\Connection.php:295
+Stack trace:
+#0 C:\xampp\htdocs\TDC_grupo_56\system\Database\MySQLi\Connection.php(295): mysqli->query('INSERT INTO `us...', 0)
+#1 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseConnection.php(691): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `us...')
+#2 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseConnection.php(605): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `us...')
+#3 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseBuilder.php(2309): CodeIgniter\Database\BaseConnection->query('INSERT INTO `us...', Array, false)
+#4 C:\xampp\htdocs\TDC_grupo_56\system\Model.php(330): CodeIgniter\Database\BaseBuilder->insert()
+#5 C:\xampp\htdocs\TDC_grupo_56\system\BaseModel.php(782): CodeIgniter\Model->doInsert(Array)
+#6 C:\xampp\htdocs\TDC_grupo_56\system\Model.php(730): CodeIgniter\BaseModel->insert(Array, true)
+#7 C:\xampp\htdocs\TDC_grupo_56\app\Controllers\UsuarioController.php(59): CodeIgniter\Model->insert(Array)
+#8 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(934): App\Controllers\UsuarioController->save()
+#9 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\UsuarioController))
+#10 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 C:\xampp\htdocs\TDC_grupo_56\public\index.php(67): CodeIgniter\CodeIgniter->run()
+#12 {main}
+CRITICAL - 2026-04-18 11:41:14 --> Cannot add or update a child row: a foreign key constraint fails (`tdc_grupo_56`.`usuario`, CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`Id_Tipo`) REFERENCES `tipo_usuario` (`Id_Tipo`))
+in SYSTEMPATH\Database\BaseConnection.php on line 645.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2309): CodeIgniter\Database\BaseConnection->query('INSERT INTO `usuario` (`DNI_Usuario`, `Nombre_Usuario`, `Apellido_Usuario`, `Fecha_Ingreso`, `Fecha_Nacimiento`, `telefono`, `Sexo_Usuario`, `pass`, `Id_Tipo`, `estado_usuario`) VALUES (:DNI_Usuario:, :Nombre_Usuario:, :Apellido_Usuario:, :Fecha_Ingreso:, :Fecha_Nacimiento:, :telefono:, :Sexo_Usuario:, :pass:, :Id_Tipo:, :estado_usuario:)', [...], false)
+ 2 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->insert()
+ 3 SYSTEMPATH\BaseModel.php(782): CodeIgniter\Model->doInsert([...])
+ 4 SYSTEMPATH\Model.php(730): CodeIgniter\BaseModel->insert([...], true)
+ 5 APPPATH\Controllers\UsuarioController.php(59): CodeIgniter\Model->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\UsuarioController->save()
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\UsuarioController))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ERROR - 2026-04-18 11:41:29 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`tdc_grupo_56`.`usuario`, CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`Id_Tipo`) REFERENCES `tipo_usuario` (`Id_Tipo`)) in C:\xampp\htdocs\TDC_grupo_56\system\Database\MySQLi\Connection.php:295
+Stack trace:
+#0 C:\xampp\htdocs\TDC_grupo_56\system\Database\MySQLi\Connection.php(295): mysqli->query('INSERT INTO `us...', 0)
+#1 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseConnection.php(691): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `us...')
+#2 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseConnection.php(605): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `us...')
+#3 C:\xampp\htdocs\TDC_grupo_56\system\Database\BaseBuilder.php(2309): CodeIgniter\Database\BaseConnection->query('INSERT INTO `us...', Array, false)
+#4 C:\xampp\htdocs\TDC_grupo_56\system\Model.php(330): CodeIgniter\Database\BaseBuilder->insert()
+#5 C:\xampp\htdocs\TDC_grupo_56\system\BaseModel.php(782): CodeIgniter\Model->doInsert(Array)
+#6 C:\xampp\htdocs\TDC_grupo_56\system\Model.php(730): CodeIgniter\BaseModel->insert(Array, true)
+#7 C:\xampp\htdocs\TDC_grupo_56\app\Controllers\UsuarioController.php(59): CodeIgniter\Model->insert(Array)
+#8 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(934): App\Controllers\UsuarioController->save()
+#9 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\UsuarioController))
+#10 C:\xampp\htdocs\TDC_grupo_56\system\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 C:\xampp\htdocs\TDC_grupo_56\public\index.php(67): CodeIgniter\CodeIgniter->run()
+#12 {main}
+CRITICAL - 2026-04-18 11:41:29 --> Cannot add or update a child row: a foreign key constraint fails (`tdc_grupo_56`.`usuario`, CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`Id_Tipo`) REFERENCES `tipo_usuario` (`Id_Tipo`))
+in SYSTEMPATH\Database\BaseConnection.php on line 645.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2309): CodeIgniter\Database\BaseConnection->query('INSERT INTO `usuario` (`DNI_Usuario`, `Nombre_Usuario`, `Apellido_Usuario`, `Fecha_Ingreso`, `Fecha_Nacimiento`, `telefono`, `Sexo_Usuario`, `pass`, `Id_Tipo`, `estado_usuario`) VALUES (:DNI_Usuario:, :Nombre_Usuario:, :Apellido_Usuario:, :Fecha_Ingreso:, :Fecha_Nacimiento:, :telefono:, :Sexo_Usuario:, :pass:, :Id_Tipo:, :estado_usuario:)', [...], false)
+ 2 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->insert()
+ 3 SYSTEMPATH\BaseModel.php(782): CodeIgniter\Model->doInsert([...])
+ 4 SYSTEMPATH\Model.php(730): CodeIgniter\BaseModel->insert([...], true)
+ 5 APPPATH\Controllers\UsuarioController.php(59): CodeIgniter\Model->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\UsuarioController->save()
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\UsuarioController))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 12:38:58 --> Invalid file: "contenido/alta_cliente.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('contenido/alta_cliente.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('contenido/alta_cliente', [], true)
+ 3 APPPATH\Controllers\ClienteController.php(19): view('contenido/alta_cliente', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\ClienteController->alta()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ClienteController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 12:42:37 --> Invalid file: "contenido/alta_cliente.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('contenido/alta_cliente.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('contenido/alta_cliente', [], true)
+ 3 APPPATH\Controllers\ClienteController.php(19): view('contenido/alta_cliente', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\ClienteController->alta()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ClienteController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 12:42:42 --> Invalid file: "contenido/alta_cliente.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('contenido/alta_cliente.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('contenido/alta_cliente', [], true)
+ 3 APPPATH\Controllers\ClienteController.php(19): view('contenido/alta_cliente', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\ClienteController->alta()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ClienteController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 13:08:13 --> Invalid file: "contenido/crud_cliente/listar_clientes.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('contenido/crud_cliente/listar_clientes.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('contenido/crud_cliente/listar_clientes', [], true)
+ 3 APPPATH\Controllers\ClienteController.php(70): view('contenido/crud_cliente/listar_clientes', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\ClienteController->listar()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ClienteController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 13:33:38 --> Invalid file: "contenido/crud_cliente/listar_clientes.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('contenido/crud_cliente/listar_clientes.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('contenido/crud_cliente/listar_clientes', [], true)
+ 3 APPPATH\Controllers\ClienteController.php(70): view('contenido/crud_cliente/listar_clientes', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\ClienteController->listar()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ClienteController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 13:43:03 --> Invalid file: "contenido/crud_cliente/listar_clientes.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('contenido/crud_cliente/listar_clientes.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('contenido/crud_cliente/listar_clientes', [], true)
+ 3 APPPATH\Controllers\ClienteController.php(72): view('contenido/crud_cliente/listar_clientes', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\ClienteController->listar()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ClienteController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 13:43:26 --> Invalid file: "contenido/crud_cliente/listar_clientes.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('contenido/crud_cliente/listar_clientes.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('contenido/crud_cliente/listar_clientes', [], true)
+ 3 APPPATH\Controllers\ClienteController.php(72): view('contenido/crud_cliente/listar_clientes', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\ClienteController->listar()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ClienteController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 13:47:55 --> Invalid file: "contenido/crud_cliente/listar_clientes.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('contenido/crud_cliente/listar_clientes.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('contenido/crud_cliente/listar_clientes', [], true)
+ 3 APPPATH\Controllers\ClienteController.php(73): view('contenido/crud_cliente/listar_clientes', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\ClienteController->listar()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ClienteController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 13:48:01 --> Invalid file: "contenido/crud_cliente/listar_clientes.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('contenido/crud_cliente/listar_clientes.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('contenido/crud_cliente/listar_clientes', [], true)
+ 3 APPPATH\Controllers\ClienteController.php(73): view('contenido/crud_cliente/listar_clientes', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\ClienteController->listar()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ClienteController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+CRITICAL - 2026-04-18 13:48:08 --> Invalid file: "contenido/crud_cliente/listar_clientes.php"
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 33.
+ 1 SYSTEMPATH\View\View.php(201): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('contenido/crud_cliente/listar_clientes.php')
+ 2 SYSTEMPATH\Common.php(1184): CodeIgniter\View\View->render('contenido/crud_cliente/listar_clientes', [], true)
+ 3 APPPATH\Controllers\ClienteController.php(73): view('contenido/crud_cliente/listar_clientes', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\ClienteController->listar()
+ 5 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ClienteController))
+ 6 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()

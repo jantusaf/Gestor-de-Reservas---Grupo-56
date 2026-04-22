@@ -1,0 +1,85 @@
+<?php
+
+namespace Config;
+
+// Create a new instance of our RouteCollection class.
+$routes = Services::routes();
+
+/*
+ * --------------------------------------------------------------------
+ * Router Setup
+ * --------------------------------------------------------------------
+ */
+$routes->setDefaultNamespace('App\Controllers');
+$routes->setDefaultController('Home');
+$routes->setDefaultMethod('index');
+$routes->setTranslateURIDashes(false);
+$routes->set404Override();
+// The Auto Routing (Legacy) is very dangerous. It is easy to create vulnerable apps
+// where controller filters or CSRF protection are bypassed.
+// If you don't want to define all routes, please use the Auto Routing (Improved).
+// Set `$autoRoutesImproved` to true in `app/Config/Feature.php` and set the following to true.
+// $routes->setAutoRoute(false);
+
+/*
+ * --------------------------------------------------------------------
+ * Route Definitions
+ * --------------------------------------------------------------------
+ */
+
+// We get a performance increase by specifying the default
+// route since we don't have to scan directories.
+$routes->get('/', 'Home::index');
+
+
+
+// LOGIN
+$routes->get('/login', 'LoginController::index');   // muestra la vista login.php
+$routes->post('/login/auth', 'LoginController::auth'); // procesa el formulario de login
+$routes->get('/logout', 'LoginController::logout'); // cierra sesión
+
+// REGISTRO
+$routes->get('/registrarse', 'UsuarioController::registrarse');   // muestra la vista registrarse.php
+$routes->post('/registrarse/save', 'UsuarioController::save');    // procesa el formulario de registro
+
+
+// CLIENTES
+$routes->get('/cliente/alta', 'ClienteController::alta');       // muestra el formulario de alta
+$routes->post('/cliente/guardar', 'ClienteController::guardar'); // procesa el alta
+$routes->get('/cliente/listar', 'ClienteController::listar');    // muestra listado de clientes
+
+
+// RECINTOS
+$routes->get('/recinto', 'RecintoController::index');          // listado de recintos
+$routes->get('/recinto/crear', 'RecintoController::crear');    // muestra el formulario de creación
+$routes->post('/recinto/save', 'RecintoController::save');     // procesa el formulario de creación
+$routes->get('/recinto/eliminar/(:num)', 'RecintoController::eliminar/$1'); // elimina un recinto
+$routes->get('/recintos-eliminados', 'RecintoController::eliminados'); // listado de recintos deshabilitados
+$routes->get('/recinto/activar/(:num)', 'RecintoController::activar/$1'); // restaura un recinto
+$routes->get('/recinto/editar/(:num)', 'RecintoController::editar/$1');     // nueva ruta
+$routes->post('/recinto/update/(:num)', 'RecintoController::update/$1');    // nueva ruta
+
+//RESERVAS
+$routes->get('/reserva/crear', 'ReservaController::crear');
+$routes->post('/reserva/save', 'ReservaController::save');
+$routes->post('/reserva/horasDisponibles', 'ReservaController::horasDisponibles');
+
+
+
+
+/*
+ * --------------------------------------------------------------------
+ * Additional Routing
+ * --------------------------------------------------------------------
+ *
+ * There will often be times that you need additional routing and you
+ * need it to be able to override any defaults in this file. Environment
+ * based routes is one such time. require() additional route files here
+ * to make that happen.
+ *
+ * You will have access to the $routes object within that file without
+ * needing to reload it.
+ */
+if (is_file(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php')) {
+    require APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php';
+}
