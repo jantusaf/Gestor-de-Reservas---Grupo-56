@@ -26,7 +26,7 @@ class LoginController extends BaseController
 
    
     if ($resultado['estado'] === false) {
-        return redirect()->back()->with('error', $resultado['DNI o contraseña incorrectos']);
+       return redirect()->back()->with('error', $resultado['mensaje']);
     }
 
     //si todo ok trae sesion
@@ -41,7 +41,7 @@ class LoginController extends BaseController
         'logged_in'      => true
     ]);
 
-    return redirect()->to(base_url('/'));
+   return redirect()->to('/contenido/principal');
 }
 
 
