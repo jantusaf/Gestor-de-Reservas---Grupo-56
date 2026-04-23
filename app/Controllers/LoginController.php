@@ -14,48 +14,71 @@ class LoginController extends BaseController
             . view('plantillas/footer');
     }
 
-    public function auth()
-    {
-        $usuarioModel = new UsuarioModel();
+   public function iniciar_sesion()
+{
+    $usuarioModel = new UsuarioModel();
 
-        // El formulario envía "usuario" (DNI) y "password"
-        $usuario  = $this->request->getPost('usuario');   // campo del formulario (DNI)
-        $password = $this->request->getPost('password');  // campo del formulario
+    $dni       = $this->request->getPost('usuario');
+    $password  = $this->request->getPost('password');
 
-        // Buscar solo por DNI_Usuario
-        $data = $usuarioModel->where('DNI_Usuario', $usuario)->first();
+    // llama al metodo que valida
+    $resultado = $this->validar_datos($usuarioModel, $dni, $password);
 
-        if ($data) {
-            // Verificar estado
-            if ($data['estado_usuario'] === 'inactivo') {
-                return redirect()->back()->with('error', 'Usuario dado de baja');
-            }
-
-            // Verificar contraseña
-            if (password_verify($password, $data['pass'])) {
-                // Guardar datos en sesión con claves consistentes (minúsculas)
-                session()->set([
-                    'id_usuario'     => $data['id_Usuario'],       // corregido
-                    'nombre_usuario' => $data['Nombre_Usuario'],
-                    'apellido'       => $data['Apellido_Usuario'],
-                    'dni_usuario'    => $data['DNI_Usuario'],
-                    'id_tipo'        => $data['Id_Tipo'],          // clave para discriminar roles
-                    'logged_in'      => true
-                ]);
-
-                // Redirige a la página principal
-                return redirect()->to(base_url('/'));
-            } else {
-                return redirect()->back()->with('error', 'Contraseña incorrecta');
-            }
-        } else {
-            // Mensaje más claro cuando no se encuentra el DNI
-            return redirect()->back()->with('error', 'Debes ingresar tu DNI para iniciar sesión');
-        }
+   
+    if ($resultado['estado'] === false) {
+        return redirect()->back()->with('error', $resultado['DNI o contraseña incorrectos']);
     }
 
+    //si todo ok trae sesion
+    $data = $resultado['data'];
+
+    session()->set([
+        'id_usuario'     => $data['id_Usuario'],
+        'nombre_usuario' => $data['Nombre_Usuario'],
+        'apellido'       => $data['Apellido_Usuario'],
+        'dni_usuario'    => $data['DNI_Usuario'],
+        'id_tipo'        => $data['Id_Tipo'],
+        'logged_in'      => true
+    ]);
+
+    return redirect()->to(base_url('/'));
+}
 
 
+private function validar_datos($usuarioModel, $dni, $password)
+{
+    // busca usuario por DNI
+    $data = $usuarioModel->where('DNI_Usuario', $dni)->first();
+
+    if (!$data) {
+        return [
+            'estado' => false,
+            'mensaje' => 'Debes ingresar tu DNI para iniciar sesión'
+        ];
+    }
+
+    // verif estado
+    if ($data['estado_usuario'] === 'inactivo') {
+        return [
+            'estado' => false,
+            'mensaje' => 'Usuario dado de baja'
+        ];
+    }
+
+    // verif contraseña
+    if (!password_verify($password, $data['pass'])) {
+        return [
+            'estado' => false,
+            'mensaje' => 'Contraseña incorrecta'
+        ];
+    }
+
+   
+    return [
+        'estado' => true,
+        'data' => $data
+    ];
+}
 
 
 

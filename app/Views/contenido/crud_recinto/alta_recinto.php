@@ -33,7 +33,7 @@
                         </div>
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-success">Guardar Recinto</button>
+                            <button type="submit" class="btn btn-success">Agregar</button>
                         </div>
                     </form>
                 </div>

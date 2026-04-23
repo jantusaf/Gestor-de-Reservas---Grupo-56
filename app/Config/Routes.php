@@ -35,7 +35,7 @@ $routes->get('/', 'Home::index');
 
 // LOGIN
 $routes->get('/login', 'LoginController::index');   // muestra la vista login.php
-$routes->post('/login/auth', 'LoginController::auth'); // procesa el formulario de login
+$routes->post('/login/auth', 'LoginController::iniciar_sesion'); // procesa el formulario de login
 $routes->get('/logout', 'LoginController::logout'); // cierra sesión
 
 // REGISTRO
@@ -50,7 +50,7 @@ $routes->get('/cliente/listar', 'ClienteController::listar_clientes');    // mue
 
 
 // RECINTOS
-$routes->get('/recinto', 'RecintoController::index');          // listado de recintos
+$routes->get('/recinto', 'RecintoController::listar_recintos_habilitados');          // listado de recintos
 $routes->get('/recinto/crear', 'RecintoController::crear');    // muestra el formulario de creación
 $routes->post('/recinto/save', 'RecintoController::validarCamposRecinto');     // procesa el formulario de creación
 $routes->get('/recinto/eliminar/(:num)', 'RecintoController::eliminar/$1'); // elimina un recinto
@@ -62,7 +62,7 @@ $routes->post('/recinto/update/(:num)', 'RecintoController::update/$1');    // n
 //RESERVAS
 $routes->get('/reserva/crear', 'ReservaController::crear');
 $routes->post('/reserva/save', 'ReservaController::AgregarReserva');
-$routes->post('/reserva/horasDisponibles', 'ReservaController::horasDisponibles');
+$routes->post('/reserva/horasDisponibles', 'ReservaController::ActualizarHorasDisponibles');
 
 
 

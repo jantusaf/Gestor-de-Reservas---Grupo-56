@@ -12,7 +12,7 @@
 
     <title><?= $title ?? 'Proyecto Grupo 56' ?></title>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -47,21 +47,21 @@
 
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownRecintos" role="button"
-                               data-bs-toggle="dropdown" aria-expanded="false">CRUD Recintos</a>
+                               data-bs-toggle="dropdown" aria-expanded="false">Recintos</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownRecintos">
                                 <li><a class="dropdown-item" href="<?= base_url('recinto'); ?>">
                                     Lista de Recintos</a></li>
                                 <li><a class="dropdown-item" href="<?= base_url('recintos-eliminados'); ?>">
                                     Recintos Eliminados</a></li>
                                 <li><a class="dropdown-item" href="<?= base_url('recinto/crear'); ?>">
-                                    Alta de Recinto</a></li>
+                                  Ingresar Recinto</a></li>
                             </ul>
                         </li>
                     <?php endif; ?>
                         <!-- Botón Generar Reserva -->
                         <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('reserva/crear'); ?>">
-                                Generar Reserva
+                                Agregar Reserva
                             </a>
                         </li>
                 </ul>
@@ -79,4 +79,4 @@
     </nav>
 </header>
 
-<main class="container mt-4">
+<main class="container mt-4 flex-grow-1">

@@ -8,7 +8,7 @@ use CodeIgniter\Controller;
 class RecintoController extends Controller
 {
     // LISTAR RECINTOS
-    public function index()
+    public function listar_recintos_habilitados()
     {
         $model = new RecintoModel();
         // Solo mostrar habilitados

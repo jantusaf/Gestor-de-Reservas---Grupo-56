@@ -24,7 +24,7 @@ class ReservaController extends Controller
     }
 
     // HORAS DISPONIBLES SEGÚN FECHA Y RECINTO
-    public function horasDisponibles()
+    public function ActualizarHorasDisponibles()
     {
         $fecha = $this->request->getPost('fecha_reserva');
         $recinto = $this->request->getPost('nro_recinto');
@@ -50,83 +50,101 @@ class ReservaController extends Controller
     }
 
 
-    // GUARDAR RESERVA
-    public function AgregarReserva()
-    {
-        $model = new ReservaModel();
+    // boton de agregar reserva
+   public function AgregarReserva()
+{
+    $model = new ReservaModel();
 
-        $fecha   = $this->request->getPost('fecha_reserva');
-        $cliente = $this->request->getPost('id_cliente');
-        $recinto = $this->request->getPost('nro_recinto');
-        $hora    = $this->request->getPost('hora_reserva');
+    $fecha   = $this->request->getPost('fecha_reserva');
+    $cliente = $this->request->getPost('id_cliente');
+    $recinto = $this->request->getPost('nro_recinto');
+    $hora    = $this->request->getPost('hora_reserva');
+    $usuario = session()->get('id_usuario');
 
-        // Tomar el usuario directamente de la sesión
-        $usuario = session()->get('id_usuario');
+   
+    $resultado = $this->validarCamposReserva($fecha, $cliente, $recinto, $hora, $usuario);
 
-        // Validaciones básicas
-        if (empty($fecha) || empty($cliente) || empty($recinto) || empty($hora) || empty($usuario)) {
-            return redirect()->back()->with('error', 'Complete todos los campos.');
-        }
-
-        if (strtotime($fecha) < strtotime(date('Y-m-d'))) {
-            return redirect()->back()->with('error', 'Por favor, seleccione una fecha futura o actual.');
-        }
-
-        // Validar cliente activo
-        $clienteModel = new ClienteModel();
-        $clienteData  = $clienteModel->find($cliente);
-        if (!$clienteData || $clienteData['estado_cliente'] !== 'activo') {
-            return redirect()->back()->with('error', 'Cliente inválido o inactivo.');
-        }
-
-        // Validar recinto habilitado
-        $recintoModel = new RecintoModel();
-        $recintoData  = $recintoModel->find($recinto);
-        if (!$recintoData || $recintoData['habilitado'] != 1) {
-            return redirect()->back()->with('error', 'Recinto inválido o no habilitado.');
-        }
-
-        // Validar hora dentro del rango y formato correcto
-        if (!preg_match('/^\d{2}:\d{2}:\d{2}$/', $hora)) {
-            return redirect()->back()->with('error', 'Formato de hora inválido.');
-        }
-
-        $horaInt = (int)substr($hora, 0, 2);
-        if ($horaInt < 8 || $horaInt > 22) {
-            return redirect()->back()->with('error', 'Hora fuera del rango permitido.');
-        }
-
-        // Validar que la hora no esté ocupada
-        $ocupada = $model->where('fecha_reserva', $fecha)
-                        ->where('nro_recinto', $recinto)
-                        ->where('hora_reserva', $hora)
-                        ->first();
-        if ($ocupada) {
-            return redirect()->back()->with('error', 'La hora seleccionada ya está ocupada.');
-        }
-
-        // Calcular monto: tarifa del recinto × 1 hora
-        $tarifa = $recintoData['tarifa_hora'] ?? 0;
-
-        $data = [
-            'fecha_reserva' => $fecha,
-            'id_cliente'    => $cliente,
-            'nro_recinto'   => $recinto,
-            'id_Usuario'    => $usuario,  
-            'hora_reserva'  => $hora,
-            'monto_reserva' => $tarifa,
-            'pagado'        => 0,
-            'estado'        => 'pendiente'
-        ];
-
-        if ($model->insert($data)) {
-            return redirect()->to(base_url('reserva/crear'))->with('success', 'Reserva creada correctamente.');
-        } else {
-            return redirect()->back()->with('error', 'Error al guardar la reserva.');
-        }
+    if (!$resultado['ok']) {
+        return redirect()->back()->with('error', $resultado['mensaje']);
     }
 
+   
+    $recintoData = $resultado['recinto'];
 
+    // calcular monto
+    $tarifa = $recintoData['tarifa_hora'] ?? 0;
 
+    $data = [
+        'fecha_reserva' => $fecha,
+        'id_cliente'    => $cliente,
+        'nro_recinto'   => $recinto,
+        'id_Usuario'    => $usuario,
+        'hora_reserva'  => $hora,
+        'monto_reserva' => $tarifa,
+        'pagado'        => 0,
+        'estado'        => 'pendiente'
+    ];
+
+    if ($model->insert($data)) {
+        return redirect()->to(base_url('reserva/crear'))->with('success', 'Reserva creada correctamente.');
+    } else {
+        return redirect()->back()->with('error', 'Error al guardar la reserva.');
+    }
+}
+
+private function validarCamposReserva($fecha, $cliente, $recinto, $hora, $usuario)
+{
+    $reservaModel = new ReservaModel();
+    $clienteModel = new ClienteModel();
+    $recintoModel = new RecintoModel();
+
+    // campos obligatorios
+    if (empty($fecha) || empty($cliente) || empty($recinto) || empty($hora) || empty($usuario)) {
+        return ['ok' => false, 'mensaje' => 'Complete todos los campos.'];
+    }
+
+    //fecha válida
+    if (strtotime($fecha) < strtotime(date('Y-m-d'))) {
+        return ['ok' => false, 'mensaje' => 'Seleccione una fecha válida.'];
+    }
+
+    //cliente activo
+    $clienteData = $clienteModel->find($cliente);
+    if (!$clienteData || $clienteData['estado_cliente'] !== 'activo') {
+        return ['ok' => false, 'mensaje' => 'Cliente inválido o inactivo.'];
+    }
+
+    //recinto habilitado
+    $recintoData = $recintoModel->find($recinto);
+    if (!$recintoData || $recintoData['habilitado'] != 1) {
+        return ['ok' => false, 'mensaje' => 'Recinto inválido o no habilitado.'];
+    }
+
+    // formato de hora
+    if (!preg_match('/^\d{2}:\d{2}:\d{2}$/', $hora)) {
+        return ['ok' => false, 'mensaje' => 'Formato de hora inválido.'];
+    }
+
+    // rango de hora
+    $horaInt = (int)substr($hora, 0, 2);
+    if ($horaInt < 8 || $horaInt > 22) {
+        return ['ok' => false, 'mensaje' => 'Hora fuera del rango permitido.'];
+    }
+
+  
+    $ocupada = $reservaModel->where('fecha_reserva', $fecha)
+        ->where('nro_recinto', $recinto)
+        ->where('hora_reserva', $hora)
+        ->first();
+
+    if ($ocupada) {
+        return ['ok' => false, 'mensaje' => 'La hora seleccionada ya está ocupada.'];
+    }
+
+    return [
+        'ok' => true,
+        'recinto' => $recintoData
+    ];
+}
 
 }
