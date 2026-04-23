@@ -33,14 +33,14 @@ class LoginController extends BaseController
     $data = $resultado['data'];
 
     session()->set([
-        'id_usuario'     => $data['id_Usuario'],
+        'id_usuario'     => $data['id_usuario'],
         'nombre_usuario' => $data['Nombre_Usuario'],
         'apellido'       => $data['Apellido_Usuario'],
         'dni_usuario'    => $data['DNI_Usuario'],
         'id_tipo'        => $data['Id_Tipo'],
         'logged_in'      => true
     ]);
-
+dd(session()->get());
    return redirect()->to('/contenido/principal');
 }
 

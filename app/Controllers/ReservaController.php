@@ -7,11 +7,12 @@ use App\Models\ClienteModel;
 use App\Models\RecintoModel;
 use CodeIgniter\Controller;
 
-class ReservaController extends Controller
+class ReservaController extends BaseController
 {
     // FORMULARIO DE CREACIÓN DE RESERVA
     public function crear()
     {
+         dd(session()->get());
         $clienteModel = new ClienteModel();
         $recintoModel = new RecintoModel();
 
@@ -53,13 +54,14 @@ class ReservaController extends Controller
     // boton de agregar reserva
    public function AgregarReserva()
 {
+
     $model = new ReservaModel();
 
     $fecha   = $this->request->getPost('fecha_reserva');
     $cliente = $this->request->getPost('id_cliente');
     $recinto = $this->request->getPost('nro_recinto');
     $hora    = $this->request->getPost('hora_reserva');
-    $usuario = session()->get('id_usuario');
+    
 
    
     $resultado = $this->validarCamposReserva($fecha, $cliente, $recinto, $hora, $usuario);
@@ -78,7 +80,7 @@ class ReservaController extends Controller
         'fecha_reserva' => $fecha,
         'id_cliente'    => $cliente,
         'nro_recinto'   => $recinto,
-        'id_Usuario'    => $usuario,
+       
         'hora_reserva'  => $hora,
         'monto_reserva' => $tarifa,
         'pagado'        => 0,
@@ -90,6 +92,8 @@ class ReservaController extends Controller
     } else {
         return redirect()->back()->with('error', 'Error al guardar la reserva.');
     }
+
+
 }
 
 private function validarCamposReserva($fecha, $cliente, $recinto, $hora, $usuario)
@@ -99,9 +103,11 @@ private function validarCamposReserva($fecha, $cliente, $recinto, $hora, $usuari
     $recintoModel = new RecintoModel();
 
     // campos obligatorios
-    if (empty($fecha) || empty($cliente) || empty($recinto) || empty($hora) || empty($usuario)) {
-        return ['ok' => false, 'mensaje' => 'Complete todos los campos.'];
-    }
+    if (empty($fecha)) return ['ok' => false, 'mensaje' => 'Falta la fecha'];
+if (empty($cliente)) return ['ok' => false, 'mensaje' => 'Falta el cliente'];
+if (empty($recinto)) return ['ok' => false, 'mensaje' => 'Falta el recinto'];
+if (empty($hora)) return ['ok' => false, 'mensaje' => 'Falta la hora'];
+
 
     //fecha válida
     if (strtotime($fecha) < strtotime(date('Y-m-d'))) {

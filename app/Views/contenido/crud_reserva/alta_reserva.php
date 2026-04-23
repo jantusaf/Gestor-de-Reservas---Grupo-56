@@ -15,7 +15,18 @@
     <?php endif; ?>
 
     <form action="<?= site_url('reserva/save') ?>" method="post">
-        <!-- Cliente -->
+        <!-- Recinto -->
+        <div class="mb-3">
+            <label for="recinto" class="form-label">Recinto</label>
+            <select name="nro_recinto" id="recinto" class="form-select" required>
+                <option value="">Seleccione un recinto</option>
+                <?php foreach($recintos as $r): ?>
+                    <option value="<?= $r['nro_recinto'] ?>">
+                        <?= 'Recinto '.$r['nro_recinto'].' - Tarifa: $'.$r['tarifa_hora'].'/h' ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
         <div class="mb-3">
             <label for="cliente" class="form-label">Cliente</label>
             <select name="id_cliente" id="cliente" class="form-select" required>
@@ -29,18 +40,7 @@
         </div>
 
 
-        <!-- Recinto -->
-        <div class="mb-3">
-            <label for="recinto" class="form-label">Recinto</label>
-            <select name="nro_recinto" id="recinto" class="form-select" required>
-                <option value="">Seleccione un recinto</option>
-                <?php foreach($recintos as $r): ?>
-                    <option value="<?= $r['nro_recinto'] ?>">
-                        <?= 'Recinto '.$r['nro_recinto'].' - Tarifa: $'.$r['tarifa_hora'].'/h' ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+    
 
         <!-- Fecha -->
         <div class="mb-3">
@@ -51,13 +51,11 @@
         <!-- Hora -->
         <div class="mb-3">
             <label for="hora" class="form-label">Hora</label>
-            <select name="hora_reserva" id="hora" class="form-select" required>
+            <select name="hora_reserva" id="hora" class="form-select" required disabled>
                 <option value="">Seleccione una hora</option>
             </select>
         </div>
 
-        <!-- Usuario (según login) -->
-        <input type="hidden" name="id_usuario" value="<?= session()->get('id_usuario') ?>">
 
         <button type="submit" class="btn btn-primary">Agregar Reserva</button>
     </form>
@@ -88,6 +86,8 @@
                     opt.textContent = h;
                     select.appendChild(opt);
                 });
+
+                select.disabled = false;
             });
         }
     }
