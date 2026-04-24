@@ -1,6 +1,7 @@
-<div class="container mt-4">
-    <h2>Agregar Reserva</h2>
-
+<div class="reserva-wrapper">
+      <div class="reserva-card">
+    <h2 class="reserva-title">Nueva Reserva</h2>
+ <p class="reserva-subtitle">Completá los datos</p>
     <!-- Mensajes de error o éxito -->
     <?php if(session()->getFlashdata('error')): ?>
         <div class="alert alert-danger">
@@ -16,51 +17,49 @@
 
     <form action="<?= site_url('reserva/save') ?>" method="post">
         <!-- Recinto -->
-        <div class="mb-3">
-            <label for="recinto" class="form-label">Recinto</label>
-            <select name="nro_recinto" id="recinto" class="form-select" required>
-                <option value="">Seleccione un recinto</option>
+        <div class="form-group-modern">
+            
+            <select name="nro_recinto" required>
+                <option value="" disabled selected></option>
                 <?php foreach($recintos as $r): ?>
                     <option value="<?= $r['nro_recinto'] ?>">
                         <?= 'Recinto '.$r['nro_recinto'].' - Tarifa: $'.$r['tarifa_hora'].'/h' ?>
                     </option>
                 <?php endforeach; ?>
             </select>
+            <label>Recinto</label>
         </div>
-        <div class="mb-3">
-            <label for="cliente" class="form-label">Cliente</label>
-            <select name="id_cliente" id="cliente" class="form-select" required>
-                <option value="">Seleccione un cliente</option>
+        <div class="form-group-modern">
+         
+            <select name="id_cliente"  required>
+                <option value=""disabled selected></option>
                 <?php foreach($clientes as $c): ?>
                     <option value="<?= $c['id_cliente'] ?>">
                         <?= $c['nombre_cliente'].' '.$c['apellido_cliente'].' ('.$c['email_cliente'].')' ?>
                     </option>
                 <?php endforeach; ?>
             </select>
+            <label>Cliente</label>
         </div>
 
-
+<div class="form-group-modern">
     
-
-        <!-- Fecha -->
-        <div class="mb-3">
-            <label for="fecha" class="form-label">Fecha</label>
-            <input type="date" name="fecha_reserva" id="fecha" class="form-control" required>
-        </div>
+    <input type="date" name="fecha_reserva" id="fecha" class="form-control" required>
+</div>
 
         <!-- Hora -->
-        <div class="mb-3">
-            <label for="hora" class="form-label">Hora</label>
-            <select name="hora_reserva" id="hora" class="form-select" required disabled>
-                <option value="">Seleccione una hora</option>
+        <div class="form-group-modern">
+            
+            <input name="hora_reserva" id="hora" class="form-select" required disabled>
+             <label>Hora</label>   <option value="">Seleccione una hora</option>
             </select>
         </div>
 
 
-        <button type="submit" class="btn btn-primary">Agregar Reserva</button>
+        <button type="submit" class=" btn-login"> Reservar</button>
     </form>
 </div>
-
+</div>
 <script>
     // Cargar horas disponibles dinámicamente
     document.getElementById('fecha').addEventListener('change', cargarHoras);

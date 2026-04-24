@@ -1,22 +1,546 @@
+.dashboard-container {
+    margin-top: 22vh;
+}
+
+.card {
+    background: transparent !important;
+    border: none !important;
+}
+
+.card-dashboard {
+    background: rgba(255,255,255,0.18) !important; /* TRANSPARENTE SIEMPRE */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border-radius: 20px;
+    padding: 20px;
+
+    border: 1px solid rgba(255,255,255,0.25);
+
+    box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+
+    transition: all 0.3s ease;
+}
+.card-dashboard h3,
+.card-dashboard p {
+    color: white;
+}
+
+.card-dashboard:hover {
+    transform: scale(1.05);
+    background: rgba(255,255,255,0.28) !important;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+}
+
+.card-blue {
+    border-left: 4px solid #3b82f6;
+}
+
+.card-green {
+    border-left: 4px solid #10b981;
+}
+
+.card-orange {
+    border-left: 4px solid #f59e0b;
+}
+
+.card-dark {
+    border-left: 4px solid #ef4444;
+}
+
+.btn-custom {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    backdrop-filter: blur(5px);
+}
+
+.btn-custom:hover {
+    background: white;
+    color: black;
+}
+
+/* FONDO DE LOGIN */
+.login-wrapper {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+     align-items: flex-start;
+    padding-top: 80px;
+    overflow: hidden; 
+}
+
+.login-card {
+    background: white;
+    padding: 30px; /* antes 40 */
+    border-radius: 20px;
+    width: 100%;
+    max-width: 360px; /* antes 400 */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+/* TITULO */
+.login-title {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.login-subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 30px;
+}
+
+/* INPUT  */
+.form-group-modern {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.form-group-modern input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+}
+
+.form-group-modern label {
+    position: absolute;
+    top: 12px;
+    left: 0;
+    color: #999;
+    transition: 0.3s;
+    pointer-events: none;
+}
+
+.form-group-modern input:focus + label,
+.form-group-modern input:valid + label {
+    top: -10px;
+    font-size: 12px;
+    color: #3b82f6;
+}
+
+/* BOTÓN */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    color: white;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* FOOTER */
+.login-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.login-footer a {
+    color: #3b82f6;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* ANIMACIÓN */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+/* LOGO */
+.logo-navbar {
+    height: 60px;
+    width: auto;
+}
+
+
+/* CONTENEDOR */
+.reserva-wrapper {
+       height: calc(100vh - 80px); 
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 40px;
+    background: transparent; 
+    overflow: hidden; 
+}
+
+/* CARD */
+.reserva-card {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 400px;
+     box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+      display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* TITULO */
+.reserva-title {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.reserva-subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 25px;
+}
+
+/* INPUTS Y SELECTS */
+.form-group-modern {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.form-group-modern input,
+.form-group-modern select {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
+}
+
+/* LABEL */
+.form-group-modern label {
+    position: absolute;
+    top: 12px;
+    left: 0;
+    color: #999;
+    transition: 0.3s;
+    pointer-events: none;
+}
+
+/* EFECTO FLOAT */
+.form-group-modern input:focus + label,
+.form-group-modern input:valid + label,
+.form-group-modern select:focus + label,
+.form-group-modern select:valid + label {
+    top: -10px;
+    font-size: 12px;
+    color: #dc2626;
+}
+
+/* BOTÓN */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+     background: linear-gradient(135deg, #065f46, #10b981);
+    color: white;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+
+/* CONTENEDOR */
+.tabla-wrapper {
+    padding: 30px;
+}
+
+/* CARD */
+.tabla-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+}
+
+/* HEADER */
+.tabla-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.tabla-header h2 {
+    margin: 0;
+    font-weight: 600;
+}
+
+/* BOTÓN OUTLINE */
+.btn-outline-danger {
+    border: 1px solid #dc2626;
+    color: #dc2626;
+    padding: 6px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-outline-danger:hover {
+    background: #dc2626;
+    color: white;
+}
+
+/* TABLA */
+.tabla-moderna {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-moderna thead {
+    background: #f9fafb;
+}
+
+.tabla-moderna th {
+    text-align: left;
+    padding: 12px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.tabla-moderna td {
+    padding: 12px;
+    border-top: 1px solid #eee;
+}
+
+/* HOVER FILA */
+.tabla-moderna tbody tr:hover {
+    background: #f3f4f6;
+}
+
+/* ACCIONES */
+.acciones {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.btn-action {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+/* EDIT */
+.btn-action.edit {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-action.edit:hover {
+    background: #2563eb;
+}
+
+/* DELETE */
+.btn-action.delete {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-action.delete:hover {
+    background: #b91c1c;
+}
+
+/* EMPTY */
+.empty {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+}
+
+/* PAGINACIÓN */
+.tabla-pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.page-btn {
+    display: inline-block;
+    margin: 0 4px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    background: #e5e7eb;
+    color: #333;
+    transition: 0.3s;
+}
+
+.page-btn:hover {
+    background: #d1d5db;
+}
+
+.page-btn.active {
+    background: #dc2626;
+    color: white;
+    pointer-events: none;
+}
+
+/* WRAPPER */
+.reserva-wrapper {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CARD */
+.reserva-card {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+    text-align: center;
+}
+
+/* TÍTULOS */
+.reserva-title {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.reserva-subtitle {
+    color: #6b7280;
+    margin-bottom: 25px;
+}
+
+/* INPUT MODERNO */
+.form-group-modern {
+    position: relative;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group-modern input {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    padding: 10px 5px;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+}
+
+.form-group-modern label {
+    position: absolute;
+    top: 10px;
+    left: 5px;
+    color: #888;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.form-group-modern input:focus + label,
+.form-group-modern input:valid + label {
+    top: -10px;
+    font-size: 12px;
+    color: #10b981;
+}
+
+/* BOTÓN */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: white;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    background: linear-gradient(135deg, #047857, #059669);
+}
+
+/* FOOTER LINK */
+.login-footer a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+
+/*  fondo */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+
+    background: url('../img/fondo.png') no-repeat center center fixed;
+    background-size: cover;
+
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.2);
+    z-index: -1;
+}
+
+.navbar {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* textos */
+.navbar .nav-link,
+.navbar .navbar-brand {
+    color: white !important;
+    font-weight: 500;
+}
+
+/* hover */
+.navbar .nav-link:hover {
+    color: #10b981 !important;
+}
+
 #footer {
-    background: linear-gradient(135deg, #212529, #343a40);
+    background: transparent !important;
+    color: white;
 }
 
 .footer-link {
-    color: #ccc;
-    text-decoration: none;
-    transition: all 0.3s ease;
+    color: white;
 }
 
 .footer-link:hover {
-    color: #0d6efd;
-    text-decoration: underline;
+    color: #10b981;
 }
 
-#footer h5 {
-    letter-spacing: 1px;
+main {
+    background: transparent;
 }
 
-#footer p {
-    font-size: 14px;
+.reserva-card,
+.login-card,
+.card-dashboard {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
 }

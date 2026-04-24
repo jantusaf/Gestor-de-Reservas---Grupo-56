@@ -21,22 +21,31 @@ class RecintoController extends Controller
 
 
     // FORMULARIO DE CREACIÓN
-    public function crear()
-    {
-        $db = \Config\Database::connect();
-        $tipos = $db->table('tipo_recinto')->get()->getResultArray();
-
-        $data['tipos'] = $tipos;
-
-        return view('plantillas/head')
-            . view('contenido/crud_recinto/alta_recinto', $data)
-            . view('plantillas/footer');
+  public function crear()
+{
+    if (!session()->get('logged_in')) {
+        return redirect()->to('/login')->with('error', 'Debes iniciar sesión');
     }
 
+    $db = \Config\Database::connect();
+    $tipos = $db->table('tipo_recinto')->get()->getResultArray();
+
+    $data['tipos'] = $tipos;
+
+    return view('plantillas/head')
+        . view('contenido/crud_recinto/alta_recinto', $data)
+        . view('plantillas/footer');
+}
+
     
-    
+
     public function validarCamposRecinto()
-    {
+{
+    if (!session()->get('logged_in')) {
+        return redirect()->to('/login')->with('error', 'Debes iniciar sesión');
+    }
+
+    $model = new RecintoModel();
         $model = new RecintoModel();
 
         $tarifa = $this->request->getPost('tarifa_hora');

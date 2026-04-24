@@ -9,6 +9,6 @@ class Home extends BaseController
         $data['title'] = 'Principal';
         return view('plantillas/head', $data)
              . view('contenido/principal', $data)
-             . view('plantillas/footer');
+            . view('plantillas/footer', $data);
     }
 }

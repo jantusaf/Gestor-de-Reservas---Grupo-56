@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=yes">
 
-    <!-- Bootstrap CSS local -->
+    <!-- Bootstrap CSS -->
     <link href="<?= base_url('assets/css/bootstrap.min.css'); ?>" rel="stylesheet">
 
     <!-- Estilos propios -->
@@ -12,68 +12,49 @@
 
     <title><?= $title ?? 'Proyecto Grupo 56' ?></title>
 </head>
+
 <body class="d-flex flex-column min-vh-100">
 
 <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg bg-white">
         <div class="container-fluid">
-            <a class="navbar-brand" href="<?= base_url('/') ?>">Grupo 56</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#navbarNav" aria-controls="navbarNav" 
-                    aria-expanded="false" aria-label="Toggle navigation">
+
+            <!-- Logo -->
+            <a class="navbar-brand fw-bold text-dark" href="<?= base_url('/') ?>">
+               
+            </a>
+
+            <!-- Botón responsive -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
+            <!-- Menú -->
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url('/contacto') ?>">Contacto</a></li>
 
-                    <!-- Menús CRUD solo para Administrador (Id_Tipo 1) o Supervisor (Id_Tipo 2) -->
-                    <?php if(session()->get('logged_in') && in_array(session()->get('id_tipo'), [1])): ?>
-
-                       <!-- <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownClientes" role="button"
-                               data-bs-toggle="dropdown" aria-expanded="false">CRUD Clientes</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownClientes">
-                                <li><a class="dropdown-item" href="<?= base_url('cliente/listar'); ?>">
-                                    Lista de Clientes (Editar - Eliminar)</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url('cliente/eliminados'); ?>">
-                                    Clientes Eliminados</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url('cliente/alta'); ?>">
-                                    Alta de Cliente</a></li>
-                            </ul>
-                        </li> -->
-
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownRecintos" role="button"
-                               data-bs-toggle="dropdown" aria-expanded="false">Recintos</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownRecintos">
-                                <li><a class="dropdown-item" href="<?= base_url('recinto'); ?>">
-                                    Lista de Recintos</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url('recintos-eliminados'); ?>">
-                                    Recintos Eliminados</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url('recinto/crear'); ?>">
-                                  Ingresar Recinto</a></li>
-                            </ul>
-                        </li>
-                    <?php endif; ?>
-                        <!-- Botón Generar Reserva -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('reserva/crear'); ?>">
-                                Agregar Reserva
-                            </a>
-                        </li>
+                <!-- IZQUIERDA -->
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark fw-semibold" href="<?= base_url('contenido/principal') ?>">
+                            Menú
+                        </a>
+                    </li>
                 </ul>
 
+                <!-- DERECHA -->
                 <ul class="navbar-nav">
                     <?php if(!session()->get('logged_in')): ?>
-                        <li class="nav-item"><a class="nav-link" href="<?= base_url('/login') ?>">Iniciar sesión</a></li>
-                        <li class="nav-item"><a class="nav-link" href="<?= base_url('/registrarse') ?>">Registrarse</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="<?= base_url('/login') ?>">Iniciar sesión</a>
+                        </li>
+                  
                     <?php else: ?>
-                        <li class="nav-item"><a class="nav-link" href="<?= base_url('/logout') ?>">Cerrar sesión</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="<?= base_url('/logout') ?>">Cerrar sesión</a>
+                        </li>
                     <?php endif; ?>
                 </ul>
+
             </div>
         </div>
     </nav>

@@ -1,37 +1,51 @@
-<?php // Vista principal del proyecto Grupo 56 ?>
+<div class="container dashboard-container">
 
-<div class="container mt-5">
-    <h2 class="text-center text-primary">Bienvenido al Proyecto Grupo 56</h2>
-    <p class="text-center">
-        Esta es la página principal, integrada con <strong>head.php</strong> y <strong>footer.php</strong>.
-    </p>
+    <div class="row g-4 justify-content-center">
 
-    <div class="row mt-4">
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h4 class="card-title">Sección 1</h4>
-                    <p class="card-text">Contenido genérico que podés reemplazar por información real de tu proyecto.</p>
+        <!-- RECINTOS -->
+        <div class="col-md-6">
+            <div class="card-dashboard card-blue h-100">
+                <div class="text-center w-100">
+                    <h3>Recintos</h3>
+                    <p>Gestionar recintos del sistema</p>
+                    <a href="<?= base_url('recinto') ?>" class="btn btn-custom">Ingresar</a>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h4 class="card-title">Sección 2</h4>
-                    <p class="card-text">Podés usar esta columna para mostrar productos, servicios o noticias.</p>
+        <!-- NUEVO RECINTO -->
+        <div class="col-md-6">
+            <div class="card-dashboard card-green h-100">
+                <div class="text-center w-100">
+                    <h3>Nuevo Recinto</h3>
+                    <p>Agregar un nuevo recinto</p>
+                    <a href="<?= base_url('recinto/crear') ?>" class="btn btn-custom">Crear</a>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h4 class="card-title">Sección 3</h4>
-                    <p class="card-text">Otra sección donde podés poner datos de contacto, novedades o enlaces.</p>
+        <!-- RESERVAS -->
+        <div class="col-md-6">
+            <div class="card-dashboard card-orange h-100">
+                <div class="text-center w-100">
+                    <h3>Reservas</h3>
+                    <p>Generar reservas fácilmente</p>
+                    <a href="<?= base_url('reserva/crear') ?>" class="btn btn-custom">Ir</a>
                 </div>
             </div>
         </div>
+
+        <!-- CLIENTES -->
+        <div class="col-md-6">
+            <div class="card-dashboard card-dark h-100">
+                <div class="text-center w-100">
+                    <h3>Clientes</h3>
+                    <p>Administrar clientes</p>
+                    <a href="<?= base_url('cliente/alta') ?>" class="btn btn-custom">Ir</a>
+                </div>
+            </div>
+        </div>
+
     </div>
+
 </div>

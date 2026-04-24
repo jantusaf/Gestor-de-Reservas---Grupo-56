@@ -11,7 +11,7 @@ class LoginController extends BaseController
         $data['title'] = 'Login';
         return view('plantillas/head', $data)
             . view('contenido/login', $data)
-            . view('plantillas/footer');
+            . view('plantillas/footer', $data);
     }
 
    public function iniciar_sesion()

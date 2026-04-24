@@ -1,13 +1,10 @@
 <?php // Vista de inicio de sesión ?>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-dark text-white text-center">
-                    <h4>Iniciar Sesión</h4>
-                </div>
-                <div class="card-body">
+<div class="login-wrapper">
+    <div class="login-card">
+       
+    <h2 class="login-title">Bienvenido</h2>
+        <p class="login-subtitle">Ingresá a tu cuenta</p>
                     <!-- Mensajes de éxito -->
                     <?php if(session()->getFlashdata('success')): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert" id="successMessage">
@@ -24,27 +21,29 @@
 
                     <!-- Formulario de login -->
                     <form action="<?= base_url('/login/auth'); ?>" method="post">
-                        <div class="mb-3">
-                            <label for="usuario" class="form-label">DNI</label>
-                            <input type="text" name="usuario" id="usuario" class="form-control" required>
+
+                        <div class="form-group-modern">
+                            <input type="text" name="usuario" required>
+                          <label>DNI</label>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Contraseña</label>
-                            <input type="password" name="password" id="password" class="form-control" required>
+                        <div class="form-group-modern">
+                            
+                            <input type="password" name="password"  required>
+                            <label>Contraseña</label>
                         </div>
 
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Ingresar</button>
-                        </div>
+                        
+                            <button type="submit" class="btn-login">Ingresar</button>
+                       
                     </form>
+                
+                <div class="login-footer">
+                    ¿No tenés cuenta? <a href="<?= base_url('/registrarse'); ?>">Registrate aquí</a>
                 </div>
-                <div class="card-footer text-center">
-                    <small>¿No tenés cuenta? <a href="<?= base_url('/registrarse'); ?>">Registrate aquí</a></small>
-                </div>
-            </div>
+            
         </div>
-    </div>
+  
 </div>
 
 <script>

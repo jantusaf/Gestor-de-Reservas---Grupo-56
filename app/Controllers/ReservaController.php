@@ -7,22 +7,23 @@ use App\Models\ClienteModel;
 use App\Models\RecintoModel;
 use CodeIgniter\Controller;
 
-class ReservaController extends BaseController
+class ReservaController extends Controller
 {
     // FORMULARIO DE CREACIÓN DE RESERVA
-    public function crear()
-    {
-         dd(session()->get());
-        $clienteModel = new ClienteModel();
-        $recintoModel = new RecintoModel();
+   public function crear()
+{
+    
 
-        $data['clientes'] = $clienteModel->where('estado_cliente', 'activo')->findAll();
-        $data['recintos'] = $recintoModel->where('habilitado', 1)->findAll();
+    $clienteModel = new ClienteModel();
+    $recintoModel = new RecintoModel();
 
-        return view('plantillas/head')
-            . view('contenido/crud_reserva/alta_reserva', $data)
-            . view('plantillas/footer');
-    }
+    $data['clientes'] = $clienteModel->where('estado_cliente', 'activo')->findAll();
+    $data['recintos'] = $recintoModel->where('habilitado', 1)->findAll();
+
+    return view('plantillas/head')
+        . view('contenido/crud_reserva/alta_reserva', $data)
+        . view('plantillas/footer');
+}
 
     // HORAS DISPONIBLES SEGÚN FECHA Y RECINTO
     public function ActualizarHorasDisponibles()
@@ -54,14 +55,15 @@ class ReservaController extends BaseController
     // boton de agregar reserva
    public function AgregarReserva()
 {
-
+if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Debes iniciar sesión');
+        }
     $model = new ReservaModel();
 
     $fecha   = $this->request->getPost('fecha_reserva');
     $cliente = $this->request->getPost('id_cliente');
     $recinto = $this->request->getPost('nro_recinto');
     $hora    = $this->request->getPost('hora_reserva');
-    
 
    
     $resultado = $this->validarCamposReserva($fecha, $cliente, $recinto, $hora, $usuario);
@@ -80,7 +82,7 @@ class ReservaController extends BaseController
         'fecha_reserva' => $fecha,
         'id_cliente'    => $cliente,
         'nro_recinto'   => $recinto,
-       
+      
         'hora_reserva'  => $hora,
         'monto_reserva' => $tarifa,
         'pagado'        => 0,
@@ -107,7 +109,7 @@ private function validarCamposReserva($fecha, $cliente, $recinto, $hora, $usuari
 if (empty($cliente)) return ['ok' => false, 'mensaje' => 'Falta el cliente'];
 if (empty($recinto)) return ['ok' => false, 'mensaje' => 'Falta el recinto'];
 if (empty($hora)) return ['ok' => false, 'mensaje' => 'Falta la hora'];
-
+ 
 
     //fecha válida
     if (strtotime($fecha) < strtotime(date('Y-m-d'))) {
