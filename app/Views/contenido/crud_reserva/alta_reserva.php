@@ -19,7 +19,7 @@
         <!-- Recinto -->
         <div class="form-group-modern">
             
-            <select name="nro_recinto" required>
+            <select name="nro_recinto" id="recinto"  required>
                 <option value="" disabled selected></option>
                 <?php foreach($recintos as $r): ?>
                     <option value="<?= $r['nro_recinto'] ?>">
