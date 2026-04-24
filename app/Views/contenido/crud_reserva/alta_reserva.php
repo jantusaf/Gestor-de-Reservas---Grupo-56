@@ -50,7 +50,7 @@
         <!-- Hora -->
         <div class="form-group-modern">
             
-            <input name="hora_reserva" id="hora" class="form-select" required disabled>
+            <select name="hora_reserva" id="hora" class="form-select" required disabled>
              <label>Hora</label>   <option value="">Seleccione una hora</option>
             </select>
         </div>
