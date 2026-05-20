@@ -29,13 +29,13 @@ class ClienteController extends BaseController
             'dni'             => 'required|numeric|min_length[7]|max_length[20]|is_unique[persona.dni]',
             'nombre'          => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
             'apellido'        => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
-            'fecha_nacimiento'=> 'required|valid_date[Y-m-d]',
+            'fecha_nacimiento'=> 'required|valid_date[Y-m-d]|check_past_date',
             'telefono'        => 'permit_empty|max_length[20]',
             'calle'           => 'required|min_length[3]|max_length[50]',
             'altura'          => 'required|max_length[10]',
             // cliente
             'email'           => 'required|valid_email|max_length[100]|is_unique[cliente.email]',
-            'estado_cliente'  => 'required|in_list[activo,inactivo]'
+            
         ]);
     }
 
@@ -69,7 +69,7 @@ class ClienteController extends BaseController
             $clienteModel->insert([
                 'email'          => $this->request->getVar('email'),
                 'fecha_alta'     => date('Y-m-d'),
-                'estado_cliente' => $this->request->getVar('estado_cliente'),
+                'estado_cliente' => 'activo', 
                 'id_persona'     => $personaId
             ]);
 
