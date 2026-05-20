@@ -6,11 +6,12 @@ use CodeIgniter\Model;
 class RecintoModel extends Model
 {
     protected $table      = 'recinto';
-    protected $primaryKey = 'nro_recinto';
+    protected $primaryKey = 'id_recinto';
 
     protected $allowedFields = [
-        'tarifa_hora',
-        'id_tipo_recinto',
-        'habilitado'
+        'tarifa',
+        'estado_recinto',
+        'descripcion',
+        'id_tipo_recinto'
     ];
 }

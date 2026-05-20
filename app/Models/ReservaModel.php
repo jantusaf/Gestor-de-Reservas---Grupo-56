@@ -10,12 +10,12 @@ class ReservaModel extends Model
 
     protected $allowedFields = [
         'fecha_reserva',
+        'monto',
+        'estado_reserva',
+        'estado_pago',
+        'id_horario',
         'id_cliente',
-        'nro_recinto',
-        'id_usuario',
-        'hora_reserva',
-        'monto_reserva',
-        'pagado',
-        'estado'
+        'id_recinto',
+        'id_usuario'
     ];
 }

@@ -9,11 +9,9 @@ class ClienteModel extends Model
     protected $primaryKey = 'id_cliente';
 
     protected $allowedFields = [
-        'dni_cliente',
-        'nombre_cliente',
-        'apellido_cliente',
-        'telefono_cliente',
+        'email',
+        'fecha_alta',
         'estado_cliente',
-        'email_cliente'
+        'id_persona'
     ];
 }
