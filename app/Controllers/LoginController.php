@@ -22,7 +22,7 @@ class LoginController extends BaseController
     $password  = $this->request->getPost('password');
 
     // llama al metodo que valida
-    $resultado = $this->validar_datos($usuarioModel, $dni, $password);
+    $resultado = $this->verificar_datos($usuarioModel, $dni, $password);
 
    
     if ($resultado['estado'] === false) {
@@ -45,7 +45,7 @@ dd(session()->get());
 }
 
 
-private function validar_datos($usuarioModel, $dni, $password)
+private function verificar_datos($usuarioModel, $dni, $password)
 {
     // busca usuario por DNI
     $data = $usuarioModel->where('DNI_Usuario', $dni)->first();
