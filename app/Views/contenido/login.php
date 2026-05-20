@@ -23,8 +23,9 @@
                     <form action="<?= base_url('/login/auth'); ?>" method="post">
 
                         <div class="form-group-modern">
-                            <input type="text" name="usuario" required>
-                          <label>DNI</label>
+                        <input type="text" name="dni" required>
+                        <label>DNI</label>
+
                         </div>
 
                         <div class="form-group-modern">
