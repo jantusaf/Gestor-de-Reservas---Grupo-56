@@ -20,7 +20,7 @@
                     <?php endif; ?>
 
                     <!-- Formulario de login -->
-                    <form action="<?= base_url('/login/auth'); ?>" method="post">
+                    <form action="<?= base_url('/login/iniciar_sesion'); ?>" method="post">
 
                         <div class="form-group-modern">
                         <input type="text" name="dni" required>
