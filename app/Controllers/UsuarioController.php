@@ -29,8 +29,8 @@ class UsuarioController extends BaseController
 
         $validation = $this->validate([
             'dni'             => 'required|numeric|min_length[7]|max_length[20]|is_unique[persona.dni]',
-            'nombre'          => 'required|alpha_space|min_length[3]|max_length[50]',
-            'apellido'        => 'required|alpha_space|min_length[3]|max_length[50]',
+            'nombre'          => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
+            'apellido'        => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
             'fecha_nacimiento'=> 'required|valid_date[Y-m-d]|check_past_date',
             'telefono'        => 'required|numeric|max_length[20]',
             'calle'           => 'required|min_length[3]|max_length[50]',
