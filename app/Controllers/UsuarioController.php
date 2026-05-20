@@ -32,7 +32,7 @@ class UsuarioController extends BaseController
             'nombre'          => 'required|alpha_space|min_length[3]|max_length[50]',
             'apellido'        => 'required|alpha_space|min_length[3]|max_length[50]',
             'fecha_nacimiento'=> 'required|valid_date[Y-m-d]',
-            'telefono'        => 'required|numeric|max_length[20]', // ahora obligatorio y numérico
+            'telefono'        => 'required|numeric|max_length[20]',
             'calle'           => 'required|min_length[3]|max_length[50]',
             'altura'          => 'required|max_length[10]',
             'usuario'         => 'required|min_length[3]|max_length[50]|is_unique[usuario.nombre_usuario]',
