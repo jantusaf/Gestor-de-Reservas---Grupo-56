@@ -35,7 +35,7 @@ $routes->get('/contenido/principal', 'Home::index');
 
 // LOGIN
 $routes->get('/login', 'LoginController::index');   // muestra la vista login.php
-$routes->post('/login/auth', 'LoginController::iniciar_sesion'); // procesa el formulario de login
+$routes->post('/login/iniciar_sesion', 'LoginController::iniciar_sesion');// procesa el formulario de login
 $routes->get('/logout', 'LoginController::logout'); // cierra sesión
 
 // REGISTRO
