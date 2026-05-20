@@ -30,8 +30,9 @@
                         </div>
                     <?php endif; ?>
 
-                    <!-- Formulario de alta de cliente -->
-                    <form action="<?= base_url('/cliente/guardar'); ?>" method="post">
+                        <!-- Formulario de alta de cliente -->
+                        <form action="<?= base_url('/cliente/alta'); ?>" method="post">
+
 
                         <!-- DATOS PERSONALES -->
                         <h5 class="mb-3">Datos Personales</h5>
