@@ -18,7 +18,7 @@ class LoginController extends BaseController
 {
     $usuarioModel = new UsuarioModel();
 
-    $dni       = $this->request->getPost('usuario');
+    $dni = $this->request->getPost('dni');
     $password  = $this->request->getPost('password');
 
     // llama al metodo que valida
@@ -47,38 +47,56 @@ dd(session()->get());
 
 private function verificar_datos($usuarioModel, $dni, $password)
 {
-    // busca usuario por DNI
-    $data = $usuarioModel->where('DNI_Usuario', $dni)->first();
+    // 1. Buscar persona por DNI
+    $personaModel = new \App\Models\PersonaModel();
+    $persona = $personaModel->where('dni', $dni)->first();
 
-    if (!$data) {
+    if (!$persona) {
         return [
             'estado' => false,
-            'mensaje' => 'Debes ingresar tu DNI para iniciar sesión'
+            'mensaje' => 'DNI no encontrado'
         ];
     }
 
-    // verif estado
-    if ($data['estado_usuario'] === 'inactivo') {
+    // 2. Buscar usuario asociado a esa persona
+    $usuario = $usuarioModel->where('id_persona', $persona['id_persona'])->first();
+
+    if (!$usuario) {
+        return [
+            'estado' => false,
+            'mensaje' => 'Usuario no encontrado'
+        ];
+    }
+
+    // 3. Validar estado
+    if ($usuario['estado_usuario'] === 'inactivo') {
         return [
             'estado' => false,
             'mensaje' => 'Usuario dado de baja'
         ];
     }
 
-    // verif contraseña
-    if (!password_verify($password, $data['pass'])) {
+    // 4. Validar contraseña
+    if (!password_verify($password, $usuario['contrasena'])) {
         return [
             'estado' => false,
             'mensaje' => 'Contraseña incorrecta'
         ];
     }
 
-   
+    // 5. Devolver datos reales para la sesión
     return [
         'estado' => true,
-        'data' => $data
+        'data' => [
+            'id_usuario'     => $usuario['id_usuario'],
+            'nombre_usuario' => $usuario['nombre_usuario'],
+            'apellido'       => $persona['apellido'],
+            'dni_usuario'    => $persona['dni'],
+            'id_tipo'        => $usuario['id_tipo_usuario']
+        ]
     ];
 }
+
 
 
 
