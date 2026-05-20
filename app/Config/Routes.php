@@ -45,9 +45,10 @@ $routes->post('/registrarse/guardar', 'UsuarioController::guardar');            
 
 
 // CLIENTES
-$routes->get('/cliente/alta', 'ClienteController::alta');       // muestra el formulario de alta
-$routes->post('/cliente/guardar', 'ClienteController::guardar'); // procesa el alta
-$routes->get('/cliente/listar', 'ClienteController::listar_clientes');    // muestra listado de clientes
+$routes->get('/cliente/alta', 'ClienteController::muestra_vista_alta_cliente'); // muestra el formulario de alta
+$routes->post('/cliente/alta', 'ClienteController::alta_cliente');              // procesa el alta
+$routes->get('/cliente/listar', 'ClienteController::listar_clientes');          // muestra listado de clientes
+
 
 
 // RECINTOS
