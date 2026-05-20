@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UsuarioModel;
+use App\Models\PersonaModel;
 
 class UsuarioController extends BaseController
 {
@@ -12,7 +13,7 @@ class UsuarioController extends BaseController
     }
 
     // CREATE: Muestra la vista de registro de usuario
-    public function registrarse()
+    public function muestra_vista_registrarse()
     {
         $data['title'] = 'Registrarse';
         return view('plantillas/head', $data)
@@ -20,61 +21,67 @@ class UsuarioController extends BaseController
             . view('plantillas/footer');
     }
 
-// CREATE: Procesa el formulario y guarda el usuario
-public function save()
-{
-    $usuarioModel = new UsuarioModel();
+    // CREATE: Procesa el formulario y guarda persona + usuario
+    public function guardar()
+    {
+        $usuarioModel = new UsuarioModel();
+        $personaModel = new PersonaModel();
 
-    $validation = $this->validate([
-        'dni'             => 'required|numeric|min_length[7]|max_length[20]|is_unique[usuario.DNI_Usuario]',
-        'nombre'          => 'required|alpha_space|min_length[3]|max_length[50]',
-        'apellido'        => 'required|alpha_space|min_length[3]|max_length[50]',
-        'fecha_nacimiento'=> 'required|valid_date[Y-m-d]',
-        'telefono'        => 'required|numeric|max_length[20]', // ahora obligatorio y numérico
-        'sexo'            => 'required|in_list[Masculino,Femenino,Otro]',
-        'password'        => 'required|min_length[6]|max_length[100]'
-    ]);
-
-    if (!$validation) {
-        // Mostrar errores de validación
-        return view('plantillas/head')
-            . view('contenido/registrarse', [
-                'validation' => $this->validator
-            ])
-            . view('plantillas/footer');
-    }
-
-    // Intentar guardar
-    try {
-        $usuarioModel->insert([
-            'DNI_Usuario'      => $this->request->getVar('dni'),
-            'Nombre_Usuario'   => $this->request->getVar('nombre'),
-            'Apellido_Usuario' => $this->request->getVar('apellido'),
-            'Fecha_Ingreso'    => date('Y-m-d'),
-            'Fecha_Nacimiento' => $this->request->getVar('fecha_nacimiento'),
-            'telefono'         => $this->request->getVar('telefono'),
-            'Sexo_Usuario'     => $this->request->getVar('sexo'),
-            'pass'             => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
-            'Id_Tipo'          => 2, // por defecto cliente normal
-            'estado_usuario'   => 'activo'
+        $validation = $this->validate([
+            'dni'             => 'required|numeric|min_length[7]|max_length[20]|is_unique[persona.dni]',
+            'nombre'          => 'required|alpha_space|min_length[3]|max_length[50]',
+            'apellido'        => 'required|alpha_space|min_length[3]|max_length[50]',
+            'fecha_nacimiento'=> 'required|valid_date[Y-m-d]',
+            'telefono'        => 'required|numeric|max_length[20]', // ahora obligatorio y numérico
+            'calle'           => 'required|min_length[3]|max_length[50]',
+            'altura'          => 'required|max_length[10]',
+            'usuario'         => 'required|min_length[3]|max_length[50]|is_unique[usuario.nombre_usuario]',
+            'password'        => 'required|min_length[6]|max_length[100]'
         ]);
 
-        session()->setFlashdata('success', 'Usuario registrado correctamente');
-        return redirect()->to('/login');
+        if (!$validation) {
+            // Mostrar errores de validación
+            return view('plantillas/head')
+                . view('contenido/registrarse', ['validation' => $this->validator])
+                . view('plantillas/footer');
+        }
 
-    } catch (\Exception $e) {
-        // Si falla el insert, mostrar error
-        session()->setFlashdata('error', 'Error al registrar: ' . $e->getMessage());
-        return redirect()->back()->withInput();
+        try {
+            // 1. Insertar persona
+            $personaId = $personaModel->insert([
+                'dni'             => $this->request->getVar('dni'),
+                'nombre'          => $this->request->getVar('nombre'),
+                'apellido'        => $this->request->getVar('apellido'),
+                'fecha_nacimiento'=> $this->request->getVar('fecha_nacimiento'),
+                'telefono'        => $this->request->getVar('telefono'),
+                'calle'           => $this->request->getVar('calle'),
+                'altura'          => $this->request->getVar('altura')
+            ]);
+
+            // 2. Insertar usuario vinculado a persona
+            $usuarioModel->insert([
+                'nombre_usuario'  => $this->request->getVar('usuario'),
+                'contrasena' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
+                'estado_usuario'  => 'activo',
+                'id_persona'      => $personaId,
+                'id_tipo_usuario' => 2 // por defecto cliente normal
+            ]);
+
+            session()->setFlashdata('success', 'Usuario registrado correctamente');
+            return redirect()->to('/login');
+
+        } catch (\Exception $e) {
+            // Si falla el insert, mostrar error
+            session()->setFlashdata('error', 'Error al registrar: ' . $e->getMessage());
+            return redirect()->back()->withInput();
+        }
     }
-}
-
 
     // READ: Mostrar perfil del usuario logueado
     public function perfil()
     {
         $usuarioModel = new UsuarioModel();
-        $id = session()->get('id_Usuario'); // tomado de la sesión
+        $id = session()->get('id_usuario'); // tomado de la sesión
 
         $data['usuario'] = $usuarioModel->find($id);
         $data['title']   = 'Mi Perfil';
@@ -85,16 +92,14 @@ public function save()
     }
 
     // UPDATE: Actualizar datos del usuario
-    public function update()
+    public function actualizar()
     {
         $usuarioModel = new UsuarioModel();
-        $id = session()->get('id_Usuario');
+        $id = session()->get('id_usuario');
 
         $data = [
-            'Nombre_Usuario'   => $this->request->getVar('nombre'),
-            'Apellido_Usuario' => $this->request->getVar('apellido'),
-            'telefono'         => $this->request->getVar('telefono'),
-            'Sexo_Usuario'     => $this->request->getVar('sexo')
+            'nombre_usuario' => $this->request->getVar('usuario'),
+            'estado_usuario' => $this->request->getVar('estado') ?? 'activo'
         ];
 
         $usuarioModel->update($id, $data);
@@ -103,10 +108,10 @@ public function save()
     }
 
     // DELETE: Dar de baja usuario (soft delete)
-    public function deleteAccount()
+    public function dar_de_baja()
     {
         $usuarioModel = new UsuarioModel();
-        $id = session()->get('id_Usuario');
+        $id = session()->get('id_usuario');
 
         $usuarioModel->update($id, ['estado_usuario' => 'inactivo']);
 

@@ -39,8 +39,9 @@ $routes->post('/login/auth', 'LoginController::iniciar_sesion'); // procesa el f
 $routes->get('/logout', 'LoginController::logout'); // cierra sesión
 
 // REGISTRO
-$routes->get('/registrarse', 'UsuarioController::registrarse');   // muestra la vista registrarse.php
-$routes->post('/registrarse/save', 'UsuarioController::save');    // procesa el formulario de registro
+$routes->get('/registrarse', 'UsuarioController::muestra_vista_registrarse');   // muestra la vista registrarse.php
+$routes->post('/registrarse/guardar', 'UsuarioController::guardar');            // procesa el formulario de registro
+
 
 
 // CLIENTES

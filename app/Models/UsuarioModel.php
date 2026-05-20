@@ -10,7 +10,7 @@ class UsuarioModel extends Model
 
     protected $allowedFields = [
         'nombre_usuario',
-        'contraseña',
+        'contrasena',
         'estado_usuario',
         'id_persona',
         'id_tipo_usuario'

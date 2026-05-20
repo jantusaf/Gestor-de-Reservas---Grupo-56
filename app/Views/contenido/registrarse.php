@@ -30,7 +30,8 @@
                     <?php endif; ?>
 
                     <!-- Formulario de registro -->
-                    <form action="<?= base_url('/registrarse/save'); ?>" method="post">
+                    <form action="<?= base_url('/registrarse/guardar'); ?>" method="post">
+
                         
                         <!-- DATOS PERSONALES -->
                         <h5 class="mb-3">Datos Personales</h5>
