@@ -30,7 +30,10 @@
                     <?php endif; ?>
 
                     <!-- Formulario de registro -->
-                    <form action="<?= base_url('/registrarse/save'); ?>" method="post" enctype="multipart/form-data">
+                    <form action="<?= base_url('/registrarse/save'); ?>" method="post">
+                        
+                        <!-- DATOS PERSONALES -->
+                        <h5 class="mb-3">Datos Personales</h5>
                         <div class="mb-3">
                             <label for="dni" class="form-label">DNI</label>
                             <input type="text" name="dni" id="dni" class="form-control" required>
@@ -57,24 +60,25 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="sexo" class="form-label">Sexo</label>
-                            <select name="sexo" id="sexo" class="form-control" required>
-                                <option value="">Seleccione...</option>
-                                <option value="Masculino">Masculino</option>
-                                <option value="Femenino">Femenino</option>
-                                <option value="Otro">Otro</option>
-                            </select>
+                            <label for="calle" class="form-label">Calle</label>
+                            <input type="text" name="calle" id="calle" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="altura" class="form-label">Altura (Numeracion de la calle)</label>
+                            <input type="text" name="altura" id="altura" class="form-control" required>
+                        </div>
+
+                        <!-- DATOS DE USUARIO -->
+                        <h5 class="mt-4 mb-3">Datos de Usuario</h5>
+                        <div class="mb-3">
+                            <label for="usuario" class="form-label">Nombre de Usuario</label>
+                            <input type="text" name="usuario" id="usuario" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="password" class="form-label">Contraseña</label>
                             <input type="password" name="password" id="password" class="form-control" required>
-                        </div>
-
-                        <!-- Campo opcional para foto -->
-                        <div class="mb-3">
-                            <label for="foto" class="form-label">Foto (opcional)</label>
-                            <input type="file" name="foto" id="foto" class="form-control">
                         </div>
 
                         <div class="d-grid">
