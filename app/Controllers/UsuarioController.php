@@ -31,7 +31,7 @@ class UsuarioController extends BaseController
             'dni'             => 'required|numeric|min_length[7]|max_length[20]|is_unique[persona.dni]',
             'nombre'          => 'required|alpha_space|min_length[3]|max_length[50]',
             'apellido'        => 'required|alpha_space|min_length[3]|max_length[50]',
-            'fecha_nacimiento'=> 'required|valid_date[Y-m-d]',
+            'fecha_nacimiento'=> 'required|valid_date[Y-m-d]|check_past_date',
             'telefono'        => 'required|numeric|max_length[20]',
             'calle'           => 'required|min_length[3]|max_length[50]',
             'altura'          => 'required|max_length[10]',
