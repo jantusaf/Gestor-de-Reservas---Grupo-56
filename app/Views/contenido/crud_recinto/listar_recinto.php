@@ -49,8 +49,8 @@ $recintos_pagina = array_slice($recintos, $start_index, $perPage);
                                     <a href="<?= site_url('recinto/editar/' . $recinto['nro_recinto']) ?>" 
                                        class="btn-action edit">Editar</a>
 
-<a href="<?= site_url('recinto/eliminar/' . $recinto['id_recinto']) ?>" 
-   class="btn-action delete">Eliminar</a>
+                                    <a href="<?= site_url('recinto/eliminar/' . $recinto['id_recinto']) ?>" 
+                                    class="btn-action delete">Eliminar</a>
 
                                 </td>
                             </tr>
