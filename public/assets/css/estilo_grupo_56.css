@@ -544,3 +544,17 @@ main {
     backdrop-filter: blur(6px);
     border-radius: 20px;
 }
+
+.btn-outline-primary {
+    border: 1px solid #3b82f6;
+    color: #3b82f6;
+    padding: 6px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-outline-primary:hover {
+    background: #3b82f6;
+    color: white;
+}
