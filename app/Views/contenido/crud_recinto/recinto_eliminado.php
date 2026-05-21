@@ -4,6 +4,21 @@
     </div>
 
     <h2>Lista de Recintos Eliminados (Deshabilitados)</h2>
+
+            <!-- BLOQUE DE MENSAJES -->
+        <?php if(session()->getFlashdata('success')): ?>
+            <div class="alert alert-success">
+                <?= session()->getFlashdata('success') ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if(session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger">
+                <?= session()->getFlashdata('error') ?>
+            </div>
+        <?php endif; ?>
+        <!-- FIN BLOQUE DE MENSAJES -->
+
     <div class="mt-3">
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
