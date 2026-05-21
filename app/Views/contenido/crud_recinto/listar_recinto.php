@@ -26,6 +26,20 @@ $recintos_pagina = array_slice($recintos, $start_index, $perPage);
             </a>
         </div>
 
+                <!-- BLOQUE DE MENSAJES -->
+        <?php if(session()->getFlashdata('success')): ?>
+            <div class="alert alert-success">
+                <?= session()->getFlashdata('success') ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if(session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger">
+                <?= session()->getFlashdata('error') ?>
+            </div>
+        <?php endif; ?>
+        <!-- FIN BLOQUE DE MENSAJES -->
+
         <div class="tabla-container">
             <table class="tabla-moderna">
                 <thead>
