@@ -52,14 +52,15 @@ $routes->get('/cliente/listar', 'ClienteController::listar_clientes');          
 
 
 // RECINTOS
-$routes->get('/recinto', 'RecintoController::listar_recintos_habilitados');          // listado de recintos
-$routes->get('/recinto/crear', 'RecintoController::crear');    // muestra el formulario de creación
-$routes->post('/recinto/save', 'RecintoController::validarCamposRecinto');     // procesa el formulario de creación
-$routes->get('/recinto/eliminar/(:num)', 'RecintoController::eliminar/$1'); // elimina un recinto
-$routes->get('/recintos-eliminados', 'RecintoController::eliminados'); // listado de recintos deshabilitados
-$routes->get('/recinto/activar/(:num)', 'RecintoController::activar/$1'); // restaura un recinto
-$routes->get('/recinto/editar/(:num)', 'RecintoController::editar/$1');     // nueva ruta
-$routes->post('/recinto/update/(:num)', 'RecintoController::update/$1');    // nueva ruta
+$routes->get('/recinto', 'RecintoController::listar_recintos');          // listado de recintos activos
+$routes->get('/recinto/crear', 'RecintoController::muestra_vista_alta_recinto'); // muestra el formulario de creación
+$routes->post('/recinto/alta', 'RecintoController::alta');               // procesa validación + inserción
+$routes->get('/recinto/eliminar/(:num)', 'RecintoController::eliminar_recinto/$1'); // baja lógica
+$routes->get('/recintos-eliminados', 'RecintoController::listar_recintos_inactivos'); // listado de recintos inactivos
+$routes->get('/recinto/activar/(:num)', 'RecintoController::activar_recinto/$1'); // restaurar recinto
+$routes->get('/recinto/editar/(:num)', 'RecintoController::mostrar_formulario_editar_recinto/$1'); // formulario edición
+$routes->post('/recinto/update/(:num)', 'RecintoController::actualizar_recinto/$1'); // actualizar recinto
+
 
 //RESERVAS
 $routes->get('/reserva/crear', 'ReservaController::crear');
