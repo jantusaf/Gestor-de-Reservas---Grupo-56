@@ -32,7 +32,7 @@
                                 <td><?= $recinto['id_tipo_recinto'] ?></td>
                                 <!-- <td><?= $recinto['habilitado'] == 1 ? 'Sí' : 'No' ?></td>-->
                                 <td>
-                                    <a href="<?= site_url('recinto/activar/' . $recinto['nro_recinto']) ?>" 
+                                    <a href="<?= site_url('recinto/activar/' . $recinto['id_recinto']) ?>" 
                                        class="btn btn-success btn-sm mt-1">Restaurar</a>
                                 </td>
                             </tr>
