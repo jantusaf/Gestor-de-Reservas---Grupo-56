@@ -90,7 +90,7 @@ class RecintoController extends Controller
     {
         $model = new RecintoModel();
         if ($model->update($id, ['estado_recinto' => 'inactivo'])) {
-            return redirect()->to(base_url('recinto'))->with('success', 'Recinto deshabilitado');
+            return redirect()->back()->with('success', 'Recinto deshabilitado');
         }
         return redirect()->back()->with('error', 'Error al deshabilitar');
     }
