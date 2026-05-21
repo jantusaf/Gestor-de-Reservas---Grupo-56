@@ -96,11 +96,11 @@ class RecintoController extends Controller
     }
 
     // Activar
-    public function activar_recinto($id = null)
+    public function activar_recinto($id)
     {
         $model = new RecintoModel();
         if ($model->update($id, ['estado_recinto' => 'activo'])) {
-            return redirect()->to(base_url('recinto'))->with('success', 'Recinto habilitado nuevamente');
+            return redirect()->back()->with('success', 'Recinto habilitado nuevamente');
         }
         return redirect()->back()->with('error', 'Error al habilitar');
     }
