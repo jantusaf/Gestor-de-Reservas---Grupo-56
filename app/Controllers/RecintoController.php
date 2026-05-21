@@ -86,7 +86,7 @@ class RecintoController extends Controller
     }
 
     // Eliminar (baja lógica)
-    public function eliminar_recinto($id = null)
+    public function eliminar_recinto($id)
     {
         $model = new RecintoModel();
         if ($model->update($id, ['estado_recinto' => 'inactivo'])) {
