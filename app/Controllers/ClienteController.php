@@ -12,85 +12,161 @@ class ClienteController extends BaseController
         helper(['form', 'url']);
     }
 
-    // 1. Mostrar la vista de alta de cliente
-    public function muestra_vista_alta_cliente()
+    private function validarCliente(int $idPersona = 0, int $idCliente = 0): bool
     {
-        $data['title'] = 'Alta de Cliente';
-        return view('plantillas/head', $data)
-            . view('contenido/crud_cliente/alta_cliente', $data)
-            . view('plantillas/footer');
-    }
+        $dniRule   = $idPersona ? "required|numeric|min_length[7]|max_length[20]|is_unique[persona.dni,id_persona,{$idPersona}]"
+                                : 'required|numeric|min_length[7]|max_length[20]|is_unique[persona.dni]';
+        $emailRule = $idCliente ? "required|valid_email|max_length[100]|is_unique[cliente.email,id_cliente,{$idCliente}]"
+                                : 'required|valid_email|max_length[100]|is_unique[cliente.email]';
 
-    // 2. Verificar datos del formulario
-    private function verificar_datos()
-    {
         return $this->validate([
-            // persona
-            'dni'             => 'required|numeric|min_length[7]|max_length[20]|is_unique[persona.dni]',
-            'nombre'          => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
-            'apellido'        => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
-            'fecha_nacimiento'=> 'required|valid_date[Y-m-d]|check_past_date',
-            'telefono'        => 'permit_empty|max_length[20]',
-            'calle'           => 'required|min_length[3]|max_length[50]',
-            'altura'          => 'required|max_length[10]',
-            // cliente
-            'email'           => 'required|valid_email|max_length[100]|is_unique[cliente.email]',
-            
+            'dni'              => $dniRule,
+            'nombre'           => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
+            'apellido'         => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
+            'fecha_nacimiento' => 'required|valid_date[Y-m-d]|check_past_date',
+            'telefono'         => 'permit_empty|max_length[20]',
+            'calle'            => 'required|min_length[3]|max_length[50]',
+            'altura'           => 'required|max_length[10]',
+            'email'            => $emailRule,
         ]);
     }
 
-    // 3. Alta de cliente (inserta persona y cliente)
-    public function alta_cliente()
+    public function altaCliente()
     {
-        if (!$this->verificar_datos()) {
-            return view('plantillas/head')
-                . view('contenido/crud_cliente/alta_cliente', [
-                    'validation' => $this->validator
+        if ($this->request->getMethod() === 'post') {
+            if (!$this->validarCliente()) {
+                return view('plantillas/head', ['title' => 'Alta de Cliente'])
+                    . view('contenido/crud_cliente/alta_cliente', ['validation' => $this->validator])
+                    . view('plantillas/footer');
+            }
+
+            $personaModel = new PersonaModel();
+            $clienteModel = new ClienteModel();
+
+            try {
+                $personaId = $personaModel->insert([
+                    'dni'              => $this->request->getVar('dni'),
+                    'nombre'           => $this->request->getVar('nombre'),
+                    'apellido'         => $this->request->getVar('apellido'),
+                    'fecha_nacimiento' => $this->request->getVar('fecha_nacimiento'),
+                    'telefono'         => $this->request->getVar('telefono'),
+                    'calle'            => $this->request->getVar('calle'),
+                    'altura'           => $this->request->getVar('altura'),
+                ]);
+
+                $clienteModel->insert([
+                    'email'          => $this->request->getVar('email'),
+                    'fecha_alta'     => date('Y-m-d'),
+                    'estado_cliente' => 'activo',
+                    'id_persona'     => $personaId,
+                ]);
+
+                return redirect()->to('/cliente/listar')->with('success', 'Cliente registrado correctamente.');
+
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Error al registrar: ' . $e->getMessage())->withInput();
+            }
+        }
+
+        return view('plantillas/head', ['title' => 'Alta de Cliente'])
+            . view('contenido/crud_cliente/alta_cliente')
+            . view('plantillas/footer');
+    }
+
+    public function listarClientes()
+    {
+        $db = \Config\Database::connect();
+        $data['clientes'] = $db->table('cliente')
+            ->select('cliente.id_cliente, cliente.email, cliente.fecha_alta, cliente.estado_cliente, cliente.id_persona,
+                      persona.nombre, persona.apellido, persona.dni, persona.telefono, persona.calle, persona.altura, persona.fecha_nacimiento')
+            ->join('persona', 'persona.id_persona = cliente.id_persona')
+            ->orderBy('cliente.estado_cliente', 'ASC')
+            ->orderBy('persona.apellido', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        $data['title'] = 'Listado de Clientes';
+        return view('plantillas/head', $data)
+            . view('contenido/crud_cliente/listar_clientes', $data)
+            . view('plantillas/footer');
+    }
+
+    public function editarCliente($id)
+    {
+        $clienteModel = new ClienteModel();
+        $personaModel = new PersonaModel();
+
+        $cliente = $clienteModel->find($id);
+        if (!$cliente) {
+            return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
+        }
+
+        return view('plantillas/head', ['title' => 'Editar Cliente'])
+            . view('contenido/crud_cliente/editar_cliente', [
+                'cliente' => $cliente,
+                'persona' => $personaModel->find($cliente['id_persona']),
+            ])
+            . view('plantillas/footer');
+    }
+
+    public function actualizarCliente($id)
+    {
+        $clienteModel = new ClienteModel();
+        $cliente = $clienteModel->find($id);
+
+        if (!$cliente) {
+            return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
+        }
+
+        $idPersona = $cliente['id_persona'];
+
+        if (!$this->validarCliente($idPersona, $id)) {
+            $personaModel = new PersonaModel();
+            return view('plantillas/head', ['title' => 'Editar Cliente'])
+                . view('contenido/crud_cliente/editar_cliente', [
+                    'cliente'    => $cliente,
+                    'persona'    => $personaModel->find($idPersona),
+                    'validation' => $this->validator,
                 ])
                 . view('plantillas/footer');
         }
 
         $personaModel = new PersonaModel();
-        $clienteModel = new ClienteModel();
+        $personaModel->update($idPersona, [
+            'dni'              => $this->request->getVar('dni'),
+            'nombre'           => $this->request->getVar('nombre'),
+            'apellido'         => $this->request->getVar('apellido'),
+            'fecha_nacimiento' => $this->request->getVar('fecha_nacimiento'),
+            'telefono'         => $this->request->getVar('telefono'),
+            'calle'            => $this->request->getVar('calle'),
+            'altura'           => $this->request->getVar('altura'),
+        ]);
 
-        try {
-            // Insertar persona
-            $personaId = $personaModel->insert([
-                'dni'             => $this->request->getVar('dni'),
-                'nombre'          => $this->request->getVar('nombre'),
-                'apellido'        => $this->request->getVar('apellido'),
-                'fecha_nacimiento'=> $this->request->getVar('fecha_nacimiento'),
-                'telefono'        => $this->request->getVar('telefono'),
-                'calle'           => $this->request->getVar('calle'),
-                'altura'          => $this->request->getVar('altura')
-            ]);
+        $clienteModel->update($id, [
+            'email'          => $this->request->getVar('email'),
+            'estado_cliente' => $this->request->getVar('estado_cliente'),
+        ]);
 
-            // Insertar cliente vinculado a persona
-            $clienteModel->insert([
-                'email'          => $this->request->getVar('email'),
-                'fecha_alta'     => date('Y-m-d'),
-                'estado_cliente' => 'activo', 
-                'id_persona'     => $personaId
-            ]);
-
-            session()->setFlashdata('success', 'Cliente registrado correctamente');
-            return redirect()->to('/cliente/alta');
-
-        } catch (\Exception $e) {
-            session()->setFlashdata('error', 'Error al registrar: ' . $e->getMessage());
-            return redirect()->back()->withInput();
-        }
+        return redirect()->to('/cliente/listar')->with('success', 'Cliente actualizado correctamente.');
     }
 
-    // 4. Listar clientes
-    public function listar_clientes()
+    public function deshabilitarCliente($id)
     {
         $clienteModel = new ClienteModel();
-        $data['clientes'] = $clienteModel->findAll();
-        $data['title'] = 'Listado de Clientes';
+        if (!$clienteModel->find($id)) {
+            return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
+        }
+        $clienteModel->update($id, ['estado_cliente' => 'inactivo']);
+        return redirect()->to('/cliente/listar')->with('success', 'Cliente deshabilitado.');
+    }
 
-        return view('plantillas/head', $data)
-            . view('contenido/crud_cliente/listar_clientes', $data)
-            . view('plantillas/footer');
+    public function habilitarCliente($id)
+    {
+        $clienteModel = new ClienteModel();
+        if (!$clienteModel->find($id)) {
+            return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
+        }
+        $clienteModel->update($id, ['estado_cliente' => 'activo']);
+        return redirect()->to('/cliente/listar')->with('success', 'Cliente habilitado.');
     }
 }

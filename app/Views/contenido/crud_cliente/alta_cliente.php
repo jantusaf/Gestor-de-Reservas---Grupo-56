@@ -1,86 +1,77 @@
 <?php // Vista de alta de cliente ?>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-dark text-white text-center">
-                    <h4>Alta de Cliente</h4>
+<div class="cliente-wrapper">
+    <div class="cliente-card">
+
+        <h2 class="reserva-title">Alta de Cliente</h2>
+        <p class="reserva-subtitle">Completá los datos</p>
+
+        <?php if(session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
+        <?php endif; ?>
+        <?php if(session()->getFlashdata('success')): ?>
+            <div class="alert alert-success"><?= session()->getFlashdata('success') ?></div>
+        <?php endif; ?>
+        <?php if(isset($validation)): ?>
+            <div class="alert alert-warning"><?= $validation->listErrors() ?></div>
+        <?php endif; ?>
+
+        <form action="<?= base_url('/cliente/alta'); ?>" method="post">
+
+            <!-- FILA 1: DNI + FECHA -->
+            <div class="form-row-2">
+                <div class="form-group-modern">
+                    <input type="text" name="dni" id="dni" required>
+                    <label for="dni">DNI</label>
                 </div>
-                <div class="card-body">
-                    
-                    <!-- Mensajes de error -->
-                    <?php if(session()->getFlashdata('error')): ?>
-                        <div class="alert alert-danger">
-                            <?= session()->getFlashdata('error') ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <!-- Mensajes de éxito -->
-                    <?php if(session()->getFlashdata('success')): ?>
-                        <div class="alert alert-success">
-                            <?= session()->getFlashdata('success') ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <!-- Errores de validación -->
-                    <?php if(isset($validation)): ?>
-                        <div class="alert alert-warning">
-                            <?= $validation->listErrors() ?>
-                        </div>
-                    <?php endif; ?>
-
-                        <!-- Formulario de alta de cliente -->
-                        <form action="<?= base_url('/cliente/alta'); ?>" method="post">
-
-
-                        <!-- DATOS PERSONALES -->
-                        <h5 class="mb-3">Datos Personales</h5>
-                        <div class="mb-3">
-                            <label for="dni" class="form-label">DNI</label>
-                            <input type="text" name="dni" id="dni" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" name="nombre" id="nombre" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="apellido" class="form-label">Apellido</label>
-                            <input type="text" name="apellido" id="apellido" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
-                            <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="text" name="telefono" id="telefono" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="calle" class="form-label">Calle</label>
-                            <input type="text" name="calle" id="calle" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="altura" class="form-label">Altura</label>
-                            <input type="text" name="altura" id="altura" class="form-control" required>
-                        </div>
-
-                        <!-- DATOS DE CLIENTE -->
-                        <h5 class="mt-4 mb-3">Datos de Cliente</h5>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" name="email" id="email" class="form-control" required>
-                        </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success">Guardar Cliente</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-footer text-center">
-                    <small><a href="<?= base_url('/cliente/listar'); ?>">Ver listado de clientes</a></small>
+                <div class="form-group-modern">
+                    <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" required>
+                    <label for="fecha_nacimiento" class="label-active">Fecha de Nacimiento</label>
                 </div>
             </div>
+
+            <!-- FILA 2: NOMBRE -->
+            <div class="form-group-modern">
+                <input type="text" name="nombre" id="nombre" required>
+                <label for="nombre">Nombre</label>
+            </div>
+
+            <!-- FILA 3: APELLIDO -->
+            <div class="form-group-modern">
+                <input type="text" name="apellido" id="apellido" required>
+                <label for="apellido">Apellido</label>
+            </div>
+
+            <!-- FILA 4: CALLE + ALTURA -->
+            <div class="form-row-2">
+                <div class="form-group-modern">
+                    <input type="text" name="calle" id="calle" required>
+                    <label for="calle">Calle</label>
+                </div>
+                <div class="form-group-modern">
+                    <input type="text" name="altura" id="altura" required>
+                    <label for="altura">Altura</label>
+                </div>
+            </div>
+
+            <!-- FILA 5: EMAIL -->
+            <div class="form-group-modern">
+                <input type="email" name="email" id="email" required>
+                <label for="email">Email</label>
+            </div>
+
+            <!-- FILA 6: TELÉFONO (opcional) -->
+            <div class="form-group-modern">
+                <input type="text" name="telefono" id="telefono">
+                <label for="telefono">Teléfono</label>
+            </div>
+
+            <button type="submit" class="btn-login">Guardar Cliente</button>
+        </form>
+
+        <div class="login-footer mt-3">
+            <a href="<?= base_url('/cliente/listar'); ?>">Ver listado de clientes</a>
         </div>
+
     </div>
 </div>

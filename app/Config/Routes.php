@@ -42,31 +42,38 @@ $routes->get('/logout', 'LoginController::logout'); // cierra sesión
 $routes->get('/registrarse', 'UsuarioController::muestra_vista_registrarse');   // muestra la vista registrarse.php
 $routes->post('/registrarse/guardar', 'UsuarioController::guardar');            // procesa el formulario de registro
 
+// USUARIO
+$routes->get('/usuario/perfil',      'UsuarioController::perfil');       // ver perfil del usuario logueado
+$routes->post('/usuario/actualizar', 'UsuarioController::actualizar');   // actualizar datos del usuario
+$routes->post('/usuario/baja',       'UsuarioController::dar_de_baja');  // dar de baja la cuenta
 
 
 // CLIENTES
-$routes->get('/cliente/alta', 'ClienteController::muestra_vista_alta_cliente'); // muestra el formulario de alta
-$routes->post('/cliente/alta', 'ClienteController::alta_cliente');              // procesa el alta
-$routes->get('/cliente/listar', 'ClienteController::listar_clientes');          // muestra listado de clientes
+$routes->match(['get','post'], '/cliente/alta',         'ClienteController::altaCliente');
+$routes->get('/cliente/listar',                         'ClienteController::listarClientes');
+$routes->get('/cliente/editar/(:num)',                  'ClienteController::editarCliente/$1');
+$routes->post('/cliente/actualizar/(:num)',              'ClienteController::actualizarCliente/$1');
+$routes->get('/cliente/deshabilitar/(:num)',             'ClienteController::deshabilitarCliente/$1');
+$routes->get('/cliente/habilitar/(:num)',                'ClienteController::habilitarCliente/$1');
+
+// RECINTO
+$routes->get('/recinto',                                'RecintoController::listarRecintos');
+$routes->get('/recinto/listar',                         'RecintoController::listarRecintos');
+$routes->match(['get','post'], '/recinto/alta',         'RecintoController::altaRecinto');
+$routes->get('/recinto/deshabilitar/(:num)',             'RecintoController::deshabilitarRecinto/$1');
+$routes->get('/recinto/habilitar/(:num)',               'RecintoController::habilitarRecinto/$1');
+$routes->get('/recinto/editar/(:num)',                  'RecintoController::editarRecinto/$1');
+$routes->post('/recinto/actualizar/(:num)',              'RecintoController::actualizarRecinto/$1');
 
 
-
-// RECINTOS
-$routes->get('/recinto', 'RecintoController::listar_recintos');          // listado de recintos activos
-$routes->get('/recinto/crear', 'RecintoController::muestra_vista_alta_recinto'); // muestra el formulario de creación
-$routes->post('/recinto/alta', 'RecintoController::alta');               // procesa validación + inserción
-$routes->get('/recinto/eliminar/(:num)', 'RecintoController::eliminar_recinto/$1'); // baja lógica
-$routes->get('/recintos-eliminados', 'RecintoController::listar_recintos_inactivos'); // listado de recintos inactivos
-$routes->get('/recinto/activar/(:num)', 'RecintoController::activar_recinto/$1'); // restaurar recinto
-$routes->get('/recinto/editar/(:num)', 'RecintoController::mostrar_formulario_editar_recinto/$1'); // formulario edición
-$routes->post('/recinto/update/(:num)', 'RecintoController::actualizar_recinto/$1'); // actualizar recinto
-
-
-//RESERVAS
-$routes->get('/reserva/crear', 'ReservaController::crear');
-$routes->post('/reserva/save', 'ReservaController::AgregarReserva');
-$routes->post('/reserva/horasDisponibles', 'ReservaController::ActualizarHorasDisponibles');
-
+// RESERVAS
+$routes->get('/reserva/crear',          'ReservaController::altaReserva');
+$routes->post('/reserva/guardar',       'ReservaController::guardarReserva');
+$routes->post('/reserva/horas',         'ReservaController::horasDisponibles');
+$routes->get('/reserva/listar',            'ReservaController::listarReservas');
+$routes->get('/reserva/cancelar/(:num)',   'ReservaController::cancelarReserva/$1');
+$routes->get('/reserva/editar/(:num)',     'ReservaController::editarReserva/$1');
+$routes->post('/reserva/actualizar/(:num)', 'ReservaController::actualizarReserva/$1');
 
 
 

@@ -7,162 +7,125 @@ use CodeIgniter\Controller;
 
 class RecintoController extends Controller
 {
-    // Vista de alta
-    public function muestra_vista_alta_recinto()
+    private function obtenerTipos()
     {
-        $tipos = $this->listar_tipo_recinto();
-        $data['tipos'] = $tipos;
+        return \Config\Database::connect()
+            ->table('tipo_recinto')
+            ->get()
+            ->getResultArray();
+    }
+
+    private function validarRecinto(bool $editando = false)
+    {
+        $rules = [
+            'tarifa'          => 'required|numeric',
+            'id_tipo_recinto' => 'required',
+            'descripcion'     => 'required|min_length[3]|max_length[50]',
+        ];
+
+        if ($editando) {
+            $rules['estado_recinto'] = 'required|in_list[activo,inactivo]';
+        }
+
+        return $this->validate($rules);
+    }
+
+    public function altaRecinto()
+    {
+        $tipos = $this->obtenerTipos();
+
+        if ($this->request->getMethod() === 'post') {
+            if (!$this->validarRecinto()) {
+                return view('plantillas/head')
+                    . view('contenido/crud_recinto/alta_recinto', [
+                        'tipos'      => $tipos,
+                        'validation' => $this->validator,
+                    ])
+                    . view('plantillas/footer');
+            }
+
+            $model = new RecintoModel();
+            $model->insert([
+                'tarifa'          => number_format((float)$this->request->getPost('tarifa'), 2, '.', ''),
+                'descripcion'     => $this->request->getPost('descripcion'),
+                'id_tipo_recinto' => $this->request->getPost('id_tipo_recinto'),
+                'estado_recinto'  => 'activo',
+            ]);
+
+            return redirect()->to('/recinto/listar')->with('success', 'Recinto agregado correctamente.');
+        }
 
         return view('plantillas/head')
-            . view('contenido/crud_recinto/alta_recinto', $data)
+            . view('contenido/crud_recinto/alta_recinto', ['tipos' => $tipos])
             . view('plantillas/footer');
     }
 
-    // Listar tipos
-    public function listar_tipo_recinto()
+    public function listarRecintos()
     {
         $db = \Config\Database::connect();
-        return $db->table('tipo_recinto')->get()->getResultArray();
-    }
-
-    // Validar campos
-    public function validar_campos_recinto()
-    {
-        $rules = [
-            'tarifa' => 'required|numeric',
-            'id_tipo_recinto' => 'required',
-            'descripcion' => 'required|min_length[3]|max_length[50]'
-        ];
-
-        if (!$this->validate($rules)) {
-            return redirect()->back()->with('error', $this->validator->listErrors());
-        }
-
-        return redirect()->back()->with('success', 'Validación correcta');
-    }
-
-    // Insertar recinto
-    public function agregar_recinto()
-    {
-        $tarifa      = number_format((float)$this->request->getPost('tarifa'), 2, '.', '');
-        $tipo        = $this->request->getPost('id_tipo_recinto');
-        $descripcion = $this->request->getPost('descripcion');
-
-        $model = new RecintoModel();
-        $data = [
-            'tarifa'          => $tarifa,
-            'descripcion'     => $descripcion,
-            'id_tipo_recinto' => $tipo,
-            'estado_recinto'  => 'activo'
-        ];
-
-        if ($model->insert($data)) {
-            return redirect()->back()->with('success', 'Recinto agregado correctamente');
-        }
-        return redirect()->back()->with('error', 'Error al agregar el recinto');
-    }
-
-    // Alta (validación + inserción)
-    public function alta()
-    {
-        $validacion = $this->validar_campos_recinto();
-
-        if (session()->getFlashdata('error')) {
-            return $validacion;
-        }
-
-        return $this->agregar_recinto();
-    }
-
-    // Listar activos
-    public function listar_recintos()
-    {
-        $model = new RecintoModel();
-        $data['recintos'] = $model->where('estado_recinto', 'activo')->findAll();
+        $data['recintos'] = $db->table('recinto')
+            ->select('recinto.*, tipo_recinto.nombre_tipo_recinto')
+            ->join('tipo_recinto', 'tipo_recinto.id_tipo_recinto = recinto.id_tipo_recinto')
+            ->orderBy('recinto.estado_recinto', 'ASC')
+            ->get()
+            ->getResultArray();
 
         return view('plantillas/head')
             . view('contenido/crud_recinto/listar_recinto', $data)
             . view('plantillas/footer');
     }
 
-    // Eliminar (baja lógica)
-    public function eliminar_recinto($id)
+    public function deshabilitarRecinto($id)
     {
         $model = new RecintoModel();
-        if ($model->update($id, ['estado_recinto' => 'inactivo'])) {
-            return redirect()->back()->with('success', 'Recinto deshabilitado');
+        if (!$model->find($id)) {
+            return redirect()->to('/recinto/listar')->with('error', 'Recinto no encontrado.');
         }
-        return redirect()->back()->with('error', 'Error al deshabilitar');
+        $model->update($id, ['estado_recinto' => 'inactivo']);
+        return redirect()->to('/recinto/listar')->with('success', 'Recinto deshabilitado.');
     }
 
-    // Activar
-    public function activar_recinto($id)
+    public function habilitarRecinto($id)
     {
         $model = new RecintoModel();
-        if ($model->update($id, ['estado_recinto' => 'activo'])) {
-            return redirect()->back()->with('success', 'Recinto habilitado nuevamente');
+        if (!$model->find($id)) {
+            return redirect()->to('/recinto/listar')->with('error', 'Recinto no encontrado.');
         }
-        return redirect()->back()->with('error', 'Error al habilitar');
+        $model->update($id, ['estado_recinto' => 'activo']);
+        return redirect()->to('/recinto/listar')->with('success', 'Recinto habilitado.');
     }
 
-    // Listar inactivos
-    public function listar_recintos_inactivos()
+    public function editarRecinto($id = null)
     {
-        $model = new RecintoModel();
-        $data['recintos'] = $model->where('estado_recinto', 'inactivo')->findAll();
-
-        return view('plantillas/head')
-            . view('contenido/crud_recinto/recinto_eliminado', $data)
-            . view('plantillas/footer');
-    }
-
-    // Formulario edición
-    public function mostrar_formulario_editar_recinto($id = null)
-    {
-        $model = new RecintoModel();
+        $model   = new RecintoModel();
         $recinto = $model->find($id);
-        $tipos   = $this->listar_tipo_recinto();
 
         if (!$recinto) {
-            return redirect()->to(base_url('recinto'))->with('error', 'Recinto no encontrado');
+            return redirect()->to('/recinto/listar')->with('error', 'Recinto no encontrado.');
         }
 
-        $data['recinto'] = $recinto;
-        $data['tipos']   = $tipos;
-
         return view('plantillas/head')
-            . view('contenido/crud_recinto/editar_recinto', $data)
+            . view('contenido/crud_recinto/editar_recinto', [
+                'recinto' => $recinto,
+                'tipos'   => $this->obtenerTipos(),
+            ])
             . view('plantillas/footer');
     }
 
-    // Actualizar
-    public function actualizar_recinto($id = null)
+    public function actualizarRecinto($id = null)
     {
-        $rules = [
-            'tarifa' => 'required|numeric',
-            'id_tipo_recinto' => 'required',
-            'descripcion' => 'required|min_length[3]|max_length[50]',
-            'estado_recinto' => 'in_list[activo,inactivo]'
-        ];
-
-        if (!$this->validate($rules)) {
+        if (!$this->validarRecinto(true)) {
             return redirect()->back()->with('error', $this->validator->listErrors());
         }
 
-        $tarifa      = number_format((float)$this->request->getPost('tarifa'), 2, '.', '');
-        $descripcion = $this->request->getPost('descripcion');
-
-        $data = [
-            'tarifa'          => $tarifa,
-            'descripcion'     => $descripcion,
-            'id_tipo_recinto' => $this->request->getPost('id_tipo_recinto'),
-            'estado_recinto'  => $this->request->getPost('estado_recinto') ?? 'activo'
-        ];
-
         $model = new RecintoModel();
-        if ($model->update($id, $data)) {
-            return redirect()->to(base_url('recinto'))->with('success', 'Recinto actualizado');
-        }
-        return redirect()->back()->with('error', 'Error al actualizar');
+        $model->update($id, [
+            'tarifa'          => number_format((float)$this->request->getPost('tarifa'), 2, '.', ''),
+            'descripcion'     => $this->request->getPost('descripcion'),
+            'id_tipo_recinto' => $this->request->getPost('id_tipo_recinto'),
+            'estado_recinto'  => $this->request->getPost('estado_recinto') ?? 'activo',
+        ]);
+
+        return redirect()->to('/recinto/listar')->with('success', 'Recinto actualizado correctamente.');
     }
 }

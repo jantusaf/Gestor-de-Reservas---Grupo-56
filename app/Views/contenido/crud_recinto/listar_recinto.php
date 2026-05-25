@@ -21,9 +21,7 @@ $recintos_pagina = array_slice($recintos, $start_index, $perPage);
 
         <div class="tabla-header">
             <h2>Recintos</h2>
-            <a href="<?= site_url('/recintos-eliminados') ?>" class="btn-outline-danger">
-                Eliminados
-            </a>
+            <a href="<?= site_url('/recinto/alta') ?>" class="btn-action edit">+ Nuevo Recinto</a>
         </div>
 
                 <!-- BLOQUE DE MENSAJES -->
@@ -44,9 +42,10 @@ $recintos_pagina = array_slice($recintos, $start_index, $perPage);
             <table class="tabla-moderna">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Tarifa</th>
                         <th>Tipo</th>
+                        <th>Descripción</th>
+                        <th>Tarifa/h</th>
+                        <th>Estado</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -54,24 +53,35 @@ $recintos_pagina = array_slice($recintos, $start_index, $perPage);
                 <tbody>
                     <?php if (!empty($recintos_pagina)): ?>
                         <?php foreach ($recintos_pagina as $recinto): ?>
+                            <?php $inactivo = $recinto['estado_recinto'] === 'inactivo'; ?>
+                            <?php $tdStyle  = $inactivo ? 'style="color:#aaa; background-color:#f8f8f8;"' : ''; ?>
                             <tr>
-                                <td><?= $recinto['nro_recinto']; ?></td>
-                                <td>$<?= $recinto['tarifa_hora']; ?></td>
-                                <td><?= $recinto['id_tipo_recinto']; ?></td>
-
+                                <td <?= $tdStyle ?>><?= esc($recinto['nombre_tipo_recinto']) ?></td>
+                                <td <?= $tdStyle ?>><?= esc($recinto['descripcion']) ?></td>
+                                <td <?= $tdStyle ?>>$<?= number_format($recinto['tarifa'], 2) ?></td>
+                                <td <?= $tdStyle ?>>
+                                    <?php if($inactivo): ?>
+                                        <span style="color:#c0392b; font-weight:600;">Deshabilitado</span>
+                                    <?php else: ?>
+                                        <span style="color:#27ae60; font-weight:600;">Activo</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td class="acciones">
-                                    <a href="<?= site_url('recinto/editar/' . $recinto['nro_recinto']) ?>" 
-                                       class="btn-action edit">Editar</a>
-
-                                    <a href="<?= site_url('recinto/eliminar/' . $recinto['id_recinto']) ?>" 
-                                    class="btn-action delete">Eliminar</a>
-
+                                    <?php if(!$inactivo): ?>
+                                        <a href="<?= site_url('recinto/editar/' . $recinto['id_recinto']) ?>"
+                                           class="btn-action edit">Editar</a>
+                                        <a href="<?= site_url('recinto/deshabilitar/' . $recinto['id_recinto']) ?>"
+                                           class="btn-action delete">Deshabilitar</a>
+                                    <?php else: ?>
+                                        <a href="<?= site_url('recinto/habilitar/' . $recinto['id_recinto']) ?>"
+                                           class="btn-action edit" style="background-color:#27ae60; opacity:1;">Habilitar</a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="4" class="empty">No hay recintos</td>
+                            <td colspan="5" class="empty">No hay recintos</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

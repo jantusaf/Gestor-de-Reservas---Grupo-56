@@ -19,7 +19,7 @@
                 <div class="text-center w-100">
                     <h3>Nuevo Recinto</h3>
                     <p>Agregar un nuevo recinto</p>
-                    <a href="<?= base_url('recinto/crear') ?>" class="btn btn-custom">Crear</a>
+                    <a href="<?= base_url('recinto/alta') ?>" class="btn btn-custom">Crear</a>
                 </div>
             </div>
         </div>
