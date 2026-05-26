@@ -61,6 +61,9 @@
                                                 '<?= esc($r['nombre']).' '.esc($r['apellido']) ?>',
                                                 '<?= esc($r['fecha_reserva']) ?>'
                                             )">Cancelar</button>
+                                        <a href="<?= site_url('pago/alta/'.$r['id_reserva']) ?>" 
+                                           class="btn-action success">Pagar</a>
+
                                     <?php else: ?>
                                         <span style="color:#aaa; font-size:13px;">Cancelada</span>
                                     <?php endif; ?>
