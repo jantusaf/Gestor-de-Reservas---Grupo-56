@@ -75,6 +75,12 @@ $routes->get('/reserva/cancelar/(:num)',   'ReservaController::cancelarReserva/$
 $routes->get('/reserva/editar/(:num)',     'ReservaController::editarReserva/$1');
 $routes->post('/reserva/actualizar/(:num)', 'ReservaController::actualizarReserva/$1');
 
+//PAGOS
+$routes->get('/pago/listar', 'PagoController::listar'); // muestra el listado de pagos
+$routes->get('/pago/alta/(:num)', 'PagoController::alta/$1');// muestra el formulario de alta de pago para una reserva específica
+$routes->post('/pago/guardar', 'PagoController::guardar'); // procesa el formulario de alta de pago
+
+
 
 
 /*
