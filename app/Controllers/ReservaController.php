@@ -202,6 +202,10 @@ class ReservaController extends Controller
             return redirect()->back()->with('error', 'Todos los campos son obligatorios.');
         }
 
+        if (strtotime($fecha) < strtotime(date('Y-m-d'))) {
+            return redirect()->back()->with('error', 'La fecha no puede ser anterior a hoy.');
+        }
+
         $ocupada = $reservaModel
             ->where('fecha_reserva', $fecha)
             ->where('id_recinto', $idRecinto)
