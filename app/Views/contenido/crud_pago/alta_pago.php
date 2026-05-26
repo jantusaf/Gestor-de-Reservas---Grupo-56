@@ -44,8 +44,7 @@
         </form>
 
         <div class="login-footer mt-3">
-            <a href="<?= site_url('reserva/listar') ?>">Volver al listado de reservas</a>
-             <a href="<?= site_url('pago/listar') ?>" class="btn-action edit">← Ver listado de pagos</a>
+             <a href="<?= site_url('pago/listar') ?>" class="btn-action edit">Ver listado de pagos</a>
         </div>
     </div>
 </div>
