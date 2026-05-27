@@ -103,8 +103,9 @@ class ReservaController extends Controller
         ];
 
         if ($reservaModel->insert($data)) {
+            $nuevaId = $reservaModel->getInsertID();
             return redirect()->to(base_url('reserva/crear'))
-                ->with('success', 'Reserva creada correctamente.');
+                ->with('nueva_reserva_id', $nuevaId);
         }
 
         return redirect()->back()->with('error', 'Error al guardar la reserva.');
@@ -116,20 +117,26 @@ class ReservaController extends Controller
             return redirect()->to('/login')->with('error', 'Debés iniciar sesión.');
         }
 
-        $db = \Config\Database::connect();
-        $reservas = $db->table('reserva')
-            ->select('reserva.*, persona.nombre, persona.apellido, horario.horario as hora, recinto.descripcion as recinto_desc, tipo_recinto.nombre_tipo_recinto')
+        $db  = \Config\Database::connect();
+        $dni = trim($this->request->getGet('dni') ?? '');
+
+        $builder = $db->table('reserva')
+            ->select('reserva.*, persona.nombre, persona.apellido, persona.dni, horario.horario as hora, recinto.descripcion as recinto_desc, tipo_recinto.nombre_tipo_recinto')
             ->join('cliente',      'cliente.id_cliente = reserva.id_cliente')
             ->join('persona',      'persona.id_persona = cliente.id_persona')
             ->join('horario',      'horario.id_horario = reserva.id_horario')
             ->join('recinto',      'recinto.id_recinto = reserva.id_recinto')
             ->join('tipo_recinto', 'tipo_recinto.id_tipo_recinto = recinto.id_tipo_recinto')
-            ->orderBy('reserva.fecha_reserva', 'DESC')
-            ->get()
-            ->getResultArray();
+            ->orderBy('reserva.fecha_reserva', 'DESC');
+
+        if ($dni !== '') {
+            $builder->like('persona.dni', $dni, 'after');
+        }
+
+        $reservas = $builder->get()->getResultArray();
 
         return view('plantillas/head', ['title' => 'Listado de Reservas'])
-            . view('contenido/crud_reserva/listar_reservas', ['reservas' => $reservas])
+            . view('contenido/crud_reserva/listar_reservas', ['reservas' => $reservas, 'dni_busqueda' => $dni])
             . view('plantillas/footer');
     }
 

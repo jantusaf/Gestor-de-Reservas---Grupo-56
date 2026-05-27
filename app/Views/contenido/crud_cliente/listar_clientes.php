@@ -4,14 +4,32 @@ $totalPages   = ceil(count($clientes) / $perPage);
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $start_index  = ($current_page - 1) * $perPage;
 $clientes_pag = array_slice($clientes, $start_index, $perPage);
+$dniParam     = ($dni_busqueda ?? '') !== '' ? '&dni=' . urlencode($dni_busqueda) : '';
 ?>
 
 <div class="tabla-wrapper">
     <div class="tabla-card">
 
         <div class="tabla-header">
-            <h2>Clientes</h2>
-            <a href="<?= site_url('cliente/alta') ?>" class="btn-action edit">+ Nuevo Cliente</a>
+            <h2><i class="bi bi-people"></i> Clientes
+                <?php if(($dni_busqueda ?? '') !== ''): ?>
+                    <span class="busqueda-badge"><?= count($clientes) ?> resultado<?= count($clientes) !== 1 ? 's' : '' ?></span>
+                <?php endif; ?>
+            </h2>
+            <div class="tabla-header-right">
+                <a href="<?= site_url('cliente/alta') ?>" class="btn-nueva">+ Nuevo Cliente</a>
+                <form method="GET" action="<?= site_url('cliente/listar') ?>" class="busqueda-form">
+                    <div class="busqueda-input-wrap">
+                        <input type="text" name="dni" value="<?= esc($dni_busqueda ?? '') ?>"
+                               placeholder="Buscar por DNI..." maxlength="20"
+                               oninput="this.value = this.value.replace(/\D/g,'')">
+                        <button type="submit" class="busqueda-btn">Buscar</button>
+                        <?php if(($dni_busqueda ?? '') !== ''): ?>
+                            <a href="<?= site_url('cliente/listar') ?>" class="busqueda-clear" title="Limpiar">&#x2715;</a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <?php if(session()->getFlashdata('success')): ?>
@@ -81,7 +99,7 @@ $clientes_pag = array_slice($clientes, $start_index, $perPage);
         <div class="tabla-pagination">
             <?php if($totalPages > 1): ?>
                 <?php for($i = 1; $i <= $totalPages; $i++): ?>
-                    <a href="?page=<?= $i ?>"
+                    <a href="?page=<?= $i ?><?= $dniParam ?>"
                        class="page-btn <?= $i == $current_page ? 'active' : '' ?>">
                         <?= $i ?>
                     </a>

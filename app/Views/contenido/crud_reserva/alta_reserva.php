@@ -1,67 +1,84 @@
 <div class="reserva-wrapper">
-      <div class="reserva-card">
-    <h2 class="reserva-title">Nueva Reserva</h2>
- <p class="reserva-subtitle">Completá los datos</p>
-    <!-- Mensajes de error o éxito -->
-    <?php if(session()->getFlashdata('error')): ?>
-        <div class="alert alert-danger">
-            <?= session()->getFlashdata('error') ?>
-        </div>
-    <?php endif; ?>
+    <div class="reserva-card">
+        <h2 class="reserva-title">Nueva Reserva</h2>
+        <p class="reserva-subtitle">Completá los datos</p>
 
-    <?php if(session()->getFlashdata('success')): ?>
-        <div class="alert alert-success">
-            <?= session()->getFlashdata('success') ?>
-        </div>
-    <?php endif; ?>
+        <?php if(session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger">
+                <?= session()->getFlashdata('error') ?>
+            </div>
+        <?php endif; ?>
 
-    <form action="<?= site_url('reserva/guardar') ?>" method="post">
-        <!-- Recinto -->
-        <div class="form-group-modern">
-            <select name="id_recinto" id="recinto" required>
-                <option value="" disabled selected></option>
-                <?php foreach($recintos as $r): ?>
-                    <option value="<?= $r['id_recinto'] ?>">
-                        <?= $r['nombre_tipo_recinto'].' - '.$r['descripcion'].' - Tarifa: $'.$r['tarifa'].'/h' ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <label>Recinto</label>
-        </div>
+        <form action="<?= site_url('reserva/guardar') ?>" method="post">
+            <div class="form-group-modern">
+                <select name="id_recinto" id="recinto" required>
+                    <option value="" disabled selected></option>
+                    <?php foreach($recintos as $r): ?>
+                        <option value="<?= $r['id_recinto'] ?>">
+                            <?= $r['nombre_tipo_recinto'].' - '.$r['descripcion'].' - Tarifa: $'.$r['tarifa'].'/h' ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <label>Recinto</label>
+            </div>
 
-        <!-- Cliente -->
-        <div class="form-group-modern">
-            <select name="id_cliente" required>
-                <option value="" disabled selected></option>
-                <?php foreach($clientes as $c): ?>
-                    <option value="<?= $c['id_cliente'] ?>">
-                        <?= $c['persona']['nombre'].' '.$c['persona']['apellido'].' ('.$c['email'].')' ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <label>Cliente</label>
-        </div>
+            <div class="form-group-modern">
+                <select name="id_cliente" required>
+                    <option value="" disabled selected></option>
+                    <?php foreach($clientes as $c): ?>
+                        <option value="<?= $c['id_cliente'] ?>">
+                            <?= $c['persona']['nombre'].' '.$c['persona']['apellido'].' ('.$c['email'].')' ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <label>Cliente</label>
+            </div>
 
-        <!-- Fecha -->
-        <div class="form-group-modern">
-            <input type="date" name="fecha_reserva" id="fecha" class="form-control" required>
-        </div>
+            <div class="form-group-modern">
+                <input type="date" name="fecha_reserva" id="fecha" required>
+                <label for="fecha" class="label-active">Fecha</label>
+            </div>
 
-        <!-- Hora -->
-        <div class="form-group-modern">
-            <select name="id_horario" id="hora" class="form-select" required disabled>
-                <option value="">Seleccione una hora</option>
-            </select>
-            
-        </div>
+            <div class="form-group-modern">
+                <select name="id_horario" id="hora" required disabled>
+                    <option value="">Seleccione una hora</option>
+                </select>
+                <label>Horario</label>
+            </div>
 
-        <button type="submit" class="btn-login">Reservar</button>
-    </form>
-    <div class="login-footer mt-3">
-        <a href="<?= site_url('reserva/listar') ?>">Ver listado de reservas</a>
+            <button type="submit" class="btn-login">Reservar</button>
+        </form>
+
+        <div class="login-footer mt-3">
+            <a href="<?= site_url('reserva/listar') ?>">Ver listado de reservas</a>
+        </div>
     </div>
 </div>
+
+<?php $nuevaReservaId = session()->getFlashdata('nueva_reserva_id'); ?>
+<?php if($nuevaReservaId): ?>
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-reserva">
+        <div class="modal-reserva-icon">✓</div>
+        <h3 class="modal-reserva-title">¡Reserva creada!</h3>
+        <p class="modal-reserva-msg">¿Qué desea hacer ahora?</p>
+        <div class="modal-reserva-btns">
+            <button class="btn-login" onclick="cerrarModal()">Seguir reservando</button>
+            <a href="<?= site_url('pago/alta/' . $nuevaReservaId) ?>" class="btn-pagar">Ir a pagar</a>
+        </div>
+    </div>
 </div>
+
+
+<script>
+function cerrarModal() {
+    document.getElementById('modalOverlay').style.display = 'none';
+}
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModal();
+});
+</script>
+<?php endif; ?>
 
 <script>
     document.getElementById('fecha').addEventListener('change', cargarHoras);

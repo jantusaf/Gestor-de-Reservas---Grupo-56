@@ -20,8 +20,8 @@ $recintos_pagina = array_slice($recintos, $start_index, $perPage);
     <div class="tabla-card">
 
         <div class="tabla-header">
-            <h2>Recintos</h2>
-            <a href="<?= site_url('/recinto/alta') ?>" class="btn-action edit">+ Nuevo Recinto</a>
+            <h2><i class="bi bi-building"></i> Recintos</h2>
+            <a href="<?= site_url('/recinto/alta') ?>" class="btn-nueva">+ Nuevo Recinto</a>
         </div>
 
                 <!-- BLOQUE DE MENSAJES -->

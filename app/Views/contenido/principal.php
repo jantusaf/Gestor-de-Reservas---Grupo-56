@@ -6,20 +6,31 @@
         <div class="col-md-6">
             <div class="card-dashboard card-blue h-100">
                 <div class="text-center w-100">
-                    <h3>Recintos</h3>
+                    <h3><i class="bi bi-building dashboard-icon"></i> Recintos</h3>
                     <p>Gestionar recintos del sistema</p>
-                    <a href="<?= base_url('recinto') ?>" class="btn btn-custom">Ingresar</a>
+                    <div class="dashboard-btns">
+                        <a href="<?= base_url('recinto/alta') ?>" class="btn btn-custom">
+                            <i class="bi bi-plus-lg"></i> Agregar
+                        </a>
+                        <a href="<?= base_url('recinto/listar') ?>" class="btn btn-custom">
+                            <i class="bi bi-eye"></i> Ver
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- NUEVO RECINTO -->
+        <!-- PAGOS -->
         <div class="col-md-6">
             <div class="card-dashboard card-green h-100">
                 <div class="text-center w-100">
-                    <h3>Nuevo Recinto</h3>
-                    <p>Agregar un nuevo recinto</p>
-                    <a href="<?= base_url('recinto/alta') ?>" class="btn btn-custom">Crear</a>
+                    <h3><i class="bi bi-credit-card dashboard-icon"></i> Pagos</h3>
+                    <p>Historial de pagos registrados</p>
+                    <div class="dashboard-btns">
+                        <a href="<?= base_url('pago/listar') ?>" class="btn btn-custom">
+                            <i class="bi bi-eye"></i> Ver
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -28,9 +39,16 @@
         <div class="col-md-6">
             <div class="card-dashboard card-orange h-100">
                 <div class="text-center w-100">
-                    <h3>Reservas</h3>
+                    <h3><i class="bi bi-calendar-check dashboard-icon"></i> Reservas</h3>
                     <p>Generar reservas fácilmente</p>
-                    <a href="<?= base_url('reserva/crear') ?>" class="btn btn-custom">Ir</a>
+                    <div class="dashboard-btns">
+                        <a href="<?= base_url('reserva/crear') ?>" class="btn btn-custom">
+                            <i class="bi bi-calendar-plus"></i> Reservar
+                        </a>
+                        <a href="<?= base_url('reserva/listar') ?>" class="btn btn-custom">
+                            <i class="bi bi-eye"></i> Ver
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -39,9 +57,16 @@
         <div class="col-md-6">
             <div class="card-dashboard card-dark h-100">
                 <div class="text-center w-100">
-                    <h3>Clientes</h3>
+                    <h3><i class="bi bi-people dashboard-icon"></i> Clientes</h3>
                     <p>Administrar clientes</p>
-                    <a href="<?= base_url('cliente/alta') ?>" class="btn btn-custom">Ir</a>
+                    <div class="dashboard-btns">
+                        <a href="<?= base_url('cliente/alta') ?>" class="btn btn-custom">
+                            <i class="bi bi-person-plus"></i> Agregar
+                        </a>
+                        <a href="<?= base_url('cliente/listar') ?>" class="btn btn-custom">
+                            <i class="bi bi-eye"></i> Ver
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

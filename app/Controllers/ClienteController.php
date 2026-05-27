@@ -75,17 +75,24 @@ class ClienteController extends BaseController
 
     public function listarClientes()
     {
-        $db = \Config\Database::connect();
-        $data['clientes'] = $db->table('cliente')
+        $db  = \Config\Database::connect();
+        $dni = trim($this->request->getGet('dni') ?? '');
+
+        $builder = $db->table('cliente')
             ->select('cliente.id_cliente, cliente.email, cliente.fecha_alta, cliente.estado_cliente, cliente.id_persona,
                       persona.nombre, persona.apellido, persona.dni, persona.telefono, persona.calle, persona.altura, persona.fecha_nacimiento')
             ->join('persona', 'persona.id_persona = cliente.id_persona')
             ->orderBy('cliente.estado_cliente', 'ASC')
-            ->orderBy('persona.apellido', 'ASC')
-            ->get()
-            ->getResultArray();
+            ->orderBy('persona.apellido', 'ASC');
 
-        $data['title'] = 'Listado de Clientes';
+        if ($dni !== '') {
+            $builder->like('persona.dni', $dni, 'after');
+        }
+
+        $data['clientes']      = $builder->get()->getResultArray();
+        $data['dni_busqueda']  = $dni;
+        $data['title']         = 'Listado de Clientes';
+
         return view('plantillas/head', $data)
             . view('contenido/crud_cliente/listar_clientes', $data)
             . view('plantillas/footer');

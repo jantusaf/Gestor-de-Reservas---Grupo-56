@@ -2,7 +2,7 @@
     <div class="tabla-card">
 
         <div class="tabla-header">
-            <h2>Pagos</h2>
+            <h2><i class="bi bi-credit-card"></i> Pagos</h2>
             <!-- Botón eliminado porque no existe /pago/alta sin ID -->
         </div>
 
@@ -17,7 +17,6 @@
             <table class="tabla-moderna">
                 <thead>
                     <tr>
-                        <th>Reserva</th>
                         <th>Cliente</th>
                         <th>Fecha Pago</th>
                         <th>Monto</th>
@@ -33,7 +32,6 @@
                     <?php else: ?>
                         <?php foreach($pagos as $p): ?>
                             <tr>
-                                <td>#<?= esc($p['id_reserva']) ?></td>
                                 <td><?= esc($p['nombre']).' '.esc($p['apellido']) ?></td>
                                 <td><?= esc($p['fecha_pago']) ?></td>
                                 <td>$<?= number_format($p['monto_total'], 2) ?></td>
