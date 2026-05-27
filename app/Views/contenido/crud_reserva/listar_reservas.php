@@ -2,8 +2,25 @@
     <div class="tabla-card">
 
         <div class="tabla-header">
-            <h2>Reservas</h2>
-            <a href="<?= site_url('reserva/crear') ?>" class="btn-action edit">+ Nueva Reserva</a>
+            <h2><i class="bi bi-calendar-check"></i> Reservas
+                <?php if(($dni_busqueda ?? '') !== ''): ?>
+                    <span class="busqueda-badge"><?= count($reservas) ?> resultado<?= count($reservas) !== 1 ? 's' : '' ?></span>
+                <?php endif; ?>
+            </h2>
+            <div class="tabla-header-right">
+                <a href="<?= site_url('reserva/crear') ?>" class="btn-nueva">+ Nueva Reserva</a>
+                <form method="GET" action="<?= site_url('reserva/listar') ?>" class="busqueda-form">
+                    <div class="busqueda-input-wrap">
+                        <input type="text" name="dni" value="<?= esc($dni_busqueda ?? '') ?>"
+                               placeholder="Buscar por DNI..." maxlength="20"
+                               oninput="this.value = this.value.replace(/\D/g,'')">
+                        <button type="submit" class="busqueda-btn">Buscar</button>
+                        <?php if(($dni_busqueda ?? '') !== ''): ?>
+                            <a href="<?= site_url('reserva/listar') ?>" class="busqueda-clear" title="Limpiar">&#x2715;</a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <?php if(session()->getFlashdata('success')): ?>
@@ -77,6 +94,24 @@
 
     </div>
 </div>
+
+<?php if(session()->getFlashdata('pago_confirmado')): ?>
+<div class="modal-overlay" id="modalPagoOk">
+    <div class="modal-reserva">
+        <div class="modal-reserva-icon">✓</div>
+        <h3 class="modal-reserva-title">¡Pago confirmado!</h3>
+        <p class="modal-reserva-msg">El pago fue registrado correctamente.<br>La reserva quedó confirmada.</p>
+        <button class="btn-login" onclick="document.getElementById('modalPagoOk').style.display='none'">Aceptar</button>
+    </div>
+</div>
+
+
+<script>
+document.getElementById('modalPagoOk').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+});
+</script>
+<?php endif; ?>
 
 <!-- Modal de confirmación de cancelación -->
 <div class="modal fade" id="modalCancelar" tabindex="-1" aria-hidden="true">

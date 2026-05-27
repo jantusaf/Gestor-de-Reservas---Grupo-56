@@ -7,6 +7,9 @@
     <!-- Bootstrap CSS -->
     <link href="<?= base_url('assets/css/bootstrap.min.css'); ?>" rel="stylesheet">
 
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
     <!-- Estilos propios -->
     <link href="<?= base_url('assets/css/estilo_grupo_56.css'); ?>" rel="stylesheet">
 

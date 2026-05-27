@@ -90,7 +90,7 @@ public function guardar()
         'estado_pago'    => 'pagada'
     ]);
 
-    return redirect()->to('/reserva/listar')->with('success', 'Pago registrado correctamente.');
+    return redirect()->to('/reserva/listar')->with('pago_confirmado', true);
 }
 
 
