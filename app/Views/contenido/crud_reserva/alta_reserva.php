@@ -27,7 +27,7 @@
                     <option value="" disabled selected></option>
                     <?php foreach($clientes as $c): ?>
                         <option value="<?= $c['id_cliente'] ?>">
-                            <?= $c['persona']['nombre'].' '.$c['persona']['apellido'].' ('.$c['email'].')' ?>
+                            <?= $c['nombre'].' '.$c['apellido'].' ('.$c['email'].')' ?>
                         </option>
                     <?php endforeach; ?>
                 </select>

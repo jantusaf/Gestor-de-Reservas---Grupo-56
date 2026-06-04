@@ -98,6 +98,27 @@ class ClienteController extends BaseController
             . view('plantillas/footer');
     }
 
+    public function listarClientesActivos()
+    {
+        $db = \Config\Database::connect();
+
+        $clientes = $db->table('cliente')
+            ->select('cliente.id_cliente, cliente.email, cliente.fecha_alta, cliente.estado_cliente, cliente.id_persona,
+                      persona.nombre, persona.apellido, persona.dni, persona.telefono, persona.calle, persona.altura, persona.fecha_nacimiento')
+            ->join('persona', 'persona.id_persona = cliente.id_persona')
+            ->where('cliente.estado_cliente', 'activo')
+            ->orderBy('persona.apellido', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        $data['clientes'] = $clientes;
+        $data['title']    = 'Clientes Activos';
+
+        return view('plantillas/head', $data)
+            . view('contenido/crud_cliente/listar_clientes', $data)
+            . view('plantillas/footer');
+    }
+
     public function editarCliente($id)
     {
         $clienteModel = new ClienteModel();

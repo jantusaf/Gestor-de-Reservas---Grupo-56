@@ -16,20 +16,22 @@ class ReservaController extends Controller
             return redirect()->to('/login')->with('error', 'Debés iniciar sesión.');
         }
 
-        $clienteModel = new ClienteModel();
-        $recintoModel = new RecintoModel();
-        $personaModel = new PersonaModel();
-
-        $clientes = $clienteModel->where('estado_cliente', 'activo')->findAll();
-        foreach ($clientes as &$c) {
-            $c['persona'] = $personaModel->find($c['id_persona']);
-        }
-
         $db = \Config\Database::connect();
+
+        $clientes = $db->table('cliente')
+            ->select('cliente.id_cliente, cliente.email, cliente.estado_cliente, cliente.id_persona,
+                      persona.nombre, persona.apellido, persona.dni')
+            ->join('persona', 'persona.id_persona = cliente.id_persona')
+            ->where('cliente.estado_cliente', 'activo')
+            ->orderBy('persona.apellido', 'ASC')
+            ->get()
+            ->getResultArray();
+
         $recintos = $db->table('recinto')
             ->select('recinto.*, tipo_recinto.nombre_tipo_recinto')
             ->join('tipo_recinto', 'tipo_recinto.id_tipo_recinto = recinto.id_tipo_recinto')
             ->where('recinto.estado_recinto', 'activo')
+            ->orderBy('tipo_recinto.nombre_tipo_recinto', 'ASC')
             ->get()
             ->getResultArray();
 

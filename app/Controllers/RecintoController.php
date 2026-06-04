@@ -75,6 +75,22 @@ class RecintoController extends Controller
             . view('plantillas/footer');
     }
 
+    public function listarRecintosHabilitados()
+    {
+        $db = \Config\Database::connect();
+        $data['recintos'] = $db->table('recinto')
+            ->select('recinto.*, tipo_recinto.nombre_tipo_recinto')
+            ->join('tipo_recinto', 'tipo_recinto.id_tipo_recinto = recinto.id_tipo_recinto')
+            ->where('recinto.estado_recinto', 'activo')
+            ->orderBy('tipo_recinto.nombre_tipo_recinto', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        return view('plantillas/head')
+            . view('contenido/crud_recinto/listar_recinto', $data)
+            . view('plantillas/footer');
+    }
+
     public function deshabilitarRecinto($id)
     {
         $model = new RecintoModel();
