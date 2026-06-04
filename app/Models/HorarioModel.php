@@ -11,4 +11,9 @@ class HorarioModel extends Model
     protected $allowedFields = [
         'horario'
     ];
+
+    public function listarHorarios()
+    {
+        return $this->findAll();
+    }
 }

@@ -63,7 +63,7 @@ class ReservaController extends Controller
 
         $idsOcupados = array_column($builder->findAll(), 'id_horario');
 
-        $todos = $horarioModel->findAll();
+        $todos = $horarioModel->listarHorarios();
         $disponibles = array_filter($todos, function($h) use ($idsOcupados) {
             return !in_array($h['id_horario'], $idsOcupados);
         });
@@ -172,7 +172,7 @@ class ReservaController extends Controller
             ->get()
             ->getResultArray();
 
-        $horarios = $horarioModel->findAll();
+        $horarios = $horarioModel->listarHorarios();
 
         $data = [
             'title'    => 'Editar Reserva',
