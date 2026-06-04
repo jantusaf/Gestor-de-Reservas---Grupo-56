@@ -32,32 +32,31 @@ class RecintoController extends Controller
 
     public function altaRecinto()
     {
-        $tipos = $this->obtenerTipos();
+        return view('plantillas/head')
+            . view('contenido/crud_recinto/alta_recinto', ['tipos' => $this->obtenerTipos()])
+            . view('plantillas/footer');
+    }
 
-        if ($this->request->getMethod() === 'post') {
-            if (!$this->validarRecinto()) {
-                return view('plantillas/head')
-                    . view('contenido/crud_recinto/alta_recinto', [
-                        'tipos'      => $tipos,
-                        'validation' => $this->validator,
-                    ])
-                    . view('plantillas/footer');
-            }
-
-            $model = new RecintoModel();
-            $model->insert([
-                'tarifa'          => number_format((float)$this->request->getPost('tarifa'), 2, '.', ''),
-                'descripcion'     => $this->request->getPost('descripcion'),
-                'id_tipo_recinto' => $this->request->getPost('id_tipo_recinto'),
-                'estado_recinto'  => 'activo',
-            ]);
-
-            return redirect()->to('/recinto/listar')->with('success', 'Recinto agregado correctamente.');
+    public function guardarRecinto()
+    {
+        if (!$this->validarRecinto()) {
+            return view('plantillas/head')
+                . view('contenido/crud_recinto/alta_recinto', [
+                    'tipos'      => $this->obtenerTipos(),
+                    'validation' => $this->validator,
+                ])
+                . view('plantillas/footer');
         }
 
-        return view('plantillas/head')
-            . view('contenido/crud_recinto/alta_recinto', ['tipos' => $tipos])
-            . view('plantillas/footer');
+        $model = new RecintoModel();
+        $model->insert([
+            'tarifa'          => number_format((float)$this->request->getPost('tarifa'), 2, '.', ''),
+            'descripcion'     => $this->request->getPost('descripcion'),
+            'id_tipo_recinto' => $this->request->getPost('id_tipo_recinto'),
+            'estado_recinto'  => 'activo',
+        ]);
+
+        return redirect()->to('/recinto/listar')->with('success', 'Recinto agregado correctamente.');
     }
 
     public function listarRecintos()

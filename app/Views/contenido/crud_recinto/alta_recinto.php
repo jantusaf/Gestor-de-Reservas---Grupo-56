@@ -16,7 +16,7 @@
             <div class="alert alert-warning"><?= $validation->listErrors() ?></div>
         <?php endif; ?>
 
-        <form action="<?= base_url('/recinto/alta'); ?>" method="post">
+        <form action="<?= base_url('/recinto/guardar'); ?>" method="post">
             <div class="form-group-modern">
                 <input type="text" name="tarifa" required>
                 <label>Tarifa por Hora</label>

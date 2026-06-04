@@ -59,7 +59,8 @@ $routes->get('/cliente/habilitar/(:num)',                'ClienteController::hab
 // RECINTO
 $routes->get('/recinto',                                'RecintoController::listarRecintos');
 $routes->get('/recinto/listar',                         'RecintoController::listarRecintos');
-$routes->match(['get','post'], '/recinto/alta',         'RecintoController::altaRecinto');
+$routes->get('/recinto/alta',                           'RecintoController::altaRecinto');
+$routes->post('/recinto/guardar',                       'RecintoController::guardarRecinto');
 $routes->get('/recinto/deshabilitar/(:num)',             'RecintoController::deshabilitarRecinto/$1');
 $routes->get('/recinto/habilitar/(:num)',               'RecintoController::habilitarRecinto/$1');
 $routes->get('/recinto/editar/(:num)',                  'RecintoController::editarRecinto/$1');
