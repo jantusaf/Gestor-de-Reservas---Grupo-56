@@ -87,7 +87,7 @@
                 <select name="estado_pago" required>
                     <option value="pendiente"  <?= $reserva['estado_pago'] === 'pendiente'  ? 'selected' : '' ?>>Pendiente</option>
                     <option value="pagado"     <?= $reserva['estado_pago'] === 'pagado'     ? 'selected' : '' ?>>Pagado</option>
-                    <option value="reembolso"  <?= $reserva['estado_pago'] === 'reembolso'  ? 'selected' : '' ?>>Reembolso</option>
+                    <option value="reembolsado" <?= $reserva['estado_pago'] === 'reembolsado' ? 'selected' : '' ?>>Reembolsado</option>
                 </select>
                 <label>Estado del pago</label>
             </div>

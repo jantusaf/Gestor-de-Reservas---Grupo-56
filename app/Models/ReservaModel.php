@@ -141,7 +141,12 @@ class ReservaModel extends Model
             return ['ok' => false, 'mensaje' => 'La reserva ya está cancelada.'];
         }
 
-        $this->update($id, ['estado_reserva' => 'cancelada']);
+        $estadoPago = $reserva['estado_pago'] === 'pagado' ? 'reembolsado' : $reserva['estado_pago'];
+
+        $this->update($id, [
+            'estado_reserva' => 'cancelada',
+            'estado_pago'    => $estadoPago
+        ]);
         return ['ok' => true];
     }
 
