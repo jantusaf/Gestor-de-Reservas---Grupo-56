@@ -14,7 +14,7 @@
 
         <form action="<?= base_url('/recinto/guardar'); ?>" method="post">
             <div class="form-group-modern">
-                <input type="text" name="tarifa">
+                <input type="text" name="tarifa" value="<?= old('tarifa') ?>">
                 <label>Tarifa por Hora</label>
             </div>
             <?php if (!empty($errores['tarifa'])): ?>
@@ -25,7 +25,7 @@
                 <select name="id_tipo_recinto">
                     <option value="" disabled selected></option>
                     <?php foreach($tipos as $tipo): ?>
-                        <option value="<?= $tipo['id_tipo_recinto']; ?>">
+                        <option value="<?= $tipo['id_tipo_recinto']; ?>" <?= old('id_tipo_recinto') == $tipo['id_tipo_recinto'] ? 'selected' : '' ?>>
                             <?= $tipo['nombre_tipo_recinto']; ?>
                         </option>
                     <?php endforeach; ?>
@@ -37,7 +37,7 @@
             <?php endif; ?>
 
             <div class="form-group-modern">
-                <input type="text" name="descripcion">
+                <input type="text" name="descripcion" value="<?= old('descripcion') ?>">
                 <label>Descripción</label>
             </div>
             <?php if (!empty($errores['descripcion'])): ?>

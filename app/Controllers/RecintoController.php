@@ -27,7 +27,7 @@ class RecintoController extends Controller
         );
 
         if (!$resultado['ok']) {
-            return redirect()->back()->with('errors', $resultado['errores']);
+            return redirect()->back()->withInput()->with('errors', $resultado['errores']);
         }
 
         return redirect()->to('/recinto/listar')->with('success', 'Recinto agregado correctamente.');
@@ -104,7 +104,7 @@ class RecintoController extends Controller
         );
 
         if (!$resultado['ok']) {
-            return redirect()->back()->with('errors', $resultado['errores']);
+            return redirect()->back()->withInput()->with('errors', $resultado['errores']);
         }
 
         return redirect()->to('/recinto/listar')->with('success', 'Recinto actualizado correctamente.');
