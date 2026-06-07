@@ -8,13 +8,14 @@
         <form action="<?= site_url('reserva/guardar') ?>" method="post">
             <div class="form-group-modern">
                 <select name="id_recinto" id="recinto">
-                    <option value="" disabled selected></option>
+                    <option value="" disabled <?= old('id_recinto') ? '' : 'selected' ?>></option>
                     <?php foreach($recintos as $r): ?>
-                        <option value="<?= $r['id_recinto'] ?>">
+                        <option value="<?= $r['id_recinto'] ?>" <?= old('id_recinto') == $r['id_recinto'] ? 'selected' : '' ?>>
                             <?= $r['nombre_tipo_recinto'].' - '.$r['descripcion'].' - Tarifa: $'.$r['tarifa'].'/h' ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
+
                 <label>Recinto</label>
             </div>
             <?php if (!empty($errores['id_recinto'])): ?>
@@ -23,13 +24,14 @@
 
             <div class="form-group-modern">
                 <select name="id_cliente">
-                    <option value="" disabled selected></option>
+                    <option value="" disabled <?= old('id_cliente') ? '' : 'selected' ?>></option>
                     <?php foreach($clientes as $c): ?>
-                        <option value="<?= $c['id_cliente'] ?>">
+                        <option value="<?= $c['id_cliente'] ?>" <?= old('id_cliente') == $c['id_cliente'] ? 'selected' : '' ?>>
                             <?= $c['nombre'].' '.$c['apellido'].' ('.$c['email'].')' ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
+
                 <label>Cliente</label>
             </div>
             <?php if (!empty($errores['id_cliente'])): ?>
@@ -46,9 +48,10 @@
 
             <div class="form-group-modern">
                 <select name="id_horario" id="hora" disabled>
-                    <option value="">Seleccione una hora</option>
+                    <option value=""><?= old('id_horario') ? '' : 'Seleccione una hora' ?></option>
                 </select>
-                <label>Horario</label>
+
+                <label for="hora" class="label-active">Horario</label>
             </div>
             <?php if (!empty($errores['id_horario'])): ?>
                 <small class="text-danger d-block mb-2"><?= esc($errores['id_horario']) ?></small>
