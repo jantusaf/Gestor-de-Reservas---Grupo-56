@@ -30,7 +30,7 @@
 
                         <div class="form-group-modern">
                             
-                            <input type="password" name="password"  required>
+                            <input type="password" name="contrasena" required>
                             <label>Contraseña</label>
                         </div>
 

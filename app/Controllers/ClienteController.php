@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Models\PersonaModel;
 use App\Models\ClienteModel;
 
 class ClienteController extends BaseController
@@ -12,148 +11,82 @@ class ClienteController extends BaseController
         helper(['form', 'url']);
     }
 
-    private function validarCliente(int $idPersona = 0, int $idCliente = 0): bool
+    public function formularioAlta()
     {
-        $dniRule = $idPersona ? "required|numeric|min_length[7]|max_length[20]|is_unique[persona.dni,id_persona,{$idPersona}]"
-                                : 'required|numeric|min_length[7]|max_length[20]|is_unique[persona.dni]';
-        $emailRule = $idCliente ? "required|valid_email|max_length[100]|is_unique[cliente.email,id_cliente,{$idCliente}]"
-                                : 'required|valid_email|max_length[100]|is_unique[cliente.email]';
-
-        return $this->validate([
-            'dni' => $dniRule,
-            'nombre' => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
-            'apellido' => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
-            'fecha_nacimiento' => 'required|valid_date[Y-m-d]|check_past_date',
-            'telefono' => 'permit_empty|max_length[20]',
-            'calle' => 'required|min_length[3]|max_length[50]',
-            'altura' => 'required|max_length[10]',
-            'email'=> $emailRule,
-        ]);
-    }
-
-    public function altaCliente()
-    {
-        if ($this->request->getMethod() === 'post') {
-            if (!$this->validarCliente()) {
-                return view('plantillas/head', ['title' => 'Alta de Cliente'])
-                    . view('contenido/crud_cliente/alta_cliente', ['validation' => $this->validator])
-                    . view('plantillas/footer');
-            }
-
-            $personaModel = new PersonaModel();
-            $clienteModel = new ClienteModel();
-
-            try {
-                $personaId = $personaModel->altaPersona(
-                    $this->request->getVar('dni'),
-                    $this->request->getVar('nombre'),
-                    $this->request->getVar('apellido'),
-                    $this->request->getVar('fecha_nacimiento'),
-                    $this->request->getVar('telefono'),
-                    $this->request->getVar('calle'),
-                    $this->request->getVar('altura'),
-                );
-
-                $clienteModel->altaCliente(
-                    $this->request->getVar('email'),
-                    $personaId,
-                );
-
-                return redirect()->to('/cliente/listar')->with('success', 'Cliente registrado correctamente.');
-
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'Error al registrar: ' . $e->getMessage())->withInput();
-            }
-        }
-
         return view('plantillas/head', ['title' => 'Alta de Cliente'])
             . view('contenido/crud_cliente/alta_cliente')
             . view('plantillas/footer');
     }
 
+    public function guardarCliente()
+    {
+        $clienteModel = new ClienteModel();
+
+        $resultado = $clienteModel->registrarCliente(
+            $this->request->getPost('dni')              ?? '',
+            $this->request->getPost('nombre')           ?? '',
+            $this->request->getPost('apellido')         ?? '',
+            $this->request->getPost('fecha_nacimiento') ?? '',
+            $this->request->getPost('telefono')         ?? '',
+            $this->request->getPost('calle')            ?? '',
+            $this->request->getPost('altura')           ?? '',
+            $this->request->getPost('email')            ?? '',
+        );
+
+        if (!$resultado['ok']) {
+            return redirect()->back()->withInput()->with('errors', $resultado['errores']);
+        }
+
+        return redirect()->to('/cliente/listar')->with('success', 'Cliente registrado correctamente.');
+    }
+
     public function listarClientes()
     {
         $clienteModel = new ClienteModel();
-        $dni = trim($this->request->getGet('dni') ?? '');
+        $dni          = trim($this->request->getGet('dni') ?? '');
 
-        $data['clientes'] = $clienteModel->listarClientes($dni);
-        $data['dni_busqueda'] = $dni;
-        $data['title'] = 'Listado de Clientes';
-
-        return view('plantillas/head', $data)
-            . view('contenido/crud_cliente/listar_clientes', $data)
+        return view('plantillas/head', ['title' => 'Listado de Clientes'])
+            . view('contenido/crud_cliente/listar_clientes', [
+                'clientes'     => $clienteModel->listarClientes($dni),
+                'dni_busqueda' => $dni,
+            ])
             . view('plantillas/footer');
     }
 
-    public function listarClientesActivos()
+    public function formularioEditar($id)
     {
         $clienteModel = new ClienteModel();
+        $data         = $clienteModel->datosFormularioEditar((int) $id);
 
-        $data['clientes'] = $clienteModel->listarClientesActivos();
-        $data['title'] = 'Clientes Activos';
-
-        return view('plantillas/head', $data)
-            . view('contenido/crud_cliente/listar_clientes', $data)
-            . view('plantillas/footer');
-    }
-
-    public function editarCliente($id)
-    {
-        $clienteModel = new ClienteModel();
-        $personaModel = new PersonaModel();
-
-        $cliente = $clienteModel->find($id);
-        if (!$cliente) {
+        if (!$data) {
             return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
         }
 
         return view('plantillas/head', ['title' => 'Editar Cliente'])
-            . view('contenido/crud_cliente/editar_cliente', [
-                'cliente' => $cliente,
-                'persona' => $personaModel->find($cliente['id_persona']),
-            ])
+            . view('contenido/crud_cliente/editar_cliente', $data)
             . view('plantillas/footer');
     }
 
     public function actualizarCliente($id)
     {
         $clienteModel = new ClienteModel();
-        $cliente = $clienteModel->find($id);
 
-        if (!$cliente) {
-            return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
-        }
-
-        $idPersona = $cliente['id_persona'];
-
-        if (!$this->validarCliente($idPersona, $id)) {
-            $personaModel = new PersonaModel();
-            return view('plantillas/head', ['title' => 'Editar Cliente'])
-                . view('contenido/crud_cliente/editar_cliente', [
-                    'cliente' => $cliente,
-                    'persona' => $personaModel->find($idPersona),
-                    'validation' => $this->validator,
-                ])
-                . view('plantillas/footer');
-        }
-
-        $personaModel = new PersonaModel();
-        $personaModel->actualizarPersona(
-            $idPersona,
-            $this->request->getVar('dni'),
-            $this->request->getVar('nombre'),
-            $this->request->getVar('apellido'),
-            $this->request->getVar('fecha_nacimiento'),
-            $this->request->getVar('telefono'),
-            $this->request->getVar('calle'),
-            $this->request->getVar('altura'),
+        $resultado = $clienteModel->modificarCliente(
+            (int) $id,
+            $this->request->getPost('dni')              ?? '',
+            $this->request->getPost('nombre')           ?? '',
+            $this->request->getPost('apellido')         ?? '',
+            $this->request->getPost('fecha_nacimiento') ?? '',
+            $this->request->getPost('telefono')         ?? '',
+            $this->request->getPost('calle')            ?? '',
+            $this->request->getPost('altura')           ?? '',
+            $this->request->getPost('email')            ?? '',
+            $this->request->getPost('estado_cliente')   ?? '',
         );
 
-        $clienteModel->actualizarCliente(
-            $id,
-            $this->request->getVar('email'),
-            $this->request->getVar('estado_cliente'),
-        );
+        if (!$resultado['ok']) {
+            return redirect()->to('/cliente/editar/' . $id)->with('errors', $resultado['errores']);
+        }
 
         return redirect()->to('/cliente/listar')->with('success', 'Cliente actualizado correctamente.');
     }
@@ -161,20 +94,24 @@ class ClienteController extends BaseController
     public function deshabilitarCliente($id)
     {
         $clienteModel = new ClienteModel();
-        if (!$clienteModel->find($id)) {
-            return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
+        $resultado    = $clienteModel->deshabilitar((int) $id);
+
+        if (!$resultado['ok']) {
+            return redirect()->to('/cliente/listar')->with('error', $resultado['mensaje']);
         }
-        $clienteModel->deshabilitar($id);
-        return redirect()->to('/cliente/listar')->with('success', 'Cliente deshabilitado.');
+
+        return redirect()->to('/cliente/listar')->with('success', $resultado['mensaje']);
     }
 
     public function habilitarCliente($id)
     {
         $clienteModel = new ClienteModel();
-        if (!$clienteModel->find($id)) {
-            return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
+        $resultado    = $clienteModel->habilitar((int) $id);
+
+        if (!$resultado['ok']) {
+            return redirect()->to('/cliente/listar')->with('error', $resultado['mensaje']);
         }
-        $clienteModel->habilitar($id);
-        return redirect()->to('/cliente/listar')->with('success', 'Cliente habilitado.');
+
+        return redirect()->to('/cliente/listar')->with('success', $resultado['mensaje']);
     }
 }

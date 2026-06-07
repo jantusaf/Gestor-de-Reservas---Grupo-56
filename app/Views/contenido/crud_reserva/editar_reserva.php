@@ -4,22 +4,13 @@
         <h2 class="reserva-title">Editar Reserva</h2>
         <p class="reserva-subtitle">Modificá los datos de la reserva</p>
 
-        <?php if(session()->getFlashdata('errors')): ?>
-            <div class="alert alert-danger">
-                <ul>
-                    <?php foreach(session()->getFlashdata('errors') as $error): ?>
-                        <li><?= esc($error) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        <?php endif; ?>
-
+        <?php $errores = session()->getFlashdata('errors') ?? []; ?>
 
         <form action="<?= site_url('reserva/actualizar/' . $reserva['id_reserva']) ?>" method="post">
 
             <!-- Recinto -->
             <div class="form-group-modern">
-                <select name="id_recinto" id="recinto" >
+                <select name="id_recinto" id="recinto">
                     <option value="" disabled></option>
                     <?php foreach($recintos as $r): ?>
                         <option value="<?= $r['id_recinto'] ?>"
@@ -30,31 +21,40 @@
                 </select>
                 <label>Recinto</label>
             </div>
+            <?php if (!empty($errores['id_recinto'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['id_recinto']) ?></small>
+            <?php endif; ?>
 
             <!-- Cliente -->
             <div class="form-group-modern">
-                <select name="id_cliente" >
+                <select name="id_cliente">
                     <option value="" disabled></option>
                     <?php foreach($clientes as $c): ?>
                         <option value="<?= $c['id_cliente'] ?>"
                             <?= $c['id_cliente'] == $reserva['id_cliente'] ? 'selected' : '' ?>>
-                            <?= esc($c['persona']['nombre']).' '.esc($c['persona']['apellido']).' ('.$c['email'].')' ?>
+                            <?= esc($c['nombre']).' '.esc($c['apellido']).' ('.$c['email'].')' ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
                 <label>Cliente</label>
             </div>
+            <?php if (!empty($errores['id_cliente'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['id_cliente']) ?></small>
+            <?php endif; ?>
 
             <!-- Fecha -->
             <div class="form-group-modern">
                 <input type="date" name="fecha_reserva" id="fecha"
-                       value="<?= esc($reserva['fecha_reserva']) ?>" >
+                       value="<?= esc($reserva['fecha_reserva']) ?>">
                 <label>Fecha</label>
             </div>
+            <?php if (!empty($errores['fecha_reserva'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['fecha_reserva']) ?></small>
+            <?php endif; ?>
 
             <!-- Horario -->
             <div class="form-group-modern">
-                <select name="id_horario" id="hora" >
+                <select name="id_horario" id="hora">
                     <option value="">Seleccione una hora</option>
                     <?php foreach($horarios as $h): ?>
                         <option value="<?= $h['id_horario'] ?>"
@@ -65,6 +65,12 @@
                 </select>
                 <label>Hora</label>
             </div>
+            <?php if (!empty($errores['id_horario'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['id_horario']) ?></small>
+            <?php endif; ?>
+            <?php if (!empty($errores['disponibilidad'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['disponibilidad']) ?></small>
+            <?php endif; ?>
 
             <!-- Estado Reserva -->
             <div class="form-group-modern">

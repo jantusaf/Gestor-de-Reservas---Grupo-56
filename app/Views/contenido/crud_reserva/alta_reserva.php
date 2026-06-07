@@ -3,20 +3,11 @@
         <h2 class="reserva-title">Nueva Reserva</h2>
         <p class="reserva-subtitle">Completá los datos</p>
 
-<?php if(session()->getFlashdata('errors')): ?>
-    <div class="alert alert-danger">
-        <ul>
-        <?php foreach(session()->getFlashdata('errors') as $error): ?>
-            <li><?= esc($error) ?></li>
-        <?php endforeach; ?>
-        </ul>
-    </div>
-<?php endif; ?>
-
+        <?php $errores = session()->getFlashdata('errors') ?? []; ?>
 
         <form action="<?= site_url('reserva/guardar') ?>" method="post">
             <div class="form-group-modern">
-                <select name="id_recinto" id="recinto" >
+                <select name="id_recinto" id="recinto">
                     <option value="" disabled selected></option>
                     <?php foreach($recintos as $r): ?>
                         <option value="<?= $r['id_recinto'] ?>">
@@ -26,9 +17,12 @@
                 </select>
                 <label>Recinto</label>
             </div>
+            <?php if (!empty($errores['id_recinto'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['id_recinto']) ?></small>
+            <?php endif; ?>
 
             <div class="form-group-modern">
-                <select name="id_cliente" >
+                <select name="id_cliente">
                     <option value="" disabled selected></option>
                     <?php foreach($clientes as $c): ?>
                         <option value="<?= $c['id_cliente'] ?>">
@@ -38,18 +32,30 @@
                 </select>
                 <label>Cliente</label>
             </div>
+            <?php if (!empty($errores['id_cliente'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['id_cliente']) ?></small>
+            <?php endif; ?>
 
             <div class="form-group-modern">
-                <input type="date" name="fecha_reserva" id="fecha" >
+                <input type="date" name="fecha_reserva" id="fecha">
                 <label for="fecha" class="label-active">Fecha</label>
             </div>
+            <?php if (!empty($errores['fecha_reserva'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['fecha_reserva']) ?></small>
+            <?php endif; ?>
 
             <div class="form-group-modern">
-                <select name="id_horario" id="hora"  disabled>
+                <select name="id_horario" id="hora" disabled>
                     <option value="">Seleccione una hora</option>
                 </select>
                 <label>Horario</label>
             </div>
+            <?php if (!empty($errores['id_horario'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['id_horario']) ?></small>
+            <?php endif; ?>
+            <?php if (!empty($errores['disponibilidad'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['disponibilidad']) ?></small>
+            <?php endif; ?>
 
             <button type="submit" class="btn-login">Reservar</button>
         </form>
@@ -73,7 +79,6 @@
         </div>
     </div>
 </div>
-
 
 <script>
 function cerrarModal() {

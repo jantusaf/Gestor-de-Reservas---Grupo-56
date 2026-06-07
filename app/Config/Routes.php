@@ -35,7 +35,7 @@ $routes->get('/contenido/principal', 'Home::index');
 
 // LOGIN
 $routes->get('/login', 'LoginController::index');   // muestra la vista login.php
-$routes->post('/login/iniciar_sesion', 'LoginController::iniciar_sesion');// procesa el formulario de login
+$routes->post('/login/iniciar_sesion', 'LoginController::iniciarSesion'); // procesa el formulario de login
 $routes->get('/logout', 'LoginController::logout'); // cierra sesión
 
 // REGISTRO
@@ -49,9 +49,10 @@ $routes->post('/usuario/baja',       'UsuarioController::baja');  // dar de baja
 
 
 // CLIENTES
-$routes->match(['get','post'], '/cliente/alta',         'ClienteController::altaCliente');
+$routes->get('/cliente/alta',                           'ClienteController::formularioAlta');
+$routes->post('/cliente/alta',                          'ClienteController::guardarCliente');
 $routes->get('/cliente/listar',                         'ClienteController::listarClientes');
-$routes->get('/cliente/editar/(:num)',                  'ClienteController::editarCliente/$1');
+$routes->get('/cliente/editar/(:num)',                  'ClienteController::formularioEditar/$1');
 $routes->post('/cliente/actualizar/(:num)',              'ClienteController::actualizarCliente/$1');
 $routes->get('/cliente/deshabilitar/(:num)',             'ClienteController::deshabilitarCliente/$1');
 $routes->get('/cliente/habilitar/(:num)',                'ClienteController::habilitarCliente/$1');
@@ -59,27 +60,27 @@ $routes->get('/cliente/habilitar/(:num)',                'ClienteController::hab
 // RECINTO
 $routes->get('/recinto',                                'RecintoController::listarRecintos');
 $routes->get('/recinto/listar',                         'RecintoController::listarRecintos');
-$routes->get('/recinto/alta',                           'RecintoController::altaRecinto');
+$routes->get('/recinto/alta',                           'RecintoController::formularioAlta');
 $routes->post('/recinto/guardar',                       'RecintoController::guardarRecinto');
 $routes->get('/recinto/deshabilitar/(:num)',             'RecintoController::deshabilitarRecinto/$1');
 $routes->get('/recinto/habilitar/(:num)',               'RecintoController::habilitarRecinto/$1');
-$routes->get('/recinto/editar/(:num)',                  'RecintoController::editarRecinto/$1');
+$routes->get('/recinto/editar/(:num)',                  'RecintoController::formularioEditar/$1');
 $routes->post('/recinto/actualizar/(:num)',              'RecintoController::actualizarRecinto/$1');
 
 
 // RESERVAS
-$routes->get('/reserva/crear',          'ReservaController::altaReserva');
-$routes->post('/reserva/guardar',       'ReservaController::guardarReserva');
-$routes->post('/reserva/horas',         'ReservaController::horasDisponibles');
-$routes->get('/reserva/listar',            'ReservaController::listarReservas');
-$routes->get('/reserva/cancelar/(:num)',   'ReservaController::cancelarReserva/$1');
-$routes->get('/reserva/editar/(:num)',     'ReservaController::editarReserva/$1');
+$routes->get('/reserva/crear',              'ReservaController::formularioAlta');
+$routes->post('/reserva/guardar',           'ReservaController::guardarReserva');
+$routes->post('/reserva/horas',             'ReservaController::horasDisponibles');
+$routes->get('/reserva/listar',             'ReservaController::listarReservas');
+$routes->get('/reserva/cancelar/(:num)',    'ReservaController::cancelarReserva/$1');
+$routes->get('/reserva/editar/(:num)',      'ReservaController::formularioEditar/$1');
 $routes->post('/reserva/actualizar/(:num)', 'ReservaController::actualizarReserva/$1');
 
 //PAGOS
-$routes->get('/pago/listar', 'PagoController::listar'); // muestra el listado de pagos
-$routes->get('/pago/alta/(:num)', 'PagoController::alta/$1');// muestra el formulario de alta de pago para una reserva específica
-$routes->post('/pago/guardar', 'PagoController::guardar'); // procesa el formulario de alta de pago
+$routes->get('/pago/listar',        'PagoController::listar');
+$routes->get('/pago/alta/(:num)',   'PagoController::formularioAlta/$1');
+$routes->post('/pago/guardar',      'PagoController::guardar');
 
 
 

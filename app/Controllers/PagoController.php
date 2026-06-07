@@ -2,34 +2,27 @@
 
 namespace App\Controllers;
 
-use App\Models\ReservaModel;
 use App\Models\PagoModel;
-use App\Models\MedioPagoModel;
 
 class PagoController extends BaseController
 {
     public function listar()
     {
         $pagoModel = new PagoModel();
-        $data['pagos'] = $pagoModel->listarPagos();
 
         return view('plantillas/head')
-            . view('contenido/crud_pago/listar_pagos', $data)
+            . view('contenido/crud_pago/listar_pagos', ['pagos' => $pagoModel->listarPagos()])
             . view('plantillas/footer');
     }
 
-    public function alta($idReserva)
+    public function formularioAlta($idReserva)
     {
-        $reservaModel = new ReservaModel();
-        $medioModel   = new MedioPagoModel();
+        $pagoModel = new PagoModel();
+        $data      = $pagoModel->datosFormularioAlta((int) $idReserva);
 
-        $reserva = $reservaModel->find($idReserva);
-        if (!$reserva) {
+        if (!$data) {
             return redirect()->to('/reserva/listar')->with('error', 'Reserva no encontrada.');
         }
-
-        $data['reserva'] = $reserva;
-        $data['medios']  = $medioModel->findAll();
 
         return view('plantillas/head')
             . view('contenido/crud_pago/alta_pago', $data)
@@ -38,16 +31,17 @@ class PagoController extends BaseController
 
     public function guardar()
     {
-        $idReserva   = (int) $this->request->getPost('id_reserva');
-        $monto       = (float) $this->request->getPost('monto_total');
-        $idMedioPago = (int) $this->request->getPost('id_medio_pago');
-        $idUsuario   = (int) session()->get('id_usuario');
-
         $pagoModel = new PagoModel();
-        $resultado = $pagoModel->altaPago($idReserva, $monto, $idMedioPago, $idUsuario);
+
+        $resultado = $pagoModel->altaPago(
+            (int)   $this->request->getPost('id_reserva'),
+            (float) $this->request->getPost('monto_total'),
+            (int)   $this->request->getPost('id_medio_pago'),
+            (int)   session()->get('id_usuario'),
+        );
 
         if (!$resultado['ok']) {
-            return redirect()->back()->with('error', $resultado['error']);
+            return redirect()->back()->with('error', $resultado['mensaje']);
         }
 
         return redirect()->to('/reserva/listar')->with('pago_confirmado', true);

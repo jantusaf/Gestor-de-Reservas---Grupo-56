@@ -16,28 +16,105 @@ class UsuarioModel extends Model
         'id_tipo_usuario'
     ];
 
-    public function altaUsuario(string $nombreUsuario, string $password, int $idPersona): int
+    public function iniciarSesion(string $dni, string $contrasena): array
     {
+        $persona = (new PersonaModel())->where('dni', $dni)->first();
+        if (!$persona) {
+            return ['ok' => false, 'mensaje' => 'DNI no encontrado.'];
+        }
+
+        $usuario = $this->where('id_persona', $persona['id_persona'])->first();
+        if (!$usuario) {
+            return ['ok' => false, 'mensaje' => 'Usuario no encontrado.'];
+        }
+
+        if ($usuario['estado_usuario'] === 'inactivo') {
+            return ['ok' => false, 'mensaje' => 'Usuario dado de baja.'];
+        }
+
+        if (!password_verify($contrasena, $usuario['contrasena'])) {
+            return ['ok' => false, 'mensaje' => 'Contraseña incorrecta.'];
+        }
+
+        return [
+            'ok'    => true,
+            'sesion' => [
+                'id_usuario'     => $usuario['id_usuario'],
+                'nombre_usuario' => $usuario['nombre_usuario'],
+                'apellido'       => $persona['apellido'],
+                'dni_usuario'    => $persona['dni'],
+                'id_tipo'        => $usuario['id_tipo_usuario'],
+                'logged_in'      => true,
+            ],
+        ];
+    }
+
+    public function registrarUsuario(string $dni, string $nombre, string $apellido, string $fechaNacimiento, string $telefono, string $calle, string $altura, string $nombreUsuario, string $contrasena): array
+    {
+        $personaResult = (new PersonaModel())->altaPersona($dni, $nombre, $apellido, $fechaNacimiento, $telefono, $calle, $altura);
+        if (!$personaResult['ok']) {
+            return $personaResult;
+        }
+
+        return $this->altaUsuario($nombreUsuario, $contrasena, $personaResult['id']);
+    }
+
+    public function datosPerfil(int $id): ?array
+    {
+        $usuario = $this->find($id);
+        if (!$usuario) {
+            return null;
+        }
+
+        return ['usuario' => $usuario];
+    }
+
+    public function altaUsuario(string $nombreUsuario, string $contrasena, int $idPersona): array
+    {
+        $validation = \Config\Services::validation();
+
+        if (!$validation->setRules([
+            'nombre_usuario' => ['label' => 'Nombre de usuario', 'rules' => 'required|min_length[3]|max_length[50]|is_unique[usuario.nombre_usuario]'],
+            'contrasena'     => ['label' => 'Contraseña',        'rules' => 'required|min_length[6]|max_length[100]'],
+        ])->run([
+            'nombre_usuario' => $nombreUsuario,
+            'contrasena'     => $contrasena,
+        ])) {
+            return ['ok' => false, 'errores' => $validation->getErrors()];
+        }
+
         $this->insert([
             'nombre_usuario'  => $nombreUsuario,
-            'contrasena'      => password_hash($password, PASSWORD_DEFAULT),
+            'contrasena'      => password_hash($contrasena, PASSWORD_DEFAULT),
             'estado_usuario'  => 'activo',
             'id_persona'      => $idPersona,
             'id_tipo_usuario' => 2,
         ]);
-        return $this->getInsertID();
+
+        return ['ok' => true, 'id' => $this->getInsertID()];
     }
 
-    public function actualizarUsuario(int $id, string $nombreUsuario, string $estadoUsuario): void
+    public function actualizarUsuario(int $id, string $nombreUsuario): array
     {
-        $this->update($id, [
-            'nombre_usuario' => $nombreUsuario,
-            'estado_usuario' => $estadoUsuario,
-        ]);
+        $validation = \Config\Services::validation();
+
+        if (!$validation->setRules([
+            'nombre_usuario' => ['label' => 'Nombre de usuario', 'rules' => "required|min_length[3]|max_length[50]|is_unique[usuario.nombre_usuario,id_usuario,{$id}]"],
+        ])->run(['nombre_usuario' => $nombreUsuario])) {
+            return ['ok' => false, 'errores' => $validation->getErrors()];
+        }
+
+        $this->update($id, ['nombre_usuario' => $nombreUsuario]);
+        return ['ok' => true];
     }
 
-    public function darDeBaja(int $id): void
+    public function darDeBaja(int $id): array
     {
+        if (!$this->find($id)) {
+            return ['ok' => false, 'mensaje' => 'Usuario no encontrado.'];
+        }
+
         $this->update($id, ['estado_usuario' => 'inactivo']);
+        return ['ok' => true];
     }
 }

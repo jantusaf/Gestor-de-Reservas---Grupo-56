@@ -19,16 +19,41 @@ class ReservaModel extends Model
         'id_usuario'
     ];
 
+    public function datosFormulario(): array
+    {
+        return [
+            'clientes' => (new ClienteModel())->listarClientesActivos(),
+            'recintos' => (new RecintoModel())->listarRecintosActivos(),
+        ];
+    }
+
+    public function datosFormularioEditar(int $id): ?array
+    {
+        $reserva = $this->find($id);
+        if (!$reserva) {
+            return null;
+        }
+
+        return [
+            'reserva'  => $reserva,
+            'clientes' => (new ClienteModel())->listarClientesActivos(),
+            'recintos' => (new RecintoModel())->listarRecintosActivos(),
+            'horarios' => (new HorarioModel())->listarHorarios(),
+        ];
+    }
+
     public function listarReservas(string $dni = ''): array
     {
-        $db = \Config\Database::connect();
+        $db      = \Config\Database::connect();
         $builder = $db->table('reserva')
-            ->select('reserva.*, persona.nombre, persona.apellido, persona.dni, horario.horario as hora, recinto.descripcion as recinto_desc, tipo_recinto.nombre_tipo_recinto')
+            ->select('reserva.*, persona.nombre, persona.apellido, persona.dni, horario.horario as hora, recinto.descripcion as recinto_desc, tipo_recinto.nombre_tipo_recinto, medio_pago.nombre_medio_pago')
             ->join('cliente',      'cliente.id_cliente = reserva.id_cliente')
             ->join('persona',      'persona.id_persona = cliente.id_persona')
             ->join('horario',      'horario.id_horario = reserva.id_horario')
             ->join('recinto',      'recinto.id_recinto = reserva.id_recinto')
             ->join('tipo_recinto', 'tipo_recinto.id_tipo_recinto = recinto.id_tipo_recinto')
+            ->join('pago',         'pago.id_reserva = reserva.id_reserva', 'left')
+            ->join('medio_pago',   'medio_pago.id_medio_pago = pago.id_medio_pago', 'left')
             ->orderBy('reserva.fecha_reserva', 'DESC');
 
         if ($dni !== '') {
@@ -53,12 +78,8 @@ class ReservaModel extends Model
         return $this->getInsertID();
     }
 
-    public function actualizarReserva(int $id, string $fecha, int $idCliente, int $idRecinto, int $idHorario, string $estadoReserva, string $estadoPago, float $montoActual): void
+    public function actualizarReserva(int $id, string $fecha, int $idCliente, int $idRecinto, int $idHorario, string $estadoReserva, string $estadoPago, float $monto): void
     {
-        $recintoModel = new RecintoModel();
-        $recinto = $recintoModel->find($idRecinto);
-        $monto = $recinto ? $recinto['tarifa'] : $montoActual;
-
         $this->update($id, [
             'fecha_reserva'  => $fecha,
             'id_cliente'     => $idCliente,
@@ -70,33 +91,99 @@ class ReservaModel extends Model
         ]);
     }
 
-    public function cancelarReserva(int $id): void
+    public function crearReserva(string $fecha, string $idCliente, string $idRecinto, string $idHorario, int $idUsuario): array
     {
-        $this->update($id, ['estado_reserva' => 'cancelada']);
+        $validacion = $this->validarReserva($fecha, $idCliente, $idRecinto, $idHorario);
+        if (!$validacion['ok']) {
+            return $validacion;
+        }
+
+        $id = $this->altaReserva(
+            $fecha,
+            (int) $idCliente,
+            (int) $idRecinto,
+            (int) $idHorario,
+            $idUsuario,
+            $validacion['recinto']['tarifa']
+        );
+
+        return ['ok' => true, 'id' => $id];
     }
 
-    public function validarReserva(string $fecha, int $idCliente, int $idRecinto, int $idHorario, int $excluirId = 0): array
+    public function modificarReserva(int $id, string $fecha, string $idCliente, string $idRecinto, string $idHorario, string $estadoReserva, string $estadoPago): array
     {
-        $clienteModel = new ClienteModel();
-        $cliente = $clienteModel->find($idCliente);
+        $validacion = $this->validarReserva($fecha, $idCliente, $idRecinto, $idHorario, $id);
+        if (!$validacion['ok']) {
+            return $validacion;
+        }
+
+        $this->actualizarReserva(
+            $id,
+            $fecha,
+            (int) $idCliente,
+            (int) $idRecinto,
+            (int) $idHorario,
+            $estadoReserva,
+            $estadoPago,
+            (float) $validacion['recinto']['tarifa']
+        );
+
+        return ['ok' => true];
+    }
+
+    public function cancelarReserva(int $id): array
+    {
+        $reserva = $this->find($id);
+        if (!$reserva) {
+            return ['ok' => false, 'mensaje' => 'Reserva no encontrada.'];
+        }
+        if ($reserva['estado_reserva'] === 'cancelada') {
+            return ['ok' => false, 'mensaje' => 'La reserva ya está cancelada.'];
+        }
+
+        $this->update($id, ['estado_reserva' => 'cancelada']);
+        return ['ok' => true];
+    }
+
+    public function validarReserva(string $fecha, string $idCliente, string $idRecinto, string $idHorario, int $excluirId = 0): array
+    {
+        $validation = \Config\Services::validation();
+
+        if (!$validation->setRules([
+            'fecha_reserva' => ['label' => 'Fecha',   'rules' => 'required|valid_date|check_future_or_today'],
+            'id_cliente'    => ['label' => 'Cliente',  'rules' => 'required|integer|greater_than[0]'],
+            'id_recinto'    => ['label' => 'Recinto',  'rules' => 'required|integer|greater_than[0]'],
+            'id_horario'    => ['label' => 'Horario',  'rules' => 'required|integer|greater_than[0]'],
+        ])->run([
+            'fecha_reserva' => $fecha,
+            'id_cliente'    => $idCliente,
+            'id_recinto'    => $idRecinto,
+            'id_horario'    => $idHorario,
+        ])) {
+            return ['ok' => false, 'mensajes' => $validation->getErrors()];
+        }
+
+        $idClienteInt = (int) $idCliente;
+        $idRecintoInt = (int) $idRecinto;
+        $idHorarioInt = (int) $idHorario;
+
+        $cliente = (new ClienteModel())->find($idClienteInt);
         if (!$cliente || $cliente['estado_cliente'] !== 'activo') {
-            return ['ok' => false, 'mensajes' => ['Cliente' => 'Cliente inválido o inactivo.']];
+            return ['ok' => false, 'mensajes' => ['id_cliente' => 'Cliente inválido o inactivo.']];
         }
 
-        $recintoModel = new RecintoModel();
-        $recinto = $recintoModel->find($idRecinto);
+        $recinto = (new RecintoModel())->find($idRecintoInt);
         if (!$recinto || $recinto['estado_recinto'] !== 'activo') {
-            return ['ok' => false, 'mensajes' => ['Recinto' => 'Recinto inválido o no habilitado.']];
+            return ['ok' => false, 'mensajes' => ['id_recinto' => 'Recinto inválido o no habilitado.']];
         }
 
-        $horarioModel = new HorarioModel();
-        $horario = $horarioModel->find($idHorario);
+        $horario = (new HorarioModel())->find($idHorarioInt);
         if (!$horario) {
-            return ['ok' => false, 'mensajes' => ['Hora' => 'Horario inválido.']];
+            return ['ok' => false, 'mensajes' => ['id_horario' => 'Horario inválido.']];
         }
 
-        if ($this->estaOcupado($fecha, $idRecinto, $idHorario, $excluirId)) {
-            return ['ok' => false, 'mensajes' => ['Disponibilidad' => 'Ese horario ya está reservado.']];
+        if ($this->estaOcupado($fecha, $idRecintoInt, $idHorarioInt, $excluirId)) {
+            return ['ok' => false, 'mensajes' => ['disponibilidad' => 'Ese horario ya está reservado.']];
         }
 
         return ['ok' => true, 'recinto' => $recinto];
@@ -126,13 +213,9 @@ class ReservaModel extends Model
             $builder->where('id_reserva !=', $excluirId);
         }
 
-        $idsOcupados = array_column($builder->findAll(), 'id_horario');
+        $idsOcupados  = array_column($builder->findAll(), 'id_horario');
+        $todos        = (new HorarioModel())->listarHorarios();
 
-        $horarioModel = new HorarioModel();
-        $todos = $horarioModel->listarHorarios();
-
-        return array_values(array_filter($todos, function ($h) use ($idsOcupados) {
-            return !in_array($h['id_horario'], $idsOcupados);
-        }));
+        return array_values(array_filter($todos, fn($h) => !in_array($h['id_horario'], $idsOcupados)));
     }
 }

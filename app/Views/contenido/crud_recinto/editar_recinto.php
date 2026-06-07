@@ -4,22 +4,24 @@
         <h2 class="reserva-title">Editar Recinto</h2>
         <p class="reserva-subtitle">Modificá los datos del recinto</p>
 
-        <?php if(session()->getFlashdata('error')): ?>
-            <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
-        <?php endif; ?>
         <?php if(session()->getFlashdata('success')): ?>
             <div class="alert alert-success"><?= session()->getFlashdata('success') ?></div>
         <?php endif; ?>
 
+        <?php $errores = session()->getFlashdata('errors') ?? []; ?>
+
         <form action="<?= base_url('/recinto/actualizar/' . $recinto['id_recinto']) ?>" method="post">
 
             <div class="form-group-modern">
-                <input type="text" name="Tarifa_por_Hora" value="<?= esc($recinto['tarifa']) ?>" >
+                <input type="text" name="tarifa" value="<?= esc($recinto['tarifa']) ?>">
                 <label>Tarifa por Hora</label>
             </div>
+            <?php if (!empty($errores['tarifa'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['tarifa']) ?></small>
+            <?php endif; ?>
 
             <div class="form-group-modern">
-                <select name="Tipo_de_Recinto" >
+                <select name="id_tipo_recinto">
                     <option value="" disabled></option>
                     <?php foreach($tipos as $tipo): ?>
                         <option value="<?= $tipo['id_tipo_recinto'] ?>"
@@ -30,19 +32,28 @@
                 </select>
                 <label>Tipo de Recinto</label>
             </div>
+            <?php if (!empty($errores['id_tipo_recinto'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['id_tipo_recinto']) ?></small>
+            <?php endif; ?>
 
             <div class="form-group-modern">
-                <input type="text" name="Descripcion" value="<?= esc($recinto['descripcion']) ?>" >
+                <input type="text" name="descripcion" value="<?= esc($recinto['descripcion']) ?>">
                 <label>Descripción</label>
             </div>
+            <?php if (!empty($errores['descripcion'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['descripcion']) ?></small>
+            <?php endif; ?>
 
             <div class="form-group-modern">
-                <select name="estado_recinto" >
+                <select name="estado_recinto">
                     <option value="activo"   <?= $recinto['estado_recinto'] === 'activo'   ? 'selected' : '' ?>>Activo</option>
                     <option value="inactivo" <?= $recinto['estado_recinto'] === 'inactivo' ? 'selected' : '' ?>>Inactivo</option>
                 </select>
                 <label>Estado</label>
             </div>
+            <?php if (!empty($errores['estado_recinto'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['estado_recinto']) ?></small>
+            <?php endif; ?>
 
             <button type="submit" class="btn-login">Guardar cambios</button>
         </form>

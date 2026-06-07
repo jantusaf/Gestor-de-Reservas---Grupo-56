@@ -14,6 +14,19 @@ class PagoModel extends Model
         'id_usuario'
     ];
 
+    public function datosFormularioAlta(int $idReserva): ?array
+    {
+        $reserva = (new ReservaModel())->find($idReserva);
+        if (!$reserva) {
+            return null;
+        }
+
+        return [
+            'reserva' => $reserva,
+            'medios'  => (new MedioPagoModel())->findAll(),
+        ];
+    }
+
     public function listarPagos(): array
     {
         $db = \Config\Database::connect();
@@ -38,11 +51,11 @@ class PagoModel extends Model
         $reserva = $reservaModel->find($idReserva);
 
         if (!$reserva) {
-            return ['ok' => false, 'error' => 'Reserva no encontrada.'];
+            return ['ok' => false, 'mensaje' => 'Reserva no encontrada.'];
         }
 
         if ($montoTotal != $reserva['monto']) {
-            return ['ok' => false, 'error' => 'El monto debe ser exactamente igual al de la reserva.'];
+            return ['ok' => false, 'mensaje' => 'El monto debe ser exactamente igual al de la reserva.'];
         }
 
         $this->insert([

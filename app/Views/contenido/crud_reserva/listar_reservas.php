@@ -41,13 +41,14 @@
                         <th>Monto</th>
                         <th>Reserva</th>
                         <th>Pago</th>
+                        <th>Medio de pago</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if(empty($reservas)): ?>
                         <tr>
-                            <td colspan="8" class="empty">No hay reservas registradas.</td>
+                            <td colspan="9" class="empty">No hay reservas registradas.</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach($reservas as $r): ?>
@@ -67,6 +68,9 @@
                                     <span class="badge-estado badge-<?= $r['estado_pago'] ?>">
                                         <?= ucfirst($r['estado_pago']) ?>
                                     </span>
+                                </td>
+                                <td>
+                                    <?= $r['nombre_medio_pago'] ? esc($r['nombre_medio_pago']) : '<span style="color:#aaa;font-size:13px;">—</span>' ?>
                                 </td>
                                 <td class="acciones">
                                     <?php if(!$cancelada): ?>
