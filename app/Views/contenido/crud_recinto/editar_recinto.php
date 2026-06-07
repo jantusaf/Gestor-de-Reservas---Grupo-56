@@ -14,12 +14,12 @@
         <form action="<?= base_url('/recinto/actualizar/' . $recinto['id_recinto']) ?>" method="post">
 
             <div class="form-group-modern">
-                <input type="text" name="tarifa" value="<?= esc($recinto['tarifa']) ?>" required>
+                <input type="text" name="Tarifa_por_Hora" value="<?= esc($recinto['tarifa']) ?>" >
                 <label>Tarifa por Hora</label>
             </div>
 
             <div class="form-group-modern">
-                <select name="id_tipo_recinto" required>
+                <select name="Tipo_de_Recinto" >
                     <option value="" disabled></option>
                     <?php foreach($tipos as $tipo): ?>
                         <option value="<?= $tipo['id_tipo_recinto'] ?>"
@@ -32,12 +32,12 @@
             </div>
 
             <div class="form-group-modern">
-                <input type="text" name="descripcion" value="<?= esc($recinto['descripcion']) ?>" required>
+                <input type="text" name="Descripcion" value="<?= esc($recinto['descripcion']) ?>" >
                 <label>Descripción</label>
             </div>
 
             <div class="form-group-modern">
-                <select name="estado_recinto" required>
+                <select name="estado_recinto" >
                     <option value="activo"   <?= $recinto['estado_recinto'] === 'activo'   ? 'selected' : '' ?>>Activo</option>
                     <option value="inactivo" <?= $recinto['estado_recinto'] === 'inactivo' ? 'selected' : '' ?>>Inactivo</option>
                 </select>

@@ -86,8 +86,9 @@ class ReservaController extends Controller
         $validacion = $this->validarReserva($fecha, $idCliente, $idRecinto, $idHorario);
 
         if (!$validacion['ok']) {
-            return redirect()->back()->with('error', $validacion['mensaje']);
+            return redirect()->back()->withInput()->with('errors', $validacion['mensajes']);
         }
+
 
         $recinto = $validacion['recinto'];
         $monto   = $recinto['tarifa'] ?? 0;
@@ -207,13 +208,26 @@ class ReservaController extends Controller
         $estadoReserva = $this->request->getPost('estado_reserva');
         $estadoPago    = $this->request->getPost('estado_pago');
 
-        if (empty($fecha) || empty($idCliente) || empty($idRecinto) || empty($idHorario)) {
-            return redirect()->back()->with('error', 'Todos los campos son obligatorios.');
+        $validation = \Config\Services::validation();
+
+        $rules = [
+            'Recinto' => 'required',
+            'Cliente' => 'required',
+            'Fecha'   => 'required|valid_date|check_future_or_today',
+            'Hora'    => 'required'
+        ];
+
+        $data = [
+            'Recinto' => $idRecinto,
+            'Cliente' => $idCliente,
+            'Fecha'   => $fecha,
+            'Hora'    => $idHorario
+        ];
+
+        if (! $validation->setRules($rules)->run($data)) {
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
         }
 
-        if (strtotime($fecha) < strtotime(date('Y-m-d'))) {
-            return redirect()->back()->with('error', 'La fecha no puede ser anterior a hoy.');
-        }
 
         $ocupada = $reservaModel
             ->where('fecha_reserva', $fecha)
@@ -272,10 +286,27 @@ class ReservaController extends Controller
         $reservaModel = new ReservaModel();
         $horarioModel = new HorarioModel();
 
-        if (empty($fecha))     return ['ok' => false, 'mensaje' => 'Falta la fecha.'];
-        if (empty($idCliente)) return ['ok' => false, 'mensaje' => 'Falta el cliente.'];
-        if (empty($idRecinto)) return ['ok' => false, 'mensaje' => 'Falta el recinto.'];
-        if (empty($idHorario)) return ['ok' => false, 'mensaje' => 'Falta la hora.'];
+        $validation = \Config\Services::validation();
+
+        $rules = [
+            'Recinto' => 'required',
+            'Cliente' => 'required',
+            'Fecha'   => 'required|valid_date|check_future_or_today',
+            'Hora' => 'required'
+        ];
+
+        $data = [
+            'Recinto' => $idRecinto,
+            'Cliente' => $idCliente,
+            'Fecha'   => $fecha,
+            'Hora' => $idHorario
+        ];
+
+
+        if (! $validation->setRules($rules)->run($data)) {
+            return ['ok' => false, 'mensajes' => $validation->getErrors()];
+        }
+
 
         if (strtotime($fecha) < strtotime(date('Y-m-d'))) {
             return ['ok' => false, 'mensaje' => 'La fecha no puede ser anterior a hoy.'];

@@ -3,15 +3,20 @@
         <h2 class="reserva-title">Nueva Reserva</h2>
         <p class="reserva-subtitle">Completá los datos</p>
 
-        <?php if(session()->getFlashdata('error')): ?>
-            <div class="alert alert-danger">
-                <?= session()->getFlashdata('error') ?>
-            </div>
-        <?php endif; ?>
+<?php if(session()->getFlashdata('errors')): ?>
+    <div class="alert alert-danger">
+        <ul>
+        <?php foreach(session()->getFlashdata('errors') as $error): ?>
+            <li><?= esc($error) ?></li>
+        <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
+
 
         <form action="<?= site_url('reserva/guardar') ?>" method="post">
             <div class="form-group-modern">
-                <select name="id_recinto" id="recinto" required>
+                <select name="id_recinto" id="recinto" >
                     <option value="" disabled selected></option>
                     <?php foreach($recintos as $r): ?>
                         <option value="<?= $r['id_recinto'] ?>">
@@ -23,7 +28,7 @@
             </div>
 
             <div class="form-group-modern">
-                <select name="id_cliente" required>
+                <select name="id_cliente" >
                     <option value="" disabled selected></option>
                     <?php foreach($clientes as $c): ?>
                         <option value="<?= $c['id_cliente'] ?>">
@@ -35,12 +40,12 @@
             </div>
 
             <div class="form-group-modern">
-                <input type="date" name="fecha_reserva" id="fecha" required>
+                <input type="date" name="fecha_reserva" id="fecha" >
                 <label for="fecha" class="label-active">Fecha</label>
             </div>
 
             <div class="form-group-modern">
-                <select name="id_horario" id="hora" required disabled>
+                <select name="id_horario" id="hora"  disabled>
                     <option value="">Seleccione una hora</option>
                 </select>
                 <label>Horario</label>

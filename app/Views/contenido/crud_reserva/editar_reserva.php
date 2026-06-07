@@ -4,15 +4,22 @@
         <h2 class="reserva-title">Editar Reserva</h2>
         <p class="reserva-subtitle">Modificá los datos de la reserva</p>
 
-        <?php if(session()->getFlashdata('error')): ?>
-            <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
+        <?php if(session()->getFlashdata('errors')): ?>
+            <div class="alert alert-danger">
+                <ul>
+                    <?php foreach(session()->getFlashdata('errors') as $error): ?>
+                        <li><?= esc($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
         <?php endif; ?>
+
 
         <form action="<?= site_url('reserva/actualizar/' . $reserva['id_reserva']) ?>" method="post">
 
             <!-- Recinto -->
             <div class="form-group-modern">
-                <select name="id_recinto" id="recinto" required>
+                <select name="id_recinto" id="recinto" >
                     <option value="" disabled></option>
                     <?php foreach($recintos as $r): ?>
                         <option value="<?= $r['id_recinto'] ?>"
@@ -26,7 +33,7 @@
 
             <!-- Cliente -->
             <div class="form-group-modern">
-                <select name="id_cliente" required>
+                <select name="id_cliente" >
                     <option value="" disabled></option>
                     <?php foreach($clientes as $c): ?>
                         <option value="<?= $c['id_cliente'] ?>"
@@ -41,13 +48,13 @@
             <!-- Fecha -->
             <div class="form-group-modern">
                 <input type="date" name="fecha_reserva" id="fecha"
-                       value="<?= esc($reserva['fecha_reserva']) ?>" required>
+                       value="<?= esc($reserva['fecha_reserva']) ?>" >
                 <label>Fecha</label>
             </div>
 
             <!-- Horario -->
             <div class="form-group-modern">
-                <select name="id_horario" id="hora" required>
+                <select name="id_horario" id="hora" >
                     <option value="">Seleccione una hora</option>
                     <?php foreach($horarios as $h): ?>
                         <option value="<?= $h['id_horario'] ?>"

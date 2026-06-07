@@ -18,10 +18,11 @@ class RecintoController extends Controller
     private function validarRecinto(bool $editando = false)
     {
         $rules = [
-            'tarifa'          => 'required|numeric',
-            'id_tipo_recinto' => 'required',
-            'descripcion'     => 'required|min_length[3]|max_length[50]',
+            'Tarifa_por_Hora' => 'required|numeric',
+            'Tipo_de_Recinto' => 'required',
+            'Descripcion'     => 'required|min_length[3]|max_length[50]',
         ];
+
 
         if ($editando) {
             $rules['estado_recinto'] = 'required|in_list[activo,inactivo]';
@@ -50,11 +51,12 @@ class RecintoController extends Controller
 
         $model = new RecintoModel();
         $model->insert([
-            'tarifa'          => number_format((float)$this->request->getPost('tarifa'), 2, '.', ''),
-            'descripcion'     => $this->request->getPost('descripcion'),
-            'id_tipo_recinto' => $this->request->getPost('id_tipo_recinto'),
+            'tarifa'          => number_format((float)$this->request->getPost('Tarifa_por_Hora'), 2, '.', ''),
+            'descripcion'     => $this->request->getPost('Descripcion'),
+            'id_tipo_recinto' => $this->request->getPost('Tipo_de_Recinto'),
             'estado_recinto'  => 'activo',
         ]);
+
 
         return redirect()->to('/recinto/listar')->with('success', 'Recinto agregado correctamente.');
     }
@@ -135,9 +137,9 @@ class RecintoController extends Controller
 
         $model = new RecintoModel();
         $model->update($id, [
-            'tarifa'          => number_format((float)$this->request->getPost('tarifa'), 2, '.', ''),
-            'descripcion'     => $this->request->getPost('descripcion'),
-            'id_tipo_recinto' => $this->request->getPost('id_tipo_recinto'),
+            'tarifa'          => number_format((float)$this->request->getPost('Tarifa_por_Hora'), 2, '.', ''),
+            'descripcion'     => $this->request->getPost('Descripcion'),
+            'id_tipo_recinto' => $this->request->getPost('Tipo_de_Recinto'),
             'estado_recinto'  => $this->request->getPost('estado_recinto') ?? 'activo',
         ]);
 

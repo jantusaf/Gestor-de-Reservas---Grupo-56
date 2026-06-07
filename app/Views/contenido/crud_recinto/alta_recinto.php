@@ -13,17 +13,17 @@
             <div class="alert alert-success"><?= session()->getFlashdata('success') ?></div>
         <?php endif; ?>
         <?php if(isset($validation)): ?>
-            <div class="alert alert-warning"><?= $validation->listErrors() ?></div>
+            <div class="alert alert-danger"><?= $validation->listErrors() ?></div>
         <?php endif; ?>
 
         <form action="<?= base_url('/recinto/guardar'); ?>" method="post">
             <div class="form-group-modern">
-                <input type="text" name="tarifa" required>
+                <input type="text" name="Tarifa_por_Hora">
                 <label>Tarifa por Hora</label>
             </div>
 
             <div class="form-group-modern">
-                <select name="id_tipo_recinto" required>
+                <select name="Tipo_de_Recinto">
                     <option value="" disabled selected></option>
                     <?php foreach($tipos as $tipo): ?>
                         <option value="<?= $tipo['id_tipo_recinto']; ?>">
@@ -35,7 +35,7 @@
             </div>
 
             <div class="form-group-modern">
-                <input type="text" name="descripcion" required>
+                <input type="text" name="Descripcion">
                 <label>Descripción</label>
             </div>
 
