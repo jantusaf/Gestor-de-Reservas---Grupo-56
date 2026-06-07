@@ -44,15 +44,15 @@ class ClienteController extends BaseController
             $clienteModel = new ClienteModel();
 
             try {
-                $personaId = $personaModel->insert([
-                    'dni'              => $this->request->getVar('dni'),
-                    'nombre'           => $this->request->getVar('nombre'),
-                    'apellido'         => $this->request->getVar('apellido'),
-                    'fecha_nacimiento' => $this->request->getVar('fecha_nacimiento'),
-                    'telefono'         => $this->request->getVar('telefono'),
-                    'calle'            => $this->request->getVar('calle'),
-                    'altura'           => $this->request->getVar('altura'),
-                ]);
+                $personaId = $personaModel->altaPersona(
+                    $this->request->getVar('dni'),
+                    $this->request->getVar('nombre'),
+                    $this->request->getVar('apellido'),
+                    $this->request->getVar('fecha_nacimiento'),
+                    $this->request->getVar('telefono'),
+                    $this->request->getVar('calle'),
+                    $this->request->getVar('altura'),
+                );
 
                 $clienteModel->insert([
                     'email'          => $this->request->getVar('email'),

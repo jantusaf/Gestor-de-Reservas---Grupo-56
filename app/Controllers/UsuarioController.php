@@ -48,15 +48,15 @@ class UsuarioController extends BaseController
 
         try {
             // 1. Insertar persona
-            $personaId = $personaModel->insert([
-                'dni'             => $this->request->getVar('dni'),
-                'nombre'          => $this->request->getVar('nombre'),
-                'apellido'        => $this->request->getVar('apellido'),
-                'fecha_nacimiento'=> $this->request->getVar('fecha_nacimiento'),
-                'telefono'        => $this->request->getVar('telefono'),
-                'calle'           => $this->request->getVar('calle'),
-                'altura'          => $this->request->getVar('altura')
-            ]);
+            $personaId = $personaModel->altaPersona(
+                $this->request->getVar('dni'),
+                $this->request->getVar('nombre'),
+                $this->request->getVar('apellido'),
+                $this->request->getVar('fecha_nacimiento'),
+                $this->request->getVar('telefono'),
+                $this->request->getVar('calle'),
+                $this->request->getVar('altura'),
+            );
 
             // 2. Insertar usuario vinculado a persona
             $usuarioModel->insert([

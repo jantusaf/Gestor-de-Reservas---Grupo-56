@@ -17,4 +17,19 @@ class PersonaModel extends Model
         'calle',
         'altura'
     ];
+
+    public function altaPersona(string $dni, string $nombre, string $apellido, string $fechaNacimiento, string $telefono, string $calle, string $altura): int
+    {
+        $this->insert([
+            'dni'              => $dni,
+            'nombre'           => $nombre,
+            'apellido'         => $apellido,
+            'fecha_nacimiento' => $fechaNacimiento,
+            'telefono'         => $telefono,
+            'calle'            => $calle,
+            'altura'           => $altura,
+        ]);
+
+        return $this->getInsertID();
+    }
 }
