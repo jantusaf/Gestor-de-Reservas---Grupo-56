@@ -12,8 +12,7 @@ class UsuarioController extends BaseController
         helper(['form', 'url']);
     }
 
-    // CREATE: Muestra la vista de registro de usuario
-    public function muestra_vista_registrarse()
+    public function formularioRegistro()
     {
         $data['title'] = 'Registrarse';
         return view('plantillas/head', $data)
@@ -21,7 +20,6 @@ class UsuarioController extends BaseController
             . view('plantillas/footer');
     }
 
-    // CREATE: Procesa el formulario y guarda persona + usuario
     public function guardar()
     {
         $usuarioModel = new UsuarioModel();
@@ -40,14 +38,12 @@ class UsuarioController extends BaseController
         ]);
 
         if (!$validation) {
-            // Mostrar errores de validación
             return view('plantillas/head')
                 . view('contenido/registrarse', ['validation' => $this->validator])
                 . view('plantillas/footer');
         }
 
         try {
-            // 1. Insertar persona
             $personaId = $personaModel->altaPersona(
                 $this->request->getVar('dni'),
                 $this->request->getVar('nombre'),
@@ -58,30 +54,25 @@ class UsuarioController extends BaseController
                 $this->request->getVar('altura'),
             );
 
-            // 2. Insertar usuario vinculado a persona
-            $usuarioModel->insert([
-                'nombre_usuario'  => $this->request->getVar('usuario'),
-                'contrasena' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
-                'estado_usuario'  => 'activo',
-                'id_persona'      => $personaId,
-                'id_tipo_usuario' => 2 // por defecto cliente normal
-            ]);
+            $usuarioModel->altaUsuario(
+                $this->request->getVar('usuario'),
+                $this->request->getVar('password'),
+                $personaId,
+            );
 
             session()->setFlashdata('success', 'Usuario registrado correctamente');
             return redirect()->to('/login');
 
         } catch (\Exception $e) {
-            // Si falla el insert, mostrar error
             session()->setFlashdata('error', 'Error al registrar: ' . $e->getMessage());
             return redirect()->back()->withInput();
         }
     }
 
-    // READ: Mostrar perfil del usuario logueado
     public function perfil()
     {
         $usuarioModel = new UsuarioModel();
-        $id = session()->get('id_usuario'); // tomado de la sesión
+        $id = session()->get('id_usuario');
 
         $data['usuario'] = $usuarioModel->find($id);
         $data['title']   = 'Mi Perfil';
@@ -91,29 +82,26 @@ class UsuarioController extends BaseController
             . view('plantillas/footer');
     }
 
-    // UPDATE: Actualizar datos del usuario
     public function actualizar()
     {
         $usuarioModel = new UsuarioModel();
         $id = session()->get('id_usuario');
 
-        $data = [
-            'nombre_usuario' => $this->request->getVar('usuario'),
-            'estado_usuario' => $this->request->getVar('estado') ?? 'activo'
-        ];
-
-        $usuarioModel->update($id, $data);
+        $usuarioModel->actualizarUsuario(
+            $id,
+            $this->request->getVar('usuario'),
+            $this->request->getVar('estado') ?? 'activo',
+        );
 
         return redirect()->back()->with('success', 'Datos actualizados correctamente');
     }
 
-    // DELETE: Dar de baja usuario (soft delete)
-    public function dar_de_baja()
+    public function baja()
     {
         $usuarioModel = new UsuarioModel();
         $id = session()->get('id_usuario');
 
-        $usuarioModel->update($id, ['estado_usuario' => 'inactivo']);
+        $usuarioModel->darDeBaja($id);
 
         session()->destroy();
         return redirect()->to('/login')->with('success', 'Cuenta dada de baja correctamente');

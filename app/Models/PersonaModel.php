@@ -5,7 +5,7 @@ use CodeIgniter\Model;
 
 class PersonaModel extends Model
 {
-    protected $table      = 'persona';
+    protected $table = 'persona';
     protected $primaryKey = 'id_persona';
 
     protected $allowedFields = [
@@ -21,6 +21,21 @@ class PersonaModel extends Model
     public function altaPersona(string $dni, string $nombre, string $apellido, string $fechaNacimiento, string $telefono, string $calle, string $altura): int
     {
         $this->insert([
+            'dni' => $dni,
+            'nombre' => $nombre,
+            'apellido' => $apellido,
+            'fecha_nacimiento' => $fechaNacimiento,
+            'telefono' => $telefono,
+            'calle' => $calle,
+            'altura' => $altura,
+        ]);
+
+        return $this->getInsertID();
+    }
+
+    public function actualizarPersona(int $id, string $dni, string $nombre, string $apellido, string $fechaNacimiento, string $telefono, string $calle, string $altura): void
+    {
+        $this->update($id, [
             'dni'              => $dni,
             'nombre'           => $nombre,
             'apellido'         => $apellido,
@@ -29,7 +44,5 @@ class PersonaModel extends Model
             'calle'            => $calle,
             'altura'           => $altura,
         ]);
-
-        return $this->getInsertID();
     }
 }

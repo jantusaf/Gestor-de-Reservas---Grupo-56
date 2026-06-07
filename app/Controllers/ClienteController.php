@@ -14,20 +14,20 @@ class ClienteController extends BaseController
 
     private function validarCliente(int $idPersona = 0, int $idCliente = 0): bool
     {
-        $dniRule   = $idPersona ? "required|numeric|min_length[7]|max_length[20]|is_unique[persona.dni,id_persona,{$idPersona}]"
+        $dniRule = $idPersona ? "required|numeric|min_length[7]|max_length[20]|is_unique[persona.dni,id_persona,{$idPersona}]"
                                 : 'required|numeric|min_length[7]|max_length[20]|is_unique[persona.dni]';
         $emailRule = $idCliente ? "required|valid_email|max_length[100]|is_unique[cliente.email,id_cliente,{$idCliente}]"
                                 : 'required|valid_email|max_length[100]|is_unique[cliente.email]';
 
         return $this->validate([
-            'dni'              => $dniRule,
-            'nombre'           => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
-            'apellido'         => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
+            'dni' => $dniRule,
+            'nombre' => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
+            'apellido' => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]',
             'fecha_nacimiento' => 'required|valid_date[Y-m-d]|check_past_date',
-            'telefono'         => 'permit_empty|max_length[20]',
-            'calle'            => 'required|min_length[3]|max_length[50]',
-            'altura'           => 'required|max_length[10]',
-            'email'            => $emailRule,
+            'telefono' => 'permit_empty|max_length[20]',
+            'calle' => 'required|min_length[3]|max_length[50]',
+            'altura' => 'required|max_length[10]',
+            'email'=> $emailRule,
         ]);
     }
 
@@ -54,12 +54,10 @@ class ClienteController extends BaseController
                     $this->request->getVar('altura'),
                 );
 
-                $clienteModel->insert([
-                    'email'          => $this->request->getVar('email'),
-                    'fecha_alta'     => date('Y-m-d'),
-                    'estado_cliente' => 'activo',
-                    'id_persona'     => $personaId,
-                ]);
+                $clienteModel->altaCliente(
+                    $this->request->getVar('email'),
+                    $personaId,
+                );
 
                 return redirect()->to('/cliente/listar')->with('success', 'Cliente registrado correctamente.');
 
@@ -75,23 +73,12 @@ class ClienteController extends BaseController
 
     public function listarClientes()
     {
-        $db  = \Config\Database::connect();
+        $clienteModel = new ClienteModel();
         $dni = trim($this->request->getGet('dni') ?? '');
 
-        $builder = $db->table('cliente')
-            ->select('cliente.id_cliente, cliente.email, cliente.fecha_alta, cliente.estado_cliente, cliente.id_persona,
-                      persona.nombre, persona.apellido, persona.dni, persona.telefono, persona.calle, persona.altura, persona.fecha_nacimiento')
-            ->join('persona', 'persona.id_persona = cliente.id_persona')
-            ->orderBy('cliente.estado_cliente', 'ASC')
-            ->orderBy('persona.apellido', 'ASC');
-
-        if ($dni !== '') {
-            $builder->like('persona.dni', $dni, 'after');
-        }
-
-        $data['clientes']      = $builder->get()->getResultArray();
-        $data['dni_busqueda']  = $dni;
-        $data['title']         = 'Listado de Clientes';
+        $data['clientes'] = $clienteModel->listarClientes($dni);
+        $data['dni_busqueda'] = $dni;
+        $data['title'] = 'Listado de Clientes';
 
         return view('plantillas/head', $data)
             . view('contenido/crud_cliente/listar_clientes', $data)
@@ -100,19 +87,10 @@ class ClienteController extends BaseController
 
     public function listarClientesActivos()
     {
-        $db = \Config\Database::connect();
+        $clienteModel = new ClienteModel();
 
-        $clientes = $db->table('cliente')
-            ->select('cliente.id_cliente, cliente.email, cliente.fecha_alta, cliente.estado_cliente, cliente.id_persona,
-                      persona.nombre, persona.apellido, persona.dni, persona.telefono, persona.calle, persona.altura, persona.fecha_nacimiento')
-            ->join('persona', 'persona.id_persona = cliente.id_persona')
-            ->where('cliente.estado_cliente', 'activo')
-            ->orderBy('persona.apellido', 'ASC')
-            ->get()
-            ->getResultArray();
-
-        $data['clientes'] = $clientes;
-        $data['title']    = 'Clientes Activos';
+        $data['clientes'] = $clienteModel->listarClientesActivos();
+        $data['title'] = 'Clientes Activos';
 
         return view('plantillas/head', $data)
             . view('contenido/crud_cliente/listar_clientes', $data)
@@ -152,28 +130,30 @@ class ClienteController extends BaseController
             $personaModel = new PersonaModel();
             return view('plantillas/head', ['title' => 'Editar Cliente'])
                 . view('contenido/crud_cliente/editar_cliente', [
-                    'cliente'    => $cliente,
-                    'persona'    => $personaModel->find($idPersona),
+                    'cliente' => $cliente,
+                    'persona' => $personaModel->find($idPersona),
                     'validation' => $this->validator,
                 ])
                 . view('plantillas/footer');
         }
 
         $personaModel = new PersonaModel();
-        $personaModel->update($idPersona, [
-            'dni'              => $this->request->getVar('dni'),
-            'nombre'           => $this->request->getVar('nombre'),
-            'apellido'         => $this->request->getVar('apellido'),
-            'fecha_nacimiento' => $this->request->getVar('fecha_nacimiento'),
-            'telefono'         => $this->request->getVar('telefono'),
-            'calle'            => $this->request->getVar('calle'),
-            'altura'           => $this->request->getVar('altura'),
-        ]);
+        $personaModel->actualizarPersona(
+            $idPersona,
+            $this->request->getVar('dni'),
+            $this->request->getVar('nombre'),
+            $this->request->getVar('apellido'),
+            $this->request->getVar('fecha_nacimiento'),
+            $this->request->getVar('telefono'),
+            $this->request->getVar('calle'),
+            $this->request->getVar('altura'),
+        );
 
-        $clienteModel->update($id, [
-            'email'          => $this->request->getVar('email'),
-            'estado_cliente' => $this->request->getVar('estado_cliente'),
-        ]);
+        $clienteModel->actualizarCliente(
+            $id,
+            $this->request->getVar('email'),
+            $this->request->getVar('estado_cliente'),
+        );
 
         return redirect()->to('/cliente/listar')->with('success', 'Cliente actualizado correctamente.');
     }
@@ -184,7 +164,7 @@ class ClienteController extends BaseController
         if (!$clienteModel->find($id)) {
             return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
         }
-        $clienteModel->update($id, ['estado_cliente' => 'inactivo']);
+        $clienteModel->deshabilitar($id);
         return redirect()->to('/cliente/listar')->with('success', 'Cliente deshabilitado.');
     }
 
@@ -194,7 +174,7 @@ class ClienteController extends BaseController
         if (!$clienteModel->find($id)) {
             return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
         }
-        $clienteModel->update($id, ['estado_cliente' => 'activo']);
+        $clienteModel->habilitar($id);
         return redirect()->to('/cliente/listar')->with('success', 'Cliente habilitado.');
     }
 }

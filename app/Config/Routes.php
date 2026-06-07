@@ -39,13 +39,13 @@ $routes->post('/login/iniciar_sesion', 'LoginController::iniciar_sesion');// pro
 $routes->get('/logout', 'LoginController::logout'); // cierra sesión
 
 // REGISTRO
-$routes->get('/registrarse', 'UsuarioController::muestra_vista_registrarse');   // muestra la vista registrarse.php
+$routes->get('/registrarse', 'UsuarioController::formularioRegistro');   // muestra la vista registrarse.php
 $routes->post('/registrarse/guardar', 'UsuarioController::guardar');            // procesa el formulario de registro
 
 // USUARIO
 $routes->get('/usuario/perfil',      'UsuarioController::perfil');       // ver perfil del usuario logueado
 $routes->post('/usuario/actualizar', 'UsuarioController::actualizar');   // actualizar datos del usuario
-$routes->post('/usuario/baja',       'UsuarioController::dar_de_baja');  // dar de baja la cuenta
+$routes->post('/usuario/baja',       'UsuarioController::baja');  // dar de baja la cuenta
 
 
 // CLIENTES

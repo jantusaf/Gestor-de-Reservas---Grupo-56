@@ -8,36 +8,16 @@ use App\Models\MedioPagoModel;
 
 class PagoController extends BaseController
 {
-    // Listar todos los pagos
     public function listar()
     {
-        $db = \Config\Database::connect();
-
-        $builder = $db->table('pago')
-            ->select('pago.id_reserva, pago.fecha_pago, pago.monto_total,
-                    persona.nombre, 
-                    persona.apellido, 
-                    medio_pago.nombre_medio_pago, 
-                    usuario.nombre_usuario')
-            ->join('reserva', 'reserva.id_reserva = pago.id_reserva')
-            ->join('cliente', 'cliente.id_cliente = reserva.id_cliente')
-            ->join('persona', 'persona.id_persona = cliente.id_persona')
-            ->join('medio_pago', 'medio_pago.id_medio_pago = pago.id_medio_pago')
-            ->join('usuario', 'usuario.id_usuario = pago.id_usuario');
-
-        $data['pagos'] = $builder->get()->getResultArray();
+        $pagoModel = new PagoModel();
+        $data['pagos'] = $pagoModel->listarPagos();
 
         return view('plantillas/head')
             . view('contenido/crud_pago/listar_pagos', $data)
             . view('plantillas/footer');
     }
 
-
-
-
-
-
-    // Mostrar formulario de alta de pago
     public function alta($idReserva)
     {
         $reservaModel = new ReservaModel();
@@ -56,42 +36,20 @@ class PagoController extends BaseController
             . view('plantillas/footer');
     }
 
+    public function guardar()
+    {
+        $idReserva   = (int) $this->request->getPost('id_reserva');
+        $monto       = (float) $this->request->getPost('monto_total');
+        $idMedioPago = (int) $this->request->getPost('id_medio_pago');
+        $idUsuario   = (int) session()->get('id_usuario');
 
+        $pagoModel = new PagoModel();
+        $resultado = $pagoModel->altaPago($idReserva, $monto, $idMedioPago, $idUsuario);
 
-    // Guardar pago y validar contra el total
-public function guardar()
-{
-    $idReserva   = $this->request->getPost('id_reserva');
-    $monto       = $this->request->getPost('monto_total');
-    $idMedioPago = $this->request->getPost('id_medio_pago');
+        if (!$resultado['ok']) {
+            return redirect()->back()->with('error', $resultado['error']);
+        }
 
-    $reservaModel = new ReservaModel();
-    $pagoModel    = new PagoModel();
-
-    $reserva = $reservaModel->find($idReserva);
-
-    // Validar que el monto sea exactamente igual al de la reserva
-    if ($monto != $reserva['monto']) {
-        return redirect()->back()->with('error', 'El monto debe ser exactamente igual al de la reserva.');
+        return redirect()->to('/reserva/listar')->with('pago_confirmado', true);
     }
-
-    // Insertar pago único
-    $pagoModel->insert([
-        'id_reserva'    => $idReserva,
-        'monto_total'   => $monto,
-        'id_medio_pago' => $idMedioPago,
-        'fecha_pago'    => date('Y-m-d'),
-        'id_usuario'    => session()->get('id_usuario')
-    ]);
-
-    // Actualizar estado de la reserva
-    $reservaModel->update($idReserva, [
-        'estado_reserva' => 'confirmada',
-        'estado_pago'    => 'pagada'
-    ]);
-
-    return redirect()->to('/reserva/listar')->with('pago_confirmado', true);
-}
-
-
 }
