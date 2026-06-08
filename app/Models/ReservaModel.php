@@ -156,10 +156,13 @@ class ReservaModel extends Model
         $validation = \Config\Services::validation();
 
         if (!$validation->setRules([
-            'fecha_reserva' => ['label' => 'Fecha',   'rules' => 'required|valid_date|check_future_or_today'],
-            'id_cliente'    => ['label' => 'Cliente',  'rules' => 'required|integer|greater_than[0]'],
-            'id_recinto'    => ['label' => 'Recinto',  'rules' => 'required|integer|greater_than[0]'],
-            'id_horario'    => ['label' => 'Horario',  'rules' => 'required|integer|greater_than[0]'],
+            'fecha_reserva' => ['label' => 'Fecha',  'rules' => 'required|valid_date|check_future_or_today'],
+            'id_cliente'    => ['label' => 'Cliente', 'rules' => 'required|integer|greater_than[0]',
+                                'errors' => ['required' => 'El campo Cliente es obligatorio.', 'integer' => 'El campo Cliente es inválido.', 'greater_than' => 'El campo Cliente es obligatorio.']],
+            'id_recinto'    => ['label' => 'Recinto', 'rules' => 'required|integer|greater_than[0]',
+                                'errors' => ['required' => 'El campo Recinto es obligatorio.', 'integer' => 'El campo Recinto es inválido.', 'greater_than' => 'El campo Recinto es obligatorio.']],
+            'id_horario'    => ['label' => 'Horario', 'rules' => 'required|integer|greater_than[0]',
+                                'errors' => ['required' => 'El campo Horario es obligatorio.', 'integer' => 'El campo Horario es inválido.', 'greater_than' => 'El campo Horario es obligatorio.']],
         ])->run([
             'fecha_reserva' => $fecha,
             'id_cliente'    => $idCliente,

@@ -71,7 +71,8 @@ class RecintoModel extends Model
         if (!$validation->setRules([
             'tarifa'          => ['label' => 'Tarifa por hora',  'rules' => 'required|numeric'],
             'descripcion'     => ['label' => 'Descripción',      'rules' => 'required|min_length[3]|max_length[50]'],
-            'id_tipo_recinto' => ['label' => 'Tipo de recinto',  'rules' => 'required|integer|greater_than[0]'],
+            'id_tipo_recinto' => ['label' => 'Tipo de recinto', 'rules' => 'required|integer|greater_than[0]',
+                                   'errors' => ['required' => 'El campo Tipo de recinto es obligatorio.', 'integer' => 'El campo Tipo de recinto es inválido.', 'greater_than' => 'El campo Tipo de recinto es obligatorio.']],
         ])->run([
             'tarifa'          => $tarifa,
             'descripcion'     => $descripcion,
@@ -97,8 +98,9 @@ class RecintoModel extends Model
         if (!$validation->setRules([
             'tarifa'          => ['label' => 'Tarifa por hora',  'rules' => 'required|numeric'],
             'descripcion'     => ['label' => 'Descripción',      'rules' => 'required|min_length[3]|max_length[50]'],
-            'id_tipo_recinto' => ['label' => 'Tipo de recinto',  'rules' => 'required|integer|greater_than[0]'],
-            'estado_recinto'  => ['label' => 'Estado',           'rules' => 'required|in_list[activo,inactivo]'],
+            'id_tipo_recinto' => ['label' => 'Tipo de recinto', 'rules' => 'required|integer|greater_than[0]',
+                                   'errors' => ['required' => 'El campo Tipo de recinto es obligatorio.', 'integer' => 'El campo Tipo de recinto es inválido.', 'greater_than' => 'El campo Tipo de recinto es obligatorio.']],
+            'estado_recinto'  => ['label' => 'Estado',          'rules' => 'required|in_list[activo,inactivo]'],
         ])->run([
             'tarifa'          => $tarifa,
             'descripcion'     => $descripcion,
