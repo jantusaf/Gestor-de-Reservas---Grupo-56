@@ -124,10 +124,13 @@ class RecintoModel extends Model
 
     public function deshabilitar(int $id): array
     {
-        if (!$this->find($id)) {
+        $db  = \Config\Database::connect();
+        $row = $db->query('CALL sp_deshabilitar_recinto(?)', [$id])->getRowArray();
+
+        if (!$row || (int) $row['encontrado'] === 0) {
             return ['ok' => false, 'mensaje' => 'Recinto no encontrado.'];
         }
-        $this->update($id, ['estado_recinto' => 'inactivo']);
+
         return ['ok' => true, 'mensaje' => 'Recinto deshabilitado.'];
     }
 

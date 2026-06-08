@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use App\Entities\Persona;
 
 class ClienteModel extends Model
 {
@@ -17,7 +18,17 @@ class ClienteModel extends Model
 
     public function registrarCliente(string $dni, string $nombre, string $apellido, string $fechaNacimiento, string $telefono, string $calle, string $altura, string $email): array
     {
-        $personaResult = (new PersonaModel())->altaPersona($dni, $nombre, $apellido, $fechaNacimiento, $telefono, $calle, $altura);
+        $persona = new Persona([
+            'dni'              => $dni,
+            'nombre'           => $nombre,
+            'apellido'         => $apellido,
+            'fecha_nacimiento' => $fechaNacimiento,
+            'telefono'         => $telefono,
+            'calle'            => $calle,
+            'altura'           => $altura,
+        ]);
+
+        $personaResult = (new PersonaModel())->altaPersona($persona);
         if (!$personaResult['ok']) {
             return $personaResult;
         }
@@ -45,10 +56,17 @@ class ClienteModel extends Model
             return ['ok' => false, 'errores' => ['id' => 'Cliente no encontrado.']];
         }
 
-        $personaResult = (new PersonaModel())->actualizarPersona(
-            $cliente['id_persona'],
-            $dni, $nombre, $apellido, $fechaNacimiento, $telefono, $calle, $altura,
-        );
+        $persona = new Persona([
+            'dni'              => $dni,
+            'nombre'           => $nombre,
+            'apellido'         => $apellido,
+            'fecha_nacimiento' => $fechaNacimiento,
+            'telefono'         => $telefono,
+            'calle'            => $calle,
+            'altura'           => $altura,
+        ]);
+
+        $personaResult = (new PersonaModel())->actualizarPersona($cliente['id_persona'], $persona);
         if (!$personaResult['ok']) {
             return $personaResult;
         }
