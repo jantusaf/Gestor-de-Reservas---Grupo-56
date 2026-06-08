@@ -1,3 +1,6 @@
 writable/*
 !writable/.gitkeep
 .env
+build/
+vendor/
+.phpunit.result.cache

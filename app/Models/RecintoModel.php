@@ -64,12 +64,13 @@ class RecintoModel extends Model
             ->getResultArray();
     }
 
-    public function altaRecinto(float $tarifa, string $descripcion, int $idTipoRecinto): array
+    public function altaRecinto(string $tarifa, string $descripcion, int $idTipoRecinto): array
     {
         $validation = \Config\Services::validation();
 
         if (!$validation->setRules([
-            'tarifa'          => ['label' => 'Tarifa por hora',  'rules' => 'required|numeric'],
+            'tarifa'          => ['label' => 'Tarifa por hora',  'rules' => 'required|numeric',
+                                   'errors' => ['required' => 'El campo Tarifa por hora es obligatorio.', 'numeric' => 'La tarifa debe ser un número.']],
             'descripcion'     => ['label' => 'Descripción',      'rules' => 'required|min_length[3]|max_length[50]'],
             'id_tipo_recinto' => ['label' => 'Tipo de recinto', 'rules' => 'required|integer|greater_than[0]',
                                    'errors' => ['required' => 'El campo Tipo de recinto es obligatorio.', 'integer' => 'El campo Tipo de recinto es inválido.', 'greater_than' => 'El campo Tipo de recinto es obligatorio.']],
@@ -82,7 +83,7 @@ class RecintoModel extends Model
         }
 
         $this->insert([
-            'tarifa'          => number_format($tarifa, 2, '.', ''),
+            'tarifa'          => number_format((float) $tarifa, 2, '.', ''),
             'descripcion'     => $descripcion,
             'id_tipo_recinto' => $idTipoRecinto,
             'estado_recinto'  => 'activo',
@@ -91,12 +92,13 @@ class RecintoModel extends Model
         return ['ok' => true];
     }
 
-    public function actualizarRecinto(int $id, float $tarifa, string $descripcion, int $idTipoRecinto, string $estadoRecinto): array
+    public function actualizarRecinto(int $id, string $tarifa, string $descripcion, int $idTipoRecinto, string $estadoRecinto): array
     {
         $validation = \Config\Services::validation();
 
         if (!$validation->setRules([
-            'tarifa'          => ['label' => 'Tarifa por hora',  'rules' => 'required|numeric'],
+            'tarifa'          => ['label' => 'Tarifa por hora',  'rules' => 'required|numeric',
+                                   'errors' => ['required' => 'El campo Tarifa por hora es obligatorio.', 'numeric' => 'La tarifa debe ser un número.']],
             'descripcion'     => ['label' => 'Descripción',      'rules' => 'required|min_length[3]|max_length[50]'],
             'id_tipo_recinto' => ['label' => 'Tipo de recinto', 'rules' => 'required|integer|greater_than[0]',
                                    'errors' => ['required' => 'El campo Tipo de recinto es obligatorio.', 'integer' => 'El campo Tipo de recinto es inválido.', 'greater_than' => 'El campo Tipo de recinto es obligatorio.']],
@@ -111,7 +113,7 @@ class RecintoModel extends Model
         }
 
         $this->update($id, [
-            'tarifa'          => number_format($tarifa, 2, '.', ''),
+            'tarifa'          => number_format((float) $tarifa, 2, '.', ''),
             'descripcion'     => $descripcion,
             'id_tipo_recinto' => $idTipoRecinto,
             'estado_recinto'  => $estadoRecinto,
