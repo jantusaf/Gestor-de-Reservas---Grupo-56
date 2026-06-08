@@ -82,9 +82,10 @@
                                                 '<?= esc($r['nombre']).' '.esc($r['apellido']) ?>',
                                                 '<?= esc($r['fecha_reserva']) ?>'
                                             )">Cancelar</button>
-                                        <a href="<?= site_url('pago/alta/'.$r['id_reserva']) ?>" 
-                                           class="btn-action success">Pagar</a>
-
+                                        <?php if($r['estado_pago'] !== 'pagada'): ?>
+                                            <a href="<?= site_url('pago/alta/'.$r['id_reserva']) ?>"
+                                               class="btn-action success">Pagar</a>
+                                        <?php endif; ?>
                                     <?php else: ?>
                                         <span style="color:#aaa; font-size:13px;">Cancelada</span>
                                     <?php endif; ?>
@@ -99,16 +100,25 @@
     </div>
 </div>
 
-<?php if(session()->getFlashdata('pago_confirmado')): ?>
+<?php $idReservaFactura = session()->getFlashdata('pago_confirmado'); ?>
+<?php if($idReservaFactura): ?>
 <div class="modal-overlay" id="modalPagoOk">
     <div class="modal-reserva">
         <div class="modal-reserva-icon">✓</div>
         <h3 class="modal-reserva-title">¡Pago confirmado!</h3>
         <p class="modal-reserva-msg">El pago fue registrado correctamente.<br>La reserva quedó confirmada.</p>
-        <button class="btn-login" onclick="document.getElementById('modalPagoOk').style.display='none'">Aceptar</button>
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:8px;">
+            <a href="<?= site_url('pago/factura/'.$idReservaFactura) ?>" target="_blank"
+               class="btn-login" style="background:#1a7a4a; text-decoration:none; display:inline-block;">
+                🖨 Imprimir Factura
+            </a>
+            <button class="btn-login" style="background:#6b7280;"
+                onclick="document.getElementById('modalPagoOk').style.display='none'">
+                Cerrar
+            </button>
+        </div>
     </div>
 </div>
-
 
 <script>
 document.getElementById('modalPagoOk').addEventListener('click', function(e) {

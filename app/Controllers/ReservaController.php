@@ -41,9 +41,9 @@ class ReservaController extends Controller
         $reservaModel = new ReservaModel();
         $resultado    = $reservaModel->crearReserva(
             $this->request->getPost('fecha_reserva') ?? '',
-            $this->request->getPost('id_cliente') ?? '',
-            $this->request->getPost('id_recinto') ?? '',
-            $this->request->getPost('id_horario') ?? '',
+            (int) $this->request->getPost('id_cliente'),
+            (int) $this->request->getPost('id_recinto'),
+            (int) $this->request->getPost('id_horario'),
             (int) session()->get('id_usuario'),
         );
 
@@ -99,9 +99,9 @@ class ReservaController extends Controller
         $resultado    = $reservaModel->modificarReserva(
             (int) $id,
             $this->request->getPost('fecha_reserva') ?? '',
-            $this->request->getPost('id_cliente') ?? '',
-            $this->request->getPost('id_recinto') ?? '',
-            $this->request->getPost('id_horario') ?? '',
+            (int) $this->request->getPost('id_cliente'),
+            (int) $this->request->getPost('id_recinto'),
+            (int) $this->request->getPost('id_horario'),
             $this->request->getPost('estado_reserva') ?? '',
             $this->request->getPost('estado_pago') ?? '',
         );

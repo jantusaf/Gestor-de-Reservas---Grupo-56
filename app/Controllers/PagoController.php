@@ -44,6 +44,19 @@ class PagoController extends BaseController
             return redirect()->back()->with('error', $resultado['mensaje']);
         }
 
-        return redirect()->to('/reserva/listar')->with('pago_confirmado', true);
+        $idReserva = (int) $this->request->getPost('id_reserva');
+        return redirect()->to('/reserva/listar')->with('pago_confirmado', $idReserva);
+    }
+
+    public function factura($idReserva)
+    {
+        $pagoModel = new PagoModel();
+        $factura   = $pagoModel->datosFactura((int) $idReserva);
+
+        if (!$factura) {
+            return redirect()->to('/pago/listar')->with('error', 'Factura no encontrada.');
+        }
+
+        return view('contenido/crud_pago/factura_pago', ['factura' => $factura]);
     }
 }

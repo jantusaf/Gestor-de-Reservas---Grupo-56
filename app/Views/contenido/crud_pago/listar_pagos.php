@@ -22,6 +22,7 @@
                         <th>Monto</th>
                         <th>Medio</th>
                         <th>Usuario</th>
+                        <th class="text-center">Factura</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,6 +38,12 @@
                                 <td>$<?= number_format($p['monto_total'], 2) ?></td>
                                 <td><?= esc($p['nombre_medio_pago']) ?></td>
                                 <td><?= esc($p['nombre_usuario']) ?></td>
+                                <td class="acciones">
+                                    <a href="<?= site_url('pago/factura/'.$p['id_reserva']) ?>"
+                                       target="_blank" class="btn-action edit">
+                                        🖨 Imprimir
+                                    </a>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>

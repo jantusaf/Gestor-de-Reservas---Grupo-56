@@ -64,7 +64,7 @@ class RecintoModel extends Model
             ->getResultArray();
     }
 
-    public function altaRecinto(string $tarifa, string $descripcion, string $idTipoRecinto): array
+    public function altaRecinto(float $tarifa, string $descripcion, int $idTipoRecinto): array
     {
         $validation = \Config\Services::validation();
 
@@ -81,16 +81,16 @@ class RecintoModel extends Model
         }
 
         $this->insert([
-            'tarifa'          => number_format((float) $tarifa, 2, '.', ''),
+            'tarifa'          => number_format($tarifa, 2, '.', ''),
             'descripcion'     => $descripcion,
-            'id_tipo_recinto' => (int) $idTipoRecinto,
+            'id_tipo_recinto' => $idTipoRecinto,
             'estado_recinto'  => 'activo',
         ]);
 
         return ['ok' => true];
     }
 
-    public function actualizarRecinto(int $id, string $tarifa, string $descripcion, string $idTipoRecinto, string $estadoRecinto): array
+    public function actualizarRecinto(int $id, float $tarifa, string $descripcion, int $idTipoRecinto, string $estadoRecinto): array
     {
         $validation = \Config\Services::validation();
 
@@ -109,9 +109,9 @@ class RecintoModel extends Model
         }
 
         $this->update($id, [
-            'tarifa'          => number_format((float) $tarifa, 2, '.', ''),
+            'tarifa'          => number_format($tarifa, 2, '.', ''),
             'descripcion'     => $descripcion,
-            'id_tipo_recinto' => (int) $idTipoRecinto,
+            'id_tipo_recinto' => $idTipoRecinto,
             'estado_recinto'  => $estadoRecinto,
         ]);
 

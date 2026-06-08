@@ -54,6 +54,7 @@ class ReservaModel extends Model
             ->join('tipo_recinto', 'tipo_recinto.id_tipo_recinto = recinto.id_tipo_recinto')
             ->join('pago',         'pago.id_reserva = reserva.id_reserva', 'left')
             ->join('medio_pago',   'medio_pago.id_medio_pago = pago.id_medio_pago', 'left')
+            ->groupBy('reserva.id_reserva')
             ->orderBy('reserva.fecha_reserva', 'DESC');
 
         if ($dni !== '') {
@@ -91,7 +92,7 @@ class ReservaModel extends Model
         ]);
     }
 
-    public function crearReserva(string $fecha, string $idCliente, string $idRecinto, string $idHorario, int $idUsuario): array
+    public function crearReserva(string $fecha, int $idCliente, int $idRecinto, int $idHorario, int $idUsuario): array
     {
         $validacion = $this->validarReserva($fecha, $idCliente, $idRecinto, $idHorario);
         if (!$validacion['ok']) {
@@ -100,9 +101,9 @@ class ReservaModel extends Model
 
         $id = $this->altaReserva(
             $fecha,
-            (int) $idCliente,
-            (int) $idRecinto,
-            (int) $idHorario,
+            $idCliente,
+            $idRecinto,
+            $idHorario,
             $idUsuario,
             $validacion['recinto']['tarifa']
         );
@@ -110,7 +111,7 @@ class ReservaModel extends Model
         return ['ok' => true, 'id' => $id];
     }
 
-    public function modificarReserva(int $id, string $fecha, string $idCliente, string $idRecinto, string $idHorario, string $estadoReserva, string $estadoPago): array
+    public function modificarReserva(int $id, string $fecha, int $idCliente, int $idRecinto, int $idHorario, string $estadoReserva, string $estadoPago): array
     {
         $validacion = $this->validarReserva($fecha, $idCliente, $idRecinto, $idHorario, $id);
         if (!$validacion['ok']) {
@@ -120,9 +121,9 @@ class ReservaModel extends Model
         $this->actualizarReserva(
             $id,
             $fecha,
-            (int) $idCliente,
-            (int) $idRecinto,
-            (int) $idHorario,
+            $idCliente,
+            $idRecinto,
+            $idHorario,
             $estadoReserva,
             $estadoPago,
             (float) $validacion['recinto']['tarifa']
@@ -150,7 +151,7 @@ class ReservaModel extends Model
         return ['ok' => true];
     }
 
-    public function validarReserva(string $fecha, string $idCliente, string $idRecinto, string $idHorario, int $excluirId = 0): array
+    public function validarReserva(string $fecha, int $idCliente, int $idRecinto, int $idHorario, int $excluirId = 0): array
     {
         $validation = \Config\Services::validation();
 
@@ -168,26 +169,22 @@ class ReservaModel extends Model
             return ['ok' => false, 'mensajes' => $validation->getErrors()];
         }
 
-        $idClienteInt = (int) $idCliente;
-        $idRecintoInt = (int) $idRecinto;
-        $idHorarioInt = (int) $idHorario;
-
-        $cliente = (new ClienteModel())->find($idClienteInt);
+        $cliente = (new ClienteModel())->find($idCliente);
         if (!$cliente || $cliente['estado_cliente'] !== 'activo') {
             return ['ok' => false, 'mensajes' => ['id_cliente' => 'Cliente inválido o inactivo.']];
         }
 
-        $recinto = (new RecintoModel())->find($idRecintoInt);
+        $recinto = (new RecintoModel())->find($idRecinto);
         if (!$recinto || $recinto['estado_recinto'] !== 'activo') {
             return ['ok' => false, 'mensajes' => ['id_recinto' => 'Recinto inválido o no habilitado.']];
         }
 
-        $horario = (new HorarioModel())->find($idHorarioInt);
+        $horario = (new HorarioModel())->find($idHorario);
         if (!$horario) {
             return ['ok' => false, 'mensajes' => ['id_horario' => 'Horario inválido.']];
         }
 
-        if ($this->estaOcupado($fecha, $idRecintoInt, $idHorarioInt, $excluirId)) {
+        if ($this->estaOcupado($fecha, $idRecinto, $idHorario, $excluirId)) {
             return ['ok' => false, 'mensajes' => ['disponibilidad' => 'Ese horario ya está reservado.']];
         }
 

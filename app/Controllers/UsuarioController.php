@@ -84,4 +84,107 @@ class UsuarioController extends BaseController
         session()->destroy();
         return redirect()->to('/login')->with('success', 'Cuenta dada de baja correctamente.');
     }
+
+    public function formularioAlta()
+    {
+        return view('plantillas/head', ['title' => 'Alta de Usuario'])
+            . view('contenido/crud_usuario/alta_usuario')
+            . view('plantillas/footer');
+    }
+
+    public function guardarUsuario()
+    {
+        $usuarioModel = new UsuarioModel();
+
+        $resultado = $usuarioModel->registrarUsuario(
+            $this->request->getPost('dni')              ?? '',
+            $this->request->getPost('nombre')           ?? '',
+            $this->request->getPost('apellido')         ?? '',
+            $this->request->getPost('fecha_nacimiento') ?? '',
+            $this->request->getPost('telefono')         ?? '',
+            $this->request->getPost('calle')            ?? '',
+            $this->request->getPost('altura')           ?? '',
+            $this->request->getPost('nombre_usuario')   ?? '',
+            $this->request->getPost('contrasena')       ?? '',
+        );
+
+        if (!$resultado['ok']) {
+            return redirect()->back()->withInput()->with('errors', $resultado['errores']);
+        }
+
+        return redirect()->to('/usuario/listar')->with('success', 'Usuario registrado correctamente.');
+    }
+
+    public function listarUsuarios()
+    {
+        $usuarioModel = new UsuarioModel();
+
+        return view('plantillas/head', ['title' => 'Listado de Usuarios'])
+            . view('contenido/crud_usuario/listar_usuarios', [
+                'usuarios' => $usuarioModel->listarUsuarios(),
+            ])
+            . view('plantillas/footer');
+    }
+
+    public function formularioEditar($id)
+    {
+        $usuarioModel = new UsuarioModel();
+        $data         = $usuarioModel->datosFormularioEditar((int) $id);
+
+        if (!$data) {
+            return redirect()->to('/usuario/listar')->with('error', 'Usuario no encontrado.');
+        }
+
+        return view('plantillas/head', ['title' => 'Editar Usuario'])
+            . view('contenido/crud_usuario/editar_usuario', $data)
+            . view('plantillas/footer');
+    }
+
+    public function editarUsuario($id)
+    {
+        $usuarioModel = new UsuarioModel();
+
+        $resultado = $usuarioModel->modificarUsuario(
+            (int) $id,
+            $this->request->getPost('dni')              ?? '',
+            $this->request->getPost('nombre')           ?? '',
+            $this->request->getPost('apellido')         ?? '',
+            $this->request->getPost('fecha_nacimiento') ?? '',
+            $this->request->getPost('telefono')         ?? '',
+            $this->request->getPost('calle')            ?? '',
+            $this->request->getPost('altura')           ?? '',
+            $this->request->getPost('nombre_usuario')   ?? '',
+            $this->request->getPost('estado_usuario')   ?? '',
+        );
+
+        if (!$resultado['ok']) {
+            return redirect()->to('/usuario/editar/' . $id)->with('errors', $resultado['errores']);
+        }
+
+        return redirect()->to('/usuario/listar')->with('success', 'Usuario actualizado correctamente.');
+    }
+
+    public function deshabilitarUsuario($id)
+    {
+        $usuarioModel = new UsuarioModel();
+        $resultado    = $usuarioModel->deshabilitar((int) $id);
+
+        if (!$resultado['ok']) {
+            return redirect()->to('/usuario/listar')->with('error', $resultado['mensaje']);
+        }
+
+        return redirect()->to('/usuario/listar')->with('success', $resultado['mensaje']);
+    }
+
+    public function habilitarUsuario($id)
+    {
+        $usuarioModel = new UsuarioModel();
+        $resultado    = $usuarioModel->habilitar((int) $id);
+
+        if (!$resultado['ok']) {
+            return redirect()->to('/usuario/listar')->with('error', $resultado['mensaje']);
+        }
+
+        return redirect()->to('/usuario/listar')->with('success', $resultado['mensaje']);
+    }
 }

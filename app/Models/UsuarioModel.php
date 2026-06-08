@@ -117,4 +117,76 @@ class UsuarioModel extends Model
         $this->update($id, ['estado_usuario' => 'inactivo']);
         return ['ok' => true];
     }
+
+    public function listarUsuarios(): array
+    {
+        return \Config\Database::connect()
+            ->table('usuario')
+            ->select('usuario.id_usuario, usuario.nombre_usuario, usuario.estado_usuario, usuario.id_tipo_usuario, persona.nombre, persona.apellido, persona.dni, persona.telefono')
+            ->join('persona', 'persona.id_persona = usuario.id_persona')
+            ->orderBy('usuario.estado_usuario', 'ASC')
+            ->orderBy('persona.apellido', 'ASC')
+            ->get()
+            ->getResultArray();
+    }
+
+    public function datosFormularioEditar(int $id): ?array
+    {
+        $usuario = $this->find($id);
+        if (!$usuario) {
+            return null;
+        }
+
+        return [
+            'usuario' => $usuario,
+            'persona' => (new PersonaModel())->find($usuario['id_persona']),
+        ];
+    }
+
+    public function modificarUsuario(int $id, string $dni, string $nombre, string $apellido, string $fechaNacimiento, string $telefono, string $calle, string $altura, string $nombreUsuario, string $estadoUsuario): array
+    {
+        $usuario = $this->find($id);
+        if (!$usuario) {
+            return ['ok' => false, 'errores' => ['id' => 'Usuario no encontrado.']];
+        }
+
+        $personaResult = (new PersonaModel())->actualizarPersona(
+            $usuario['id_persona'],
+            $dni, $nombre, $apellido, $fechaNacimiento, $telefono, $calle, $altura
+        );
+        if (!$personaResult['ok']) {
+            return $personaResult;
+        }
+
+        $validation = \Config\Services::validation();
+        if (!$validation->setRules([
+            'nombre_usuario' => ['label' => 'Nombre de usuario', 'rules' => "required|min_length[3]|max_length[50]|is_unique[usuario.nombre_usuario,id_usuario,{$id}]"],
+            'estado_usuario' => ['label' => 'Estado',            'rules' => 'required|in_list[activo,inactivo]'],
+        ])->run(['nombre_usuario' => $nombreUsuario, 'estado_usuario' => $estadoUsuario])) {
+            return ['ok' => false, 'errores' => $validation->getErrors()];
+        }
+
+        $this->update($id, ['nombre_usuario' => $nombreUsuario, 'estado_usuario' => $estadoUsuario]);
+        return ['ok' => true];
+    }
+
+    public function deshabilitar(int $id): array
+    {
+        if (!$this->find($id)) {
+            return ['ok' => false, 'mensaje' => 'Usuario no encontrado.'];
+        }
+
+        $this->update($id, ['estado_usuario' => 'inactivo']);
+        return ['ok' => true, 'mensaje' => 'Usuario deshabilitado.'];
+    }
+
+    public function habilitar(int $id): array
+    {
+        if (!$this->find($id)) {
+            return ['ok' => false, 'mensaje' => 'Usuario no encontrado.'];
+        }
+
+        $this->update($id, ['estado_usuario' => 'activo']);
+        return ['ok' => true, 'mensaje' => 'Usuario habilitado.'];
+    }
 }

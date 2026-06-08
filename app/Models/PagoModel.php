@@ -45,6 +45,39 @@ class PagoModel extends Model
             ->getResultArray();
     }
 
+    public function datosFactura(int $idReserva): ?array
+    {
+        $db  = \Config\Database::connect();
+        $row = $db->table('pago')
+            ->select('
+                pago.id_pago,
+                pago.fecha_pago,
+                pago.monto_total,
+                medio_pago.nombre_medio_pago,
+                persona.nombre,
+                persona.apellido,
+                persona.dni,
+                reserva.fecha_reserva,
+                recinto.descripcion AS recinto_desc,
+                tipo_recinto.nombre_tipo_recinto,
+                horario.horario AS hora,
+                usuario.nombre_usuario
+            ')
+            ->join('reserva',      'reserva.id_reserva = pago.id_reserva')
+            ->join('cliente',      'cliente.id_cliente = reserva.id_cliente')
+            ->join('persona',      'persona.id_persona = cliente.id_persona')
+            ->join('recinto',      'recinto.id_recinto = reserva.id_recinto')
+            ->join('tipo_recinto', 'tipo_recinto.id_tipo_recinto = recinto.id_tipo_recinto')
+            ->join('horario',      'horario.id_horario = reserva.id_horario')
+            ->join('medio_pago',   'medio_pago.id_medio_pago = pago.id_medio_pago')
+            ->join('usuario',      'usuario.id_usuario = pago.id_usuario')
+            ->where('pago.id_reserva', $idReserva)
+            ->get()
+            ->getRowArray();
+
+        return $row ?: null;
+    }
+
     public function altaPago(int $idReserva, float $montoTotal, int $idMedioPago, int $idUsuario): array
     {
         $reservaModel = new ReservaModel();
@@ -52,6 +85,10 @@ class PagoModel extends Model
 
         if (!$reserva) {
             return ['ok' => false, 'mensaje' => 'Reserva no encontrada.'];
+        }
+
+        if ($reserva['estado_pago'] === 'pagada') {
+            return ['ok' => false, 'mensaje' => 'Esta reserva ya fue pagada.'];
         }
 
         if ($montoTotal != $reserva['monto']) {

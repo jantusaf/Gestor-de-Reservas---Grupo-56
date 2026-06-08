@@ -42,10 +42,19 @@ $routes->get('/logout', 'LoginController::logout'); // cierra sesión
 $routes->get('/registrarse', 'UsuarioController::formularioRegistro');   // muestra la vista registrarse.php
 $routes->post('/registrarse/guardar', 'UsuarioController::guardar');            // procesa el formulario de registro
 
-// USUARIO
-$routes->get('/usuario/perfil',      'UsuarioController::perfil');       // ver perfil del usuario logueado
-$routes->post('/usuario/actualizar', 'UsuarioController::actualizar');   // actualizar datos del usuario
-$routes->post('/usuario/baja',       'UsuarioController::baja');  // dar de baja la cuenta
+// USUARIO — perfil (recepcionista)
+$routes->get('/usuario/perfil',      'UsuarioController::perfil');
+$routes->post('/usuario/actualizar', 'UsuarioController::actualizar');
+$routes->post('/usuario/baja',       'UsuarioController::baja');
+
+// USUARIO — admin CRUD
+$routes->get('/usuario/alta',                    'UsuarioController::formularioAlta');
+$routes->post('/usuario/guardar',                'UsuarioController::guardarUsuario');
+$routes->get('/usuario/listar',                  'UsuarioController::listarUsuarios');
+$routes->get('/usuario/editar/(:num)',            'UsuarioController::formularioEditar/$1');
+$routes->post('/usuario/actualizar/(:num)',       'UsuarioController::editarUsuario/$1');
+$routes->get('/usuario/deshabilitar/(:num)',      'UsuarioController::deshabilitarUsuario/$1');
+$routes->get('/usuario/habilitar/(:num)',         'UsuarioController::habilitarUsuario/$1');
 
 
 // CLIENTES
@@ -78,9 +87,10 @@ $routes->get('/reserva/editar/(:num)',      'ReservaController::formularioEditar
 $routes->post('/reserva/actualizar/(:num)', 'ReservaController::actualizarReserva/$1');
 
 //PAGOS
-$routes->get('/pago/listar',        'PagoController::listar');
-$routes->get('/pago/alta/(:num)',   'PagoController::formularioAlta/$1');
-$routes->post('/pago/guardar',      'PagoController::guardar');
+$routes->get('/pago/listar',           'PagoController::listar');
+$routes->get('/pago/alta/(:num)',      'PagoController::formularioAlta/$1');
+$routes->post('/pago/guardar',         'PagoController::guardar');
+$routes->get('/pago/factura/(:num)',   'PagoController::factura/$1');
 
 
 

@@ -21,9 +21,9 @@ class RecintoController extends Controller
         $recintoModel = new RecintoModel();
 
         $resultado = $recintoModel->altaRecinto(
-            $this->request->getPost('tarifa')          ?? '',
+            (float) $this->request->getPost('tarifa'),
             $this->request->getPost('descripcion')     ?? '',
-            $this->request->getPost('id_tipo_recinto') ?? '',
+            (int)   $this->request->getPost('id_tipo_recinto'),
         );
 
         if (!$resultado['ok']) {
@@ -96,10 +96,10 @@ class RecintoController extends Controller
         $recintoModel = new RecintoModel();
 
         $resultado = $recintoModel->actualizarRecinto(
-            (int) $id,
-            $this->request->getPost('tarifa')          ?? '',
+            (int)   $id,
+            (float) $this->request->getPost('tarifa'),
             $this->request->getPost('descripcion')     ?? '',
-            $this->request->getPost('id_tipo_recinto') ?? '',
+            (int)   $this->request->getPost('id_tipo_recinto'),
             $this->request->getPost('estado_recinto')  ?? '',
         );
 
