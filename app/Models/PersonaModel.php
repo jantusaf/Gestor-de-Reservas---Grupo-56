@@ -7,6 +7,16 @@ use App\Entities\Persona;
 
 class PersonaModel extends Model
 {
+    private static ?PersonaModel $instance = null;
+
+    public static function getInstance(): static
+    {
+        if (static::$instance === null) {
+            static::$instance = new static();
+        }
+        return static::$instance;
+    }
+
     protected $table      = 'persona';
     protected $primaryKey = 'id_persona';
 

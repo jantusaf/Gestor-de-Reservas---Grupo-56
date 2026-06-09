@@ -19,7 +19,7 @@ class UsuarioModel extends Model
 
     public function iniciarSesion(string $dni, string $contrasena): array
     {
-        $persona = (new PersonaModel())->where('dni', $dni)->first();
+        $persona = PersonaModel::getInstance()->where('dni', $dni)->first();
         if (!$persona) {
             return ['ok' => false, 'mensaje' => 'DNI no encontrado.'];
         }
@@ -52,7 +52,7 @@ class UsuarioModel extends Model
 
     public function registrarUsuario(Persona $persona, string $nombreUsuario, string $contrasena): array
     {
-        $personaResult = (new PersonaModel())->altaPersona($persona);
+        $personaResult = PersonaModel::getInstance()->altaPersona($persona);
         if (!$personaResult['ok']) {
             return $personaResult;
         }
@@ -140,7 +140,7 @@ class UsuarioModel extends Model
 
         return [
             'usuario' => $usuario,
-            'persona' => (new PersonaModel())->find($usuario['id_persona']),
+            'persona' => PersonaModel::getInstance()->find($usuario['id_persona']),
         ];
     }
 
@@ -151,7 +151,7 @@ class UsuarioModel extends Model
             return ['ok' => false, 'errores' => ['id' => 'Usuario no encontrado.']];
         }
 
-        $personaResult = (new PersonaModel())->actualizarPersona($usuario['id_persona'], $persona);
+        $personaResult = PersonaModel::getInstance()->actualizarPersona($usuario['id_persona'], $persona);
         if (!$personaResult['ok']) {
             return $personaResult;
         }

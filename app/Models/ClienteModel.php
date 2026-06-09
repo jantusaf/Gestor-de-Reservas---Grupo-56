@@ -18,7 +18,7 @@ class ClienteModel extends Model
 
     public function registrarCliente(Persona $persona, string $email): array
     {
-        $personaResult = (new PersonaModel())->altaPersona($persona);
+        $personaResult = PersonaModel::getInstance()->altaPersona($persona);
         if (!$personaResult['ok']) {
             return $personaResult;
         }
@@ -35,7 +35,7 @@ class ClienteModel extends Model
 
         return [
             'cliente' => $cliente,
-            'persona' => (new PersonaModel())->find($cliente['id_persona']),
+            'persona' => PersonaModel::getInstance()->find($cliente['id_persona']),
         ];
     }
 
@@ -46,7 +46,7 @@ class ClienteModel extends Model
             return ['ok' => false, 'errores' => ['id' => 'Cliente no encontrado.']];
         }
 
-        $personaResult = (new PersonaModel())->actualizarPersona($cliente['id_persona'], $persona);
+        $personaResult = PersonaModel::getInstance()->actualizarPersona($cliente['id_persona'], $persona);
         if (!$personaResult['ok']) {
             return $personaResult;
         }
