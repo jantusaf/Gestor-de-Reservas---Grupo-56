@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UsuarioModel;
+use App\Entities\Persona;
 
 class UsuarioController extends BaseController
 {
@@ -22,14 +23,18 @@ class UsuarioController extends BaseController
     {
         $usuarioModel = new UsuarioModel();
 
+        $persona = new Persona([
+            'dni'              => $this->request->getPost('dni')              ?? '',
+            'nombre'           => $this->request->getPost('nombre')           ?? '',
+            'apellido'         => $this->request->getPost('apellido')         ?? '',
+            'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento') ?? '',
+            'telefono'         => $this->request->getPost('telefono')         ?? '',
+            'calle'            => $this->request->getPost('calle')            ?? '',
+            'altura'           => $this->request->getPost('altura')           ?? '',
+        ]);
+
         $resultado = $usuarioModel->registrarUsuario(
-            $this->request->getPost('dni')            ?? '',
-            $this->request->getPost('nombre')         ?? '',
-            $this->request->getPost('apellido')       ?? '',
-            $this->request->getPost('fecha_nacimiento') ?? '',
-            $this->request->getPost('telefono')       ?? '',
-            $this->request->getPost('calle')          ?? '',
-            $this->request->getPost('altura')         ?? '',
+            $persona,
             $this->request->getPost('nombre_usuario') ?? '',
             $this->request->getPost('contrasena')     ?? '',
         );
@@ -96,16 +101,20 @@ class UsuarioController extends BaseController
     {
         $usuarioModel = new UsuarioModel();
 
+        $persona = new Persona([
+            'dni'              => $this->request->getPost('dni')              ?? '',
+            'nombre'           => $this->request->getPost('nombre')           ?? '',
+            'apellido'         => $this->request->getPost('apellido')         ?? '',
+            'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento') ?? '',
+            'telefono'         => $this->request->getPost('telefono')         ?? '',
+            'calle'            => $this->request->getPost('calle')            ?? '',
+            'altura'           => $this->request->getPost('altura')           ?? '',
+        ]);
+
         $resultado = $usuarioModel->registrarUsuario(
-            $this->request->getPost('dni')              ?? '',
-            $this->request->getPost('nombre')           ?? '',
-            $this->request->getPost('apellido')         ?? '',
-            $this->request->getPost('fecha_nacimiento') ?? '',
-            $this->request->getPost('telefono')         ?? '',
-            $this->request->getPost('calle')            ?? '',
-            $this->request->getPost('altura')           ?? '',
-            $this->request->getPost('nombre_usuario')   ?? '',
-            $this->request->getPost('contrasena')       ?? '',
+            $persona,
+            $this->request->getPost('nombre_usuario') ?? '',
+            $this->request->getPost('contrasena')     ?? '',
         );
 
         if (!$resultado['ok']) {
@@ -144,17 +153,21 @@ class UsuarioController extends BaseController
     {
         $usuarioModel = new UsuarioModel();
 
+        $persona = new Persona([
+            'dni'              => $this->request->getPost('dni')              ?? '',
+            'nombre'           => $this->request->getPost('nombre')           ?? '',
+            'apellido'         => $this->request->getPost('apellido')         ?? '',
+            'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento') ?? '',
+            'telefono'         => $this->request->getPost('telefono')         ?? '',
+            'calle'            => $this->request->getPost('calle')            ?? '',
+            'altura'           => $this->request->getPost('altura')           ?? '',
+        ]);
+
         $resultado = $usuarioModel->modificarUsuario(
             (int) $id,
-            $this->request->getPost('dni')              ?? '',
-            $this->request->getPost('nombre')           ?? '',
-            $this->request->getPost('apellido')         ?? '',
-            $this->request->getPost('fecha_nacimiento') ?? '',
-            $this->request->getPost('telefono')         ?? '',
-            $this->request->getPost('calle')            ?? '',
-            $this->request->getPost('altura')           ?? '',
-            $this->request->getPost('nombre_usuario')   ?? '',
-            $this->request->getPost('estado_usuario')   ?? '',
+            $persona,
+            $this->request->getPost('nombre_usuario') ?? '',
+            $this->request->getPost('estado_usuario') ?? '',
         );
 
         if (!$resultado['ok']) {

@@ -50,18 +50,8 @@ class UsuarioModel extends Model
         ];
     }
 
-    public function registrarUsuario(string $dni, string $nombre, string $apellido, string $fechaNacimiento, string $telefono, string $calle, string $altura, string $nombreUsuario, string $contrasena): array
+    public function registrarUsuario(Persona $persona, string $nombreUsuario, string $contrasena): array
     {
-        $persona = new Persona([
-            'dni'              => $dni,
-            'nombre'           => $nombre,
-            'apellido'         => $apellido,
-            'fecha_nacimiento' => $fechaNacimiento,
-            'telefono'         => $telefono,
-            'calle'            => $calle,
-            'altura'           => $altura,
-        ]);
-
         $personaResult = (new PersonaModel())->altaPersona($persona);
         if (!$personaResult['ok']) {
             return $personaResult;
@@ -154,22 +144,12 @@ class UsuarioModel extends Model
         ];
     }
 
-    public function modificarUsuario(int $id, string $dni, string $nombre, string $apellido, string $fechaNacimiento, string $telefono, string $calle, string $altura, string $nombreUsuario, string $estadoUsuario): array
+    public function modificarUsuario(int $id, Persona $persona, string $nombreUsuario, string $estadoUsuario): array
     {
         $usuario = $this->find($id);
         if (!$usuario) {
             return ['ok' => false, 'errores' => ['id' => 'Usuario no encontrado.']];
         }
-
-        $persona = new Persona([
-            'dni'              => $dni,
-            'nombre'           => $nombre,
-            'apellido'         => $apellido,
-            'fecha_nacimiento' => $fechaNacimiento,
-            'telefono'         => $telefono,
-            'calle'            => $calle,
-            'altura'           => $altura,
-        ]);
 
         $personaResult = (new PersonaModel())->actualizarPersona($usuario['id_persona'], $persona);
         if (!$personaResult['ok']) {

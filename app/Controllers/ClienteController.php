@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\ClienteModel;
+use App\Entities\Persona;
 
 class ClienteController extends BaseController
 {
@@ -22,15 +23,19 @@ class ClienteController extends BaseController
     {
         $clienteModel = new ClienteModel();
 
+        $persona = new Persona([
+            'dni'              => $this->request->getPost('dni')              ?? '',
+            'nombre'           => $this->request->getPost('nombre')           ?? '',
+            'apellido'         => $this->request->getPost('apellido')         ?? '',
+            'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento') ?? '',
+            'telefono'         => $this->request->getPost('telefono')         ?? '',
+            'calle'            => $this->request->getPost('calle')            ?? '',
+            'altura'           => $this->request->getPost('altura')           ?? '',
+        ]);
+
         $resultado = $clienteModel->registrarCliente(
-            $this->request->getPost('dni')              ?? '',
-            $this->request->getPost('nombre')           ?? '',
-            $this->request->getPost('apellido')         ?? '',
-            $this->request->getPost('fecha_nacimiento') ?? '',
-            $this->request->getPost('telefono')         ?? '',
-            $this->request->getPost('calle')            ?? '',
-            $this->request->getPost('altura')           ?? '',
-            $this->request->getPost('email')            ?? '',
+            $persona,
+            $this->request->getPost('email') ?? '',
         );
 
         if (!$resultado['ok']) {
@@ -71,17 +76,21 @@ class ClienteController extends BaseController
     {
         $clienteModel = new ClienteModel();
 
+        $persona = new Persona([
+            'dni'              => $this->request->getPost('dni')              ?? '',
+            'nombre'           => $this->request->getPost('nombre')           ?? '',
+            'apellido'         => $this->request->getPost('apellido')         ?? '',
+            'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento') ?? '',
+            'telefono'         => $this->request->getPost('telefono')         ?? '',
+            'calle'            => $this->request->getPost('calle')            ?? '',
+            'altura'           => $this->request->getPost('altura')           ?? '',
+        ]);
+
         $resultado = $clienteModel->modificarCliente(
             (int) $id,
-            $this->request->getPost('dni')              ?? '',
-            $this->request->getPost('nombre')           ?? '',
-            $this->request->getPost('apellido')         ?? '',
-            $this->request->getPost('fecha_nacimiento') ?? '',
-            $this->request->getPost('telefono')         ?? '',
-            $this->request->getPost('calle')            ?? '',
-            $this->request->getPost('altura')           ?? '',
-            $this->request->getPost('email')            ?? '',
-            $this->request->getPost('estado_cliente')   ?? '',
+            $persona,
+            $this->request->getPost('email')          ?? '',
+            $this->request->getPost('estado_cliente') ?? '',
         );
 
         if (!$resultado['ok']) {

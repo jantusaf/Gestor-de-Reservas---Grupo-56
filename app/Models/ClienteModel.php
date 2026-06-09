@@ -16,18 +16,8 @@ class ClienteModel extends Model
         'id_persona'
     ];
 
-    public function registrarCliente(string $dni, string $nombre, string $apellido, string $fechaNacimiento, string $telefono, string $calle, string $altura, string $email): array
+    public function registrarCliente(Persona $persona, string $email): array
     {
-        $persona = new Persona([
-            'dni'              => $dni,
-            'nombre'           => $nombre,
-            'apellido'         => $apellido,
-            'fecha_nacimiento' => $fechaNacimiento,
-            'telefono'         => $telefono,
-            'calle'            => $calle,
-            'altura'           => $altura,
-        ]);
-
         $personaResult = (new PersonaModel())->altaPersona($persona);
         if (!$personaResult['ok']) {
             return $personaResult;
@@ -49,22 +39,12 @@ class ClienteModel extends Model
         ];
     }
 
-    public function modificarCliente(int $id, string $dni, string $nombre, string $apellido, string $fechaNacimiento, string $telefono, string $calle, string $altura, string $email, string $estadoCliente): array
+    public function modificarCliente(int $id, Persona $persona, string $email, string $estadoCliente): array
     {
         $cliente = $this->find($id);
         if (!$cliente) {
             return ['ok' => false, 'errores' => ['id' => 'Cliente no encontrado.']];
         }
-
-        $persona = new Persona([
-            'dni'              => $dni,
-            'nombre'           => $nombre,
-            'apellido'         => $apellido,
-            'fecha_nacimiento' => $fechaNacimiento,
-            'telefono'         => $telefono,
-            'calle'            => $calle,
-            'altura'           => $altura,
-        ]);
 
         $personaResult = (new PersonaModel())->actualizarPersona($cliente['id_persona'], $persona);
         if (!$personaResult['ok']) {
