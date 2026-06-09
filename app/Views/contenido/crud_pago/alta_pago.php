@@ -15,17 +15,18 @@
             </div>
         <?php endif; ?>
 
+        <?php $errores = session()->getFlashdata('errors') ?? []; ?>
+
         <form action="<?= site_url('pago/guardar') ?>" method="post">
             <input type="hidden" name="id_reserva" value="<?= $reserva['id_reserva'] ?>">
 
             <div class="form-group-modern">
-                <input type="number" step="0.01" name="monto_total" id="monto_total"
-                       value="<?= $reserva['monto'] ?>" required>
+                <input type="text" id="monto_total" value="$<?= number_format($reserva['monto'], 2) ?>" readonly>
                 <label for="monto_total" class="label-active">Monto a pagar</label>
             </div>
 
             <div class="form-group-modern">
-                <select name="id_medio_pago" id="id_medio_pago" required>
+                <select name="id_medio_pago" id="id_medio_pago">
                     <option value="" disabled selected></option>
                     <?php foreach($medios as $m): ?>
                         <option value="<?= $m['id_medio_pago'] ?>">
@@ -35,6 +36,9 @@
                 </select>
                 <label for="id_medio_pago">Medio de pago</label>
             </div>
+            <?php if (!empty($errores['id_medio_pago'])): ?>
+                <small class="text-danger d-block mb-2"><?= esc($errores['id_medio_pago']) ?></small>
+            <?php endif; ?>
 
             <button type="submit" class="btn-login">Confirmar Pago</button>
         </form>

@@ -75,6 +75,9 @@ class ReservaModel extends Model
     // Firma pública mantenida para el Controller
     public function modificarReserva(int $id, string $fecha, int $idCliente, int $idRecinto, int $idHorario, string $estadoReserva, string $estadoPago): array
     {
+        $original    = $this->find($id);
+        $fechaCambio = !$original || $original['fecha_reserva'] !== $fecha;
+
         $reserva = new Reserva([
             'fecha_reserva'  => $fecha,
             'id_cliente'     => $idCliente,
@@ -84,7 +87,7 @@ class ReservaModel extends Model
             'estado_pago'    => $estadoPago,
         ]);
 
-        $validacion = $this->validarReserva($reserva, $id);
+        $validacion = $this->validarReserva($reserva, $id, $fechaCambio);
         if (!$validacion['ok']) {
             return $validacion;
         }
@@ -114,12 +117,14 @@ class ReservaModel extends Model
         return ['ok' => true];
     }
 
-    public function validarReserva(Reserva $reserva, int $excluirId = 0): array
+    public function validarReserva(Reserva $reserva, int $excluirId = 0, bool $validarFechaFutura = true): array
     {
         $validation = \Config\Services::validation();
 
+        $reglasFecha = $validarFechaFutura ? 'required|valid_date|check_future_or_today' : 'required|valid_date';
+
         if (!$validation->setRules([
-            'fecha_reserva' => ['label' => 'Fecha',   'rules' => 'required|valid_date|check_future_or_today'],
+            'fecha_reserva' => ['label' => 'Fecha',   'rules' => $reglasFecha],
             'id_cliente'    => ['label' => 'Cliente',  'rules' => 'required|integer|greater_than[0]',
                                 'errors' => ['required' => 'El campo Cliente es obligatorio.', 'integer' => 'El campo Cliente es inválido.', 'greater_than' => 'El campo Cliente es obligatorio.']],
             'id_recinto'    => ['label' => 'Recinto',  'rules' => 'required|integer|greater_than[0]',

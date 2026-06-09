@@ -53,7 +53,7 @@ class PagoModel extends Model
         return $row ?: null;
     }
 
-    public function altaPago(int $idReserva, float $montoTotal, int $idMedioPago, int $idUsuario): array
+    public function altaPago(int $idReserva, int $idMedioPago, int $idUsuario): array
     {
         $reservaModel = new ReservaModel();
         $reserva = $reservaModel->find($idReserva);
@@ -63,16 +63,16 @@ class PagoModel extends Model
         }
 
         if ($reserva['estado_pago'] === 'pagada') {
-            return ['ok' => false, 'mensaje' => 'Esta reserva ya fue pagada.'];
+            return ['ok' => false, 'mensajes' => ['id_medio_pago' => 'Esta reserva ya fue pagada.']];
         }
 
-        if ($montoTotal != $reserva['monto']) {
-            return ['ok' => false, 'mensaje' => 'El monto debe ser exactamente igual al de la reserva.'];
+        if ($idMedioPago <= 0) {
+            return ['ok' => false, 'mensajes' => ['id_medio_pago' => 'El medio de pago es obligatorio.']];
         }
 
         $this->insert([
             'id_reserva'    => $idReserva,
-            'monto_total'   => $montoTotal,
+            'monto_total'   => $reserva['monto'],
             'id_medio_pago' => $idMedioPago,
             'fecha_pago'    => date('Y-m-d'),
             'id_usuario'    => $idUsuario,

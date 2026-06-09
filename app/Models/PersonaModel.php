@@ -9,7 +9,7 @@ class PersonaModel extends Model
 {
     private static ?PersonaModel $instance = null;
 
-    public static function getInstance(): static
+    public static function getInstance(): self
     {
         if (static::$instance === null) {
             static::$instance = new static();

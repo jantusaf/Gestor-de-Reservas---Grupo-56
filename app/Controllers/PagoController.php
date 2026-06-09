@@ -34,14 +34,13 @@ class PagoController extends BaseController
         $pagoModel = new PagoModel();
 
         $resultado = $pagoModel->altaPago(
-            (int)   $this->request->getPost('id_reserva'),
-            (float) $this->request->getPost('monto_total'),
-            (int)   $this->request->getPost('id_medio_pago'),
-            (int)   session()->get('id_usuario'),
+            (int) $this->request->getPost('id_reserva'),
+            (int) $this->request->getPost('id_medio_pago'),
+            (int) session()->get('id_usuario'),
         );
 
         if (!$resultado['ok']) {
-            return redirect()->back()->with('error', $resultado['mensaje']);
+            return redirect()->back()->withInput()->with('errors', $resultado['mensajes']);
         }
 
         $idReserva = (int) $this->request->getPost('id_reserva');
