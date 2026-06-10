@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
-use App\Entities\Reserva;
 
 class ReservaModel extends Model
 {
@@ -26,40 +25,49 @@ class ReservaModel extends Model
         return $db->query('CALL sp_listar_reservas(?)', [$dni])->getResultArray();
     }
 
-    // Recibe la Reserva ya construida desde el Controller (evita Long Parameter List).
-    public function crearReserva(Reserva $reserva): array
+    public function crearReserva(string $fecha, int $idCliente, int $idRecinto, int $idHorario, int $idUsuario): array
     {
-        $validacion = $this->validarReserva($reserva);
+        $validacion = $this->validarReserva($fecha, $idCliente, $idRecinto, $idHorario);
         if (!$validacion['ok']) {
             return $validacion;
         }
 
-        $reserva->monto = $validacion['recinto']['tarifa'];
+        $id = $this->altaReserva(
+            $fecha,
+            $idCliente,
+            $idRecinto,
+            $idHorario,
+            $idUsuario,
+            (float) $validacion['recinto']['tarifa']
+        );
 
-        $id = $this->altaReserva($reserva);
         return ['ok' => true, 'id' => $id];
     }
 
-    // Recibe la Reserva ya construida desde el Controller (evita Long Parameter List).
-    // El id de la reserva a modificar viaja dentro de la entity ($reserva->id_reserva).
-    public function modificarReserva(Reserva $reserva): array
+    public function modificarReserva(int $id, string $fecha, int $idCliente, int $idRecinto, int $idHorario, string $estadoReserva): array
     {
-        $id       = (int) $reserva->id_reserva;
         $original = $this->find($id);
         if (!$original) {
             return ['ok' => false, 'mensajes' => ['id' => 'Reserva no encontrada.']];
         }
 
-        $fechaCambio = $original['fecha_reserva'] !== $reserva->fecha_reserva;
+        $fechaCambio = $original['fecha_reserva'] !== $fecha;
 
-        $validacion = $this->validarReserva($reserva, $id, $fechaCambio);
+        $validacion = $this->validarReserva($fecha, $idCliente, $idRecinto, $idHorario, $id, $fechaCambio);
         if (!$validacion['ok']) {
             return $validacion;
         }
 
-        $reserva->monto = (float) $validacion['recinto']['tarifa'];
+        $this->actualizarReserva(
+            $id,
+            $fecha,
+            $idCliente,
+            $idRecinto,
+            $idHorario,
+            $estadoReserva,
+            (float) $validacion['recinto']['tarifa']
+        );
 
-        $this->actualizarReserva($id, $reserva);
         return ['ok' => true];
     }
 
@@ -96,7 +104,7 @@ class ReservaModel extends Model
         return ['ok' => true];
     }
 
-    public function validarReserva(Reserva $reserva, int $excluirId = 0, bool $validarFechaFutura = true): array
+    public function validarReserva(string $fecha, int $idCliente, int $idRecinto, int $idHorario, int $excluirId = 0, bool $validarFechaFutura = true): array
     {
         $validation = \Config\Services::validation();
 
@@ -111,63 +119,69 @@ class ReservaModel extends Model
             'id_horario'    => ['label' => 'Horario',  'rules' => 'required|integer|greater_than[0]',
                                 'errors' => ['required' => 'El campo Horario es obligatorio.', 'integer' => 'El campo Horario es inválido.', 'greater_than' => 'El campo Horario es obligatorio.']],
         ])->run([
-            'fecha_reserva' => $reserva->fecha_reserva,
-            'id_cliente'    => $reserva->id_cliente,
-            'id_recinto'    => $reserva->id_recinto,
-            'id_horario'    => $reserva->id_horario,
+            'fecha_reserva' => $fecha,
+            'id_cliente'    => $idCliente,
+            'id_recinto'    => $idRecinto,
+            'id_horario'    => $idHorario,
         ])) {
             return ['ok' => false, 'mensajes' => $validation->getErrors()];
         }
 
-        $cliente = (new ClienteModel())->find($reserva->id_cliente);
+        $cliente = (new ClienteModel())->find($idCliente);
         if (!$cliente || $cliente['estado_cliente'] !== 'activo') {
             return ['ok' => false, 'mensajes' => ['id_cliente' => 'Cliente inválido o inactivo.']];
         }
 
-        $recinto = (new RecintoModel())->find($reserva->id_recinto);
+        $recinto = (new RecintoModel())->find($idRecinto);
         if (!$recinto || $recinto['estado_recinto'] !== 'activo') {
             return ['ok' => false, 'mensajes' => ['id_recinto' => 'Recinto inválido o no habilitado.']];
         }
 
-        $horario = (new HorarioModel())->find($reserva->id_horario);
+        $horario = (new HorarioModel())->find($idHorario);
         if (!$horario) {
             return ['ok' => false, 'mensajes' => ['id_horario' => 'Horario inválido.']];
         }
 
-        if ($this->estaOcupado($reserva->fecha_reserva, $reserva->id_recinto, $reserva->id_horario, $excluirId)) {
+        if ($this->estaOcupado($fecha, $idRecinto, $idHorario, $excluirId)) {
             return ['ok' => false, 'mensajes' => ['disponibilidad' => 'Ese horario ya está reservado.']];
         }
 
         return ['ok' => true, 'recinto' => $recinto];
     }
 
-    public function altaReserva(Reserva $reserva): int
+    // Persistencia pura (INSERT): solo la usa crearReserva() una vez validada la
+    // reserva y calculado el monto. No valida nada por sí misma.
+    private function altaReserva(string $fecha, int $idCliente, int $idRecinto, int $idHorario, int $idUsuario, float $monto): int
     {
         $this->insert([
-            'fecha_reserva'  => $reserva->fecha_reserva,
-            'monto'          => $reserva->monto,
+            'fecha_reserva'  => $fecha,
+            'monto'          => $monto,
             'estado_reserva' => 'pendiente',
-            'id_horario'     => $reserva->id_horario,
-            'id_cliente'     => $reserva->id_cliente,
-            'id_recinto'     => $reserva->id_recinto,
-            'id_usuario'     => $reserva->id_usuario,
+            'id_horario'     => $idHorario,
+            'id_cliente'     => $idCliente,
+            'id_recinto'     => $idRecinto,
+            'id_usuario'     => $idUsuario,
         ]);
         return $this->getInsertID();
     }
 
-    public function actualizarReserva(int $id, Reserva $reserva): void
+    // Persistencia pura (UPDATE): solo la usa modificarReserva() una vez validada la
+    // reserva y calculado el monto. No valida nada por sí misma.
+    private function actualizarReserva(int $id, string $fecha, int $idCliente, int $idRecinto, int $idHorario, string $estadoReserva, float $monto): void
     {
         $this->update($id, [
-            'fecha_reserva'  => $reserva->fecha_reserva,
-            'id_cliente'     => $reserva->id_cliente,
-            'id_recinto'     => $reserva->id_recinto,
-            'id_horario'     => $reserva->id_horario,
-            'estado_reserva' => $reserva->estado_reserva,
-            'monto'          => $reserva->monto,
+            'fecha_reserva'  => $fecha,
+            'id_cliente'     => $idCliente,
+            'id_recinto'     => $idRecinto,
+            'id_horario'     => $idHorario,
+            'estado_reserva' => $estadoReserva,
+            'monto'          => $monto,
         ]);
     }
 
-    public function estaOcupado(string $fecha, int $idRecinto, int $idHorario, int $excluirId = 0): bool
+    // Ayudante interno de validarReserva(): comprueba si ese recinto+fecha+horario
+    // ya tiene una reserva no cancelada. No es una operación pública por sí misma.
+    private function estaOcupado(string $fecha, int $idRecinto, int $idHorario, int $excluirId = 0): bool
     {
         $builder = $this->where('fecha_reserva', $fecha)
             ->where('id_recinto', $idRecinto)

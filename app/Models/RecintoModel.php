@@ -2,7 +2,6 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
-use App\Entities\Recinto;
 
 class RecintoModel extends Model
 {
@@ -47,40 +46,36 @@ class RecintoModel extends Model
             ->getResultArray();
     }
 
-    // Recibe el Recinto ya construido desde el Controller (evita Long Parameter List).
-    public function altaRecinto(Recinto $recinto): array
+    public function altaRecinto(string $tarifa, string $descripcion, int $idTipoRecinto): array
     {
         $validation = \Config\Services::validation();
 
         if (!$validation->setRules([
-            'tarifa'          => ['label' => 'Tarifa por hora',  'rules' => 'required|numeric',
-                                   'errors' => ['required' => 'El campo Tarifa por hora es obligatorio.', 'numeric' => 'La tarifa debe ser un número.']],
+            'tarifa'          => ['label' => 'Tarifa por hora',  'rules' => 'required|numeric|greater_than[0]',
+                                   'errors' => ['required' => 'El campo Tarifa por hora es obligatorio.', 'numeric' => 'La tarifa debe ser un número.', 'greater_than' => 'La tarifa debe ser mayor a 0.']],
             'descripcion'     => ['label' => 'Descripción',      'rules' => 'required|min_length[3]|max_length[50]'],
             'id_tipo_recinto' => ['label' => 'Tipo de recinto', 'rules' => 'required|integer|greater_than[0]',
                                    'errors' => ['required' => 'El campo Tipo de recinto es obligatorio.', 'integer' => 'El campo Tipo de recinto es inválido.', 'greater_than' => 'El campo Tipo de recinto es obligatorio.']],
         ])->run([
-            'tarifa'          => $recinto->tarifa,
-            'descripcion'     => $recinto->descripcion,
-            'id_tipo_recinto' => $recinto->id_tipo_recinto,
+            'tarifa'          => $tarifa,
+            'descripcion'     => $descripcion,
+            'id_tipo_recinto' => $idTipoRecinto,
         ])) {
             return ['ok' => false, 'errores' => $validation->getErrors()];
         }
 
         $this->insert([
-            'tarifa'          => number_format((float) $recinto->tarifa, 2, '.', ''),
-            'descripcion'     => $recinto->descripcion,
-            'id_tipo_recinto' => $recinto->id_tipo_recinto,
+            'tarifa'          => number_format((float) $tarifa, 2, '.', ''),
+            'descripcion'     => $descripcion,
+            'id_tipo_recinto' => $idTipoRecinto,
             'estado_recinto'  => 'activo',
         ]);
 
         return ['ok' => true];
     }
 
-    // Recibe el Recinto ya construido desde el Controller (evita Long Parameter List).
-    // El id del recinto a modificar viaja dentro de la entity ($recinto->id_recinto).
-    public function modificarRecinto(Recinto $recinto): array
+    public function modificarRecinto(int $id, string $tarifa, string $descripcion, int $idTipoRecinto, string $estadoRecinto): array
     {
-        $id         = (int) $recinto->id_recinto;
         $validation = \Config\Services::validation();
 
         if (!$validation->setRules([
@@ -91,19 +86,19 @@ class RecintoModel extends Model
                                    'errors' => ['required' => 'El campo Tipo de recinto es obligatorio.', 'integer' => 'El campo Tipo de recinto es inválido.', 'greater_than' => 'El campo Tipo de recinto es obligatorio.']],
             'estado_recinto'  => ['label' => 'Estado',          'rules' => 'required|in_list[activo,inactivo]'],
         ])->run([
-            'tarifa'          => $recinto->tarifa,
-            'descripcion'     => $recinto->descripcion,
-            'id_tipo_recinto' => $recinto->id_tipo_recinto,
-            'estado_recinto'  => $recinto->estado_recinto,
+            'tarifa'          => $tarifa,
+            'descripcion'     => $descripcion,
+            'id_tipo_recinto' => $idTipoRecinto,
+            'estado_recinto'  => $estadoRecinto,
         ])) {
             return ['ok' => false, 'errores' => $validation->getErrors()];
         }
 
         $this->update($id, [
-            'tarifa'          => number_format((float) $recinto->tarifa, 2, '.', ''),
-            'descripcion'     => $recinto->descripcion,
-            'id_tipo_recinto' => $recinto->id_tipo_recinto,
-            'estado_recinto'  => $recinto->estado_recinto,
+            'tarifa'          => number_format((float) $tarifa, 2, '.', ''),
+            'descripcion'     => $descripcion,
+            'id_tipo_recinto' => $idTipoRecinto,
+            'estado_recinto'  => $estadoRecinto,
         ]);
 
         return ['ok' => true];

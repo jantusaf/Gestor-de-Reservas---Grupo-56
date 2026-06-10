@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\RecintoModel;
-use App\Entities\Recinto;
 use CodeIgniter\Controller;
 
 class RecintoController extends Controller
@@ -21,13 +20,11 @@ class RecintoController extends Controller
     {
         $recintoModel = new RecintoModel();
 
-        $recinto = new Recinto([
-            'tarifa'          => $this->request->getPost('tarifa')      ?? '',
-            'descripcion'     => $this->request->getPost('descripcion') ?? '',
-            'id_tipo_recinto' => (int) $this->request->getPost('id_tipo_recinto'),
-        ]);
-
-        $resultado = $recintoModel->altaRecinto($recinto);
+        $resultado = $recintoModel->altaRecinto(
+            $this->request->getPost('tarifa')      ?? '',
+            $this->request->getPost('descripcion') ?? '',
+            (int) $this->request->getPost('id_tipo_recinto')
+        );
 
         if (!$resultado['ok']) {
             return redirect()->back()->withInput()->with('errors', $resultado['errores']);
@@ -89,15 +86,13 @@ class RecintoController extends Controller
     {
         $recintoModel = new RecintoModel();
 
-        $recinto = new Recinto([
-            'id_recinto'      => (int) $id,
-            'tarifa'          => $this->request->getPost('tarifa')         ?? '',
-            'descripcion'     => $this->request->getPost('descripcion')    ?? '',
-            'id_tipo_recinto' => (int) $this->request->getPost('id_tipo_recinto'),
-            'estado_recinto'  => $this->request->getPost('estado_recinto') ?? '',
-        ]);
-
-        $resultado = $recintoModel->modificarRecinto($recinto);
+        $resultado = $recintoModel->modificarRecinto(
+            (int) $id,
+            $this->request->getPost('tarifa')         ?? '',
+            $this->request->getPost('descripcion')    ?? '',
+            (int) $this->request->getPost('id_tipo_recinto'),
+            $this->request->getPost('estado_recinto') ?? ''
+        );
 
         if (!$resultado['ok']) {
             return redirect()->back()->withInput()->with('errors', $resultado['errores']);

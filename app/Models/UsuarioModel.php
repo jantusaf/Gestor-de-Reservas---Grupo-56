@@ -17,7 +17,7 @@ class UsuarioModel extends Model
         'id_tipo_usuario'
     ];
 
-    public function iniciarSesion(string $dni, string $contrasena): array
+    public function autenticar(string $dni, string $contrasena): array
     {
         if (empty($dni)) {
             return ['ok' => false, 'errores' => ['dni' => 'El campo DNI es obligatorio.']];

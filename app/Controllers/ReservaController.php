@@ -5,7 +5,6 @@ use App\Models\ReservaModel;
 use App\Models\ClienteModel;
 use App\Models\RecintoModel;
 use App\Models\HorarioModel;
-use App\Entities\Reserva;
 use CodeIgniter\Controller;
 
 class ReservaController extends Controller
@@ -37,15 +36,13 @@ class ReservaController extends Controller
     {
         $reservaModel = new ReservaModel();
 
-        $reserva = new Reserva([
-            'fecha_reserva' => $this->request->getPost('fecha_reserva') ?? '',
-            'id_cliente'    => (int) $this->request->getPost('id_cliente'),
-            'id_recinto'    => (int) $this->request->getPost('id_recinto'),
-            'id_horario'    => (int) $this->request->getPost('id_horario'),
-            'id_usuario'    => (int) session()->get('id_usuario'),
-        ]);
-
-        $resultado = $reservaModel->crearReserva($reserva);
+        $resultado = $reservaModel->crearReserva(
+            $this->request->getPost('fecha_reserva') ?? '',
+            (int) $this->request->getPost('id_cliente'),
+            (int) $this->request->getPost('id_recinto'),
+            (int) $this->request->getPost('id_horario'),
+            (int) session()->get('id_usuario')
+        );
 
         if (!$resultado['ok']) {
             return redirect()->back()->withInput()->with('errors', $resultado['mensajes']);
@@ -90,16 +87,14 @@ class ReservaController extends Controller
     {
         $reservaModel = new ReservaModel();
 
-        $reserva = new Reserva([
-            'id_reserva'     => (int) $id,
-            'fecha_reserva'  => $this->request->getPost('fecha_reserva') ?? '',
-            'id_cliente'     => (int) $this->request->getPost('id_cliente'),
-            'id_recinto'     => (int) $this->request->getPost('id_recinto'),
-            'id_horario'     => (int) $this->request->getPost('id_horario'),
-            'estado_reserva' => $this->request->getPost('estado_reserva') ?? '',
-        ]);
-
-        $resultado = $reservaModel->modificarReserva($reserva);
+        $resultado = $reservaModel->modificarReserva(
+            (int) $id,
+            $this->request->getPost('fecha_reserva') ?? '',
+            (int) $this->request->getPost('id_cliente'),
+            (int) $this->request->getPost('id_recinto'),
+            (int) $this->request->getPost('id_horario'),
+            $this->request->getPost('estado_reserva') ?? ''
+        );
 
         if (!$resultado['ok']) {
             return redirect()->back()->withInput()->with('errors', $resultado['mensajes']);

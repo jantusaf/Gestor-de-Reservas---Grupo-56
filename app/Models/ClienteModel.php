@@ -77,6 +77,11 @@ class ClienteModel extends Model
             return ['ok' => false, 'errores' => $validation->getErrors()];
         }
 
+        // La persona debe existir para poder asignarla como cliente.
+        if (!PersonaModel::getInstance()->find($idPersona)) {
+            return ['ok' => false, 'errores' => ['id_persona' => 'No se puede asignar como cliente: la persona no está registrada.']];
+        }
+
         $this->insert([
             'email'          => $email,
             'fecha_alta'     => date('Y-m-d'),

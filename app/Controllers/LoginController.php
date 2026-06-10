@@ -17,7 +17,7 @@ class LoginController extends BaseController
     {
         $usuarioModel = new UsuarioModel();
 
-        $resultado = $usuarioModel->iniciarSesion(
+        $resultado = $usuarioModel->autenticar(
             $this->request->getPost('dni')      ?? '',
             $this->request->getPost('contrasena') ?? '',
         );
