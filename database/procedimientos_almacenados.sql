@@ -35,7 +35,19 @@ DELIMITER $$
 CREATE PROCEDURE sp_listar_reservas(IN p_dni VARCHAR(20))
 BEGIN
     SELECT
-        reserva.*,
+        reserva.id_reserva,
+        reserva.fecha_reserva,
+        reserva.monto,
+        reserva.estado_reserva,
+        reserva.id_horario,
+        reserva.id_cliente,
+        reserva.id_recinto,
+        reserva.id_usuario,
+        -- El estado de pago se DERIVA de la tabla 'pago' (única fuente de verdad):
+        --   sin pago        -> 'pendiente'
+        --   pago vigente    -> 'pagada'
+        --   pago reembolsado-> 'reembolsado'
+        COALESCE(MAX(pago.estado), 'pendiente') AS estado_pago,
         persona.nombre,
         persona.apellido,
         persona.dni,

@@ -10,7 +10,7 @@
 
         <?php $errores = session()->getFlashdata('errors') ?? []; ?>
 
-        <form action="<?= base_url('/recinto/actualizar/' . $recinto['id_recinto']) ?>" method="post">
+        <form action="<?= base_url('/recinto/modificar/' . $recinto['id_recinto']) ?>" method="post">
 
             <div class="form-group-modern">
                 <input type="text" name="tarifa" value="<?= esc($recinto['tarifa']) ?>">

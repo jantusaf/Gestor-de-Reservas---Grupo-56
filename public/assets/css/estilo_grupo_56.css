@@ -658,8 +658,8 @@ header {
 .badge-pendiente  { background: #fef3c7; color: #92400e; }
 .badge-confirmada { background: #d1fae5; color: #065f46; }
 .badge-cancelada  { background: #fee2e2; color: #991b1b; }
-.badge-pagado     { background: #d1fae5; color: #065f46; }
-.badge-reembolso  { background: #dbeafe; color: #1e40af; }
+.badge-pagada      { background: #d1fae5; color: #065f46; }
+.badge-reembolsado { background: #dbeafe; color: #1e40af; }
 
 /* ===========================
    PAGINACIÓN

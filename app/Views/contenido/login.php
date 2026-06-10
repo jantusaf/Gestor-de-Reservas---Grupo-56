@@ -20,19 +20,24 @@
                     <?php endif; ?>
 
                     <!-- Formulario de login -->
+                    <?php $errores = session()->getFlashdata('errors') ?? []; ?>
                     <form action="<?= base_url('/login/iniciar_sesion'); ?>" method="post">
 
                         <div class="form-group-modern">
-                        <input type="text" name="dni" required>
-                        <label>DNI</label>
-
+                            <input type="text" name="dni" value="<?= esc(old('dni')) ?>">
+                            <label>DNI</label>
                         </div>
+                        <?php if (!empty($errores['dni'])): ?>
+                            <small class="text-danger d-block mb-2"><?= esc($errores['dni']) ?></small>
+                        <?php endif; ?>
 
                         <div class="form-group-modern">
-                            
-                            <input type="password" name="contrasena" required>
+                            <input type="password" name="contrasena">
                             <label>Contraseña</label>
                         </div>
+                        <?php if (!empty($errores['contrasena'])): ?>
+                            <small class="text-danger d-block mb-2"><?= esc($errores['contrasena']) ?></small>
+                        <?php endif; ?>
 
                         
                             <button type="submit" class="btn-login">Ingresar</button>

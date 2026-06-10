@@ -8,6 +8,8 @@ use CodeIgniter\Filters\DebugToolbar;
 use CodeIgniter\Filters\Honeypot;
 use CodeIgniter\Filters\InvalidChars;
 use CodeIgniter\Filters\SecureHeaders;
+use App\Filters\AuthFilter;
+use App\Filters\AdminFilter;
 
 class Filters extends BaseConfig
 {
@@ -21,6 +23,8 @@ class Filters extends BaseConfig
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
+        'auth'          => AuthFilter::class,
+        'admin'         => AdminFilter::class,
     ];
 
     /**
@@ -60,5 +64,30 @@ class Filters extends BaseConfig
      * Example:
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
      */
-    public array $filters = [];
+    public array $filters = [
+        'auth' => [
+            'before' => [
+                'contenido/*',
+                'usuario/*',
+                'cliente/*',
+                'recinto/*',
+                'reserva/*',
+                'pago/*',
+            ],
+        ],
+        // Solo administradores: gestión de usuarios.
+        // El perfil propio (usuario/perfil, usuario/baja, usuario/actualizar sin id)
+        // NO entra acá, así que el recepcionista lo sigue usando.
+        'admin' => [
+            'before' => [
+                'usuario/alta',
+                'usuario/guardar',
+                'usuario/listar',
+                'usuario/editar/*',
+                'usuario/actualizar/*',
+                'usuario/deshabilitar/*',
+                'usuario/habilitar/*',
+            ],
+        ],
+    ];
 }

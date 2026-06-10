@@ -18,25 +18,25 @@ class ClienteModel extends Model
 
     public function registrarCliente(Persona $persona, string $email): array
     {
+        $db = \Config\Database::connect();
+        $db->transBegin();
+
         $personaResult = PersonaModel::getInstance()->altaPersona($persona);
         if (!$personaResult['ok']) {
+            $db->transRollback();
             return $personaResult;
         }
 
-        return $this->altaCliente($email, $personaResult['id']);
-    }
-
-    public function datosFormularioEditar(int $id): ?array
-    {
-        $cliente = $this->find($id);
-        if (!$cliente) {
-            return null;
+        $clienteResult = $this->altaCliente($email, $personaResult['id']);
+        if (!$clienteResult['ok']) {
+            // Si falla el alta del cliente, se revierte la persona ya insertada
+            // para no dejar registros huérfanos en la base de datos.
+            $db->transRollback();
+            return $clienteResult;
         }
 
-        return [
-            'cliente' => $cliente,
-            'persona' => PersonaModel::getInstance()->find($cliente['id_persona']),
-        ];
+        $db->transCommit();
+        return $clienteResult;
     }
 
     public function modificarCliente(int $id, Persona $persona, string $email, string $estadoCliente): array
@@ -46,12 +46,25 @@ class ClienteModel extends Model
             return ['ok' => false, 'errores' => ['id' => 'Cliente no encontrado.']];
         }
 
+        $db = \Config\Database::connect();
+        $db->transBegin();
+
         $personaResult = PersonaModel::getInstance()->actualizarPersona($cliente['id_persona'], $persona);
         if (!$personaResult['ok']) {
+            $db->transRollback();
             return $personaResult;
         }
 
-        return $this->actualizarCliente($id, $email, $estadoCliente);
+        $clienteResult = $this->actualizarCliente($id, $email, $estadoCliente);
+        if (!$clienteResult['ok']) {
+            // Si la validación del cliente falla, se revierte también el cambio
+            // de persona para no dejar datos modificados a medias.
+            $db->transRollback();
+            return $clienteResult;
+        }
+
+        $db->transCommit();
+        return $clienteResult;
     }
 
     public function altaCliente(string $email, int $idPersona): array
@@ -123,23 +136,23 @@ class ClienteModel extends Model
         return ['ok' => true];
     }
 
-    public function deshabilitar(int $id): array
+    public function deshabilitar(int $id): bool
     {
         if (!$this->find($id)) {
-            return ['ok' => false, 'mensaje' => 'Cliente no encontrado.'];
+            return false;
         }
 
         $this->update($id, ['estado_cliente' => 'inactivo']);
-        return ['ok' => true, 'mensaje' => 'Cliente deshabilitado.'];
+        return true;
     }
 
-    public function habilitar(int $id): array
+    public function habilitar(int $id): bool
     {
         if (!$this->find($id)) {
-            return ['ok' => false, 'mensaje' => 'Cliente no encontrado.'];
+            return false;
         }
 
         $this->update($id, ['estado_cliente' => 'activo']);
-        return ['ok' => true, 'mensaje' => 'Cliente habilitado.'];
+        return true;
     }
 }

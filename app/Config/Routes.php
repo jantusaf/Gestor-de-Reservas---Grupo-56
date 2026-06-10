@@ -43,9 +43,10 @@ $routes->get('/registrarse', 'UsuarioController::formularioRegistro');   // mues
 $routes->post('/registrarse/guardar', 'UsuarioController::guardar');            // procesa el formulario de registro
 
 // USUARIO — perfil (recepcionista)
-$routes->get('/usuario/perfil',      'UsuarioController::perfil');
-$routes->post('/usuario/actualizar', 'UsuarioController::actualizar');
-$routes->post('/usuario/baja',       'UsuarioController::baja');
+$routes->get('/usuario/perfil',         'UsuarioController::perfil');
+$routes->get('/usuario/perfil/editar',  'UsuarioController::formularioEditarPerfil');
+$routes->post('/usuario/actualizar',    'UsuarioController::actualizar');
+$routes->post('/usuario/baja',          'UsuarioController::baja');
 
 // USUARIO — admin CRUD
 $routes->get('/usuario/alta',                    'UsuarioController::formularioAlta');
@@ -53,8 +54,8 @@ $routes->post('/usuario/guardar',                'UsuarioController::guardarUsua
 $routes->get('/usuario/listar',                  'UsuarioController::listarUsuarios');
 $routes->get('/usuario/editar/(:num)',            'UsuarioController::formularioEditar/$1');
 $routes->post('/usuario/actualizar/(:num)',       'UsuarioController::editarUsuario/$1');
-$routes->get('/usuario/deshabilitar/(:num)',      'UsuarioController::deshabilitarUsuario/$1');
-$routes->get('/usuario/habilitar/(:num)',         'UsuarioController::habilitarUsuario/$1');
+$routes->post('/usuario/deshabilitar/(:num)',      'UsuarioController::deshabilitarUsuario/$1');
+$routes->post('/usuario/habilitar/(:num)',         'UsuarioController::habilitarUsuario/$1');
 
 
 // CLIENTES
@@ -63,18 +64,18 @@ $routes->post('/cliente/alta',                          'ClienteController::guar
 $routes->get('/cliente/listar',                         'ClienteController::listarClientes');
 $routes->get('/cliente/editar/(:num)',                  'ClienteController::formularioEditar/$1');
 $routes->post('/cliente/actualizar/(:num)',              'ClienteController::actualizarCliente/$1');
-$routes->get('/cliente/deshabilitar/(:num)',             'ClienteController::deshabilitarCliente/$1');
-$routes->get('/cliente/habilitar/(:num)',                'ClienteController::habilitarCliente/$1');
+$routes->post('/cliente/deshabilitar/(:num)',             'ClienteController::deshabilitarCliente/$1');
+$routes->post('/cliente/habilitar/(:num)',                'ClienteController::habilitarCliente/$1');
 
 // RECINTO
 $routes->get('/recinto',                                'RecintoController::listarRecintos');
 $routes->get('/recinto/listar',                         'RecintoController::listarRecintos');
 $routes->get('/recinto/alta',                           'RecintoController::formularioAlta');
 $routes->post('/recinto/guardar',                       'RecintoController::guardarRecinto');
-$routes->get('/recinto/deshabilitar/(:num)',             'RecintoController::deshabilitarRecinto/$1');
-$routes->get('/recinto/habilitar/(:num)',               'RecintoController::habilitarRecinto/$1');
+$routes->post('/recinto/deshabilitar/(:num)',             'RecintoController::deshabilitarRecinto/$1');
+$routes->post('/recinto/habilitar/(:num)',               'RecintoController::habilitarRecinto/$1');
 $routes->get('/recinto/editar/(:num)',                  'RecintoController::formularioEditar/$1');
-$routes->post('/recinto/actualizar/(:num)',              'RecintoController::actualizarRecinto/$1');
+$routes->post('/recinto/modificar/(:num)',               'RecintoController::modificarRecinto/$1');
 
 
 // RESERVAS
@@ -82,7 +83,7 @@ $routes->get('/reserva/crear',              'ReservaController::formularioAlta')
 $routes->post('/reserva/guardar',           'ReservaController::guardarReserva');
 $routes->post('/reserva/horas',             'ReservaController::horasDisponibles');
 $routes->get('/reserva/listar',             'ReservaController::listarReservas');
-$routes->get('/reserva/cancelar/(:num)',    'ReservaController::cancelarReserva/$1');
+$routes->post('/reserva/cancelar/(:num)',    'ReservaController::cancelarReserva/$1');
 $routes->get('/reserva/editar/(:num)',      'ReservaController::formularioEditar/$1');
 $routes->post('/reserva/actualizar/(:num)', 'ReservaController::actualizarReserva/$1');
 

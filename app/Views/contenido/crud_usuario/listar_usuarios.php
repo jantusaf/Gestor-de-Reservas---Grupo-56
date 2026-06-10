@@ -56,9 +56,9 @@
                                                 '<?= esc($u['nombre']).' '.esc($u['apellido']) ?>'
                                             )">Deshabilitar</button>
                                     <?php else: ?>
-                                        <a href="<?= site_url('usuario/habilitar/'.$u['id_usuario']) ?>"
-                                           class="btn-action edit" style="background-color:#27ae60; opacity:1;">
-                                           Habilitar</a>
+                                        <form method="post" action="<?= site_url('usuario/habilitar/'.$u['id_usuario']) ?>" style="display:inline;">
+                                            <button type="submit" class="btn-action edit" style="background-color:#27ae60; opacity:1;">Habilitar</button>
+                                        </form>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -90,16 +90,22 @@
             </div>
             <div class="modal-footer border-0 justify-content-center gap-2">
                 <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
-                <a id="btnConfirmarDeshabilitar" href="#" class="btn btn-danger px-4">Sí, deshabilitar</a>
+                <button type="button" id="btnConfirmarDeshabilitar" class="btn btn-danger px-4">Sí, deshabilitar</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Form oculto que ejecuta la baja por POST -->
+<form id="formDeshabilitar" method="post" class="d-none"></form>
+
 <script>
     function abrirModalDeshabilitar(url, nombre) {
         document.getElementById('modalNombreUsuario').textContent = nombre;
-        document.getElementById('btnConfirmarDeshabilitar').href = url;
+        document.getElementById('formDeshabilitar').action = url;
         new bootstrap.Modal(document.getElementById('modalDeshabilitar')).show();
     }
+    document.getElementById('btnConfirmarDeshabilitar').addEventListener('click', function () {
+        document.getElementById('formDeshabilitar').submit();
+    });
 </script>

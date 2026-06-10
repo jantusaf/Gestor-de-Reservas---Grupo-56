@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\PagoModel;
+use App\Models\ReservaModel;
+use App\Models\MedioPagoModel;
 
 class PagoController extends BaseController
 {
@@ -17,15 +19,17 @@ class PagoController extends BaseController
 
     public function formularioAlta($idReserva)
     {
-        $pagoModel = new PagoModel();
-        $data      = $pagoModel->datosFormularioAlta((int) $idReserva);
+        $reserva = (new ReservaModel())->find((int) $idReserva);
 
-        if (!$data) {
+        if (!$reserva) {
             return redirect()->to('/reserva/listar')->with('error', 'Reserva no encontrada.');
         }
 
         return view('plantillas/head')
-            . view('contenido/crud_pago/alta_pago', $data)
+            . view('contenido/crud_pago/alta_pago', [
+                'reserva' => $reserva,
+                'medios'  => (new MedioPagoModel())->findAll(),
+            ])
             . view('plantillas/footer');
     }
 

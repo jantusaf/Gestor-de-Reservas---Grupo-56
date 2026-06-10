@@ -14,35 +14,11 @@ class ReservaModel extends Model
         'fecha_reserva',
         'monto',
         'estado_reserva',
-        'estado_pago',
         'id_horario',
         'id_cliente',
         'id_recinto',
         'id_usuario',
     ];
-
-    public function datosFormulario(): array
-    {
-        return [
-            'clientes' => (new ClienteModel())->listarClientesActivos(),
-            'recintos' => (new RecintoModel())->listarRecintosActivos(),
-        ];
-    }
-
-    public function datosFormularioEditar(int $id): ?array
-    {
-        $reserva = $this->find($id);
-        if (!$reserva) {
-            return null;
-        }
-
-        return [
-            'reserva'  => $reserva,
-            'clientes' => (new ClienteModel())->listarClientesActivos(),
-            'recintos' => (new RecintoModel())->listarRecintosActivos(),
-            'horarios' => (new HorarioModel())->listarHorarios(),
-        ];
-    }
 
     public function listarReservas(string $dni = ''): array
     {
@@ -50,17 +26,9 @@ class ReservaModel extends Model
         return $db->query('CALL sp_listar_reservas(?)', [$dni])->getResultArray();
     }
 
-    // Firma pública mantenida para el Controller
-    public function crearReserva(string $fecha, int $idCliente, int $idRecinto, int $idHorario, int $idUsuario): array
+    // Recibe la Reserva ya construida desde el Controller (evita Long Parameter List).
+    public function crearReserva(Reserva $reserva): array
     {
-        $reserva = new Reserva([
-            'fecha_reserva' => $fecha,
-            'id_cliente'    => $idCliente,
-            'id_recinto'    => $idRecinto,
-            'id_horario'    => $idHorario,
-            'id_usuario'    => $idUsuario,
-        ]);
-
         $validacion = $this->validarReserva($reserva);
         if (!$validacion['ok']) {
             return $validacion;
@@ -72,20 +40,17 @@ class ReservaModel extends Model
         return ['ok' => true, 'id' => $id];
     }
 
-    // Firma pública mantenida para el Controller
-    public function modificarReserva(int $id, string $fecha, int $idCliente, int $idRecinto, int $idHorario, string $estadoReserva, string $estadoPago): array
+    // Recibe la Reserva ya construida desde el Controller (evita Long Parameter List).
+    // El id de la reserva a modificar viaja dentro de la entity ($reserva->id_reserva).
+    public function modificarReserva(Reserva $reserva): array
     {
-        $original    = $this->find($id);
-        $fechaCambio = !$original || $original['fecha_reserva'] !== $fecha;
+        $id       = (int) $reserva->id_reserva;
+        $original = $this->find($id);
+        if (!$original) {
+            return ['ok' => false, 'mensajes' => ['id' => 'Reserva no encontrada.']];
+        }
 
-        $reserva = new Reserva([
-            'fecha_reserva'  => $fecha,
-            'id_cliente'     => $idCliente,
-            'id_recinto'     => $idRecinto,
-            'id_horario'     => $idHorario,
-            'estado_reserva' => $estadoReserva,
-            'estado_pago'    => $estadoPago,
-        ]);
+        $fechaCambio = $original['fecha_reserva'] !== $reserva->fecha_reserva;
 
         $validacion = $this->validarReserva($reserva, $id, $fechaCambio);
         if (!$validacion['ok']) {
@@ -108,12 +73,26 @@ class ReservaModel extends Model
             return ['ok' => false, 'mensaje' => 'La reserva ya está cancelada.'];
         }
 
-        $estadoPago = $reserva['estado_pago'] === 'pagado' ? 'reembolsado' : $reserva['estado_pago'];
+        // La cancelación y el reembolso deben guardarse juntos: o ambos, o ninguno.
+        $db = \Config\Database::connect();
+        $db->transBegin();
 
-        $this->update($id, [
-            'estado_reserva' => 'cancelada',
-            'estado_pago'    => $estadoPago,
-        ]);
+        $this->update($id, ['estado_reserva' => 'cancelada']);
+
+        // El reembolso se registra como un cambio de estado del pago vigente,
+        // no como un flag en la reserva. Solo aplica si la reserva estaba pagada.
+        $pagoModel = new PagoModel();
+        $pago      = $pagoModel->where('id_reserva', $id)->where('estado', 'pagada')->first();
+        if ($pago) {
+            $pagoModel->update($pago['id_pago'], ['estado' => 'reembolsado']);
+        }
+
+        if ($db->transStatus() === false) {
+            $db->transRollback();
+            return ['ok' => false, 'mensaje' => 'No se pudo cancelar la reserva.'];
+        }
+
+        $db->transCommit();
         return ['ok' => true];
     }
 
@@ -168,7 +147,6 @@ class ReservaModel extends Model
             'fecha_reserva'  => $reserva->fecha_reserva,
             'monto'          => $reserva->monto,
             'estado_reserva' => 'pendiente',
-            'estado_pago'    => 'pendiente',
             'id_horario'     => $reserva->id_horario,
             'id_cliente'     => $reserva->id_cliente,
             'id_recinto'     => $reserva->id_recinto,
@@ -185,7 +163,6 @@ class ReservaModel extends Model
             'id_recinto'     => $reserva->id_recinto,
             'id_horario'     => $reserva->id_horario,
             'estado_reserva' => $reserva->estado_reserva,
-            'estado_pago'    => $reserva->estado_pago,
             'monto'          => $reserva->monto,
         ]);
     }

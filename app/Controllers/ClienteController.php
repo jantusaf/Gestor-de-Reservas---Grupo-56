@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\ClienteModel;
+use App\Models\PersonaModel;
 use App\Entities\Persona;
 
 class ClienteController extends BaseController
@@ -61,14 +62,17 @@ class ClienteController extends BaseController
     public function formularioEditar($id)
     {
         $clienteModel = new ClienteModel();
-        $data         = $clienteModel->datosFormularioEditar((int) $id);
+        $cliente      = $clienteModel->find((int) $id);
 
-        if (!$data) {
+        if (!$cliente) {
             return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
         }
 
         return view('plantillas/head', ['title' => 'Editar Cliente'])
-            . view('contenido/crud_cliente/editar_cliente', $data)
+            . view('contenido/crud_cliente/editar_cliente', [
+                'cliente' => $cliente,
+                'persona' => PersonaModel::getInstance()->find($cliente['id_persona']),
+            ])
             . view('plantillas/footer');
     }
 
@@ -103,24 +107,22 @@ class ClienteController extends BaseController
     public function deshabilitarCliente($id)
     {
         $clienteModel = new ClienteModel();
-        $resultado    = $clienteModel->deshabilitar((int) $id);
 
-        if (!$resultado['ok']) {
-            return redirect()->to('/cliente/listar')->with('error', $resultado['mensaje']);
+        if (!$clienteModel->deshabilitar((int) $id)) {
+            return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
         }
 
-        return redirect()->to('/cliente/listar')->with('success', $resultado['mensaje']);
+        return redirect()->to('/cliente/listar');
     }
 
     public function habilitarCliente($id)
     {
         $clienteModel = new ClienteModel();
-        $resultado    = $clienteModel->habilitar((int) $id);
 
-        if (!$resultado['ok']) {
-            return redirect()->to('/cliente/listar')->with('error', $resultado['mensaje']);
+        if (!$clienteModel->habilitar((int) $id)) {
+            return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
         }
 
-        return redirect()->to('/cliente/listar')->with('success', $resultado['mensaje']);
+        return redirect()->to('/cliente/listar');
     }
 }

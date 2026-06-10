@@ -82,15 +82,8 @@
                 <label>Estado de la reserva</label>
             </div>
 
-            <!-- Estado Pago -->
-            <div class="form-group-modern">
-                <select name="estado_pago" required>
-                    <option value="pendiente"  <?= $reserva['estado_pago'] === 'pendiente'  ? 'selected' : '' ?>>Pendiente</option>
-                    <option value="pagado"     <?= $reserva['estado_pago'] === 'pagado'     ? 'selected' : '' ?>>Pagado</option>
-                    <option value="reembolsado" <?= $reserva['estado_pago'] === 'reembolsado' ? 'selected' : '' ?>>Reembolsado</option>
-                </select>
-                <label>Estado del pago</label>
-            </div>
+            <!-- El estado del pago no se edita a mano: se deriva de la tabla 'pago'
+                 (se actualiza al pagar o al cancelar/reembolsar una reserva). -->
 
             <button type="submit" class="btn-login">Guardar cambios</button>
         </form>

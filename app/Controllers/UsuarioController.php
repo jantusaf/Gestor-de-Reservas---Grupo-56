@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UsuarioModel;
+use App\Models\PersonaModel;
 use App\Entities\Persona;
 
 class UsuarioController extends BaseController
@@ -49,14 +50,34 @@ class UsuarioController extends BaseController
     public function perfil()
     {
         $usuarioModel = new UsuarioModel();
-        $data         = $usuarioModel->datosPerfil((int) session()->get('id_usuario'));
+        $usuario      = $usuarioModel->find((int) session()->get('id_usuario'));
 
-        if (!$data) {
+        if (!$usuario) {
             return redirect()->to('/login')->with('error', 'Usuario no encontrado.');
         }
 
         return view('plantillas/head', ['title' => 'Mi Perfil'])
-            . view('contenido/perfil_usuario', $data)
+            . view('contenido/perfil_usuario', [
+                'usuario' => $usuario,
+                'persona' => PersonaModel::getInstance()->find($usuario['id_persona']),
+            ])
+            . view('plantillas/footer');
+    }
+
+    public function formularioEditarPerfil()
+    {
+        $usuarioModel = new UsuarioModel();
+        $usuario      = $usuarioModel->find((int) session()->get('id_usuario'));
+
+        if (!$usuario) {
+            return redirect()->to('/login')->with('error', 'Usuario no encontrado.');
+        }
+
+        return view('plantillas/head', ['title' => 'Editar Mi Perfil'])
+            . view('contenido/editar_perfil', [
+                'usuario' => $usuario,
+                'persona' => PersonaModel::getInstance()->find($usuario['id_persona']),
+            ])
             . view('plantillas/footer');
     }
 
@@ -64,26 +85,37 @@ class UsuarioController extends BaseController
     {
         $usuarioModel = new UsuarioModel();
 
-        $resultado = $usuarioModel->actualizarUsuario(
+        $persona = new Persona([
+            'nombre'           => $this->request->getPost('nombre')           ?? '',
+            'apellido'         => $this->request->getPost('apellido')         ?? '',
+            'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento') ?? '',
+            'telefono'         => $this->request->getPost('telefono')         ?? '',
+            'calle'            => $this->request->getPost('calle')            ?? '',
+            'altura'           => $this->request->getPost('altura')           ?? '',
+        ]);
+
+        $resultado = $usuarioModel->modificarPerfil(
             (int) session()->get('id_usuario'),
+            $persona,
             $this->request->getPost('nombre_usuario') ?? '',
         );
 
         if (!$resultado['ok']) {
-            return redirect()->back()->withInput()->with('errors', $resultado['errores']);
+            return redirect()->to('/usuario/perfil/editar')->withInput()->with('errors', $resultado['errores']);
         }
 
-        return redirect()->back()->with('success', 'Datos actualizados correctamente.');
+        // Reflejar el nuevo nombre de usuario en la sesión.
+        session()->set('nombre_usuario', $this->request->getPost('nombre_usuario'));
+
+        return redirect()->to('/usuario/perfil')->with('success', 'Datos actualizados correctamente.');
     }
 
     public function baja()
     {
         $usuarioModel = new UsuarioModel();
 
-        $resultado = $usuarioModel->darDeBaja((int) session()->get('id_usuario'));
-
-        if (!$resultado['ok']) {
-            return redirect()->back()->with('error', $resultado['mensaje']);
+        if (!$usuarioModel->darDeBaja((int) session()->get('id_usuario'))) {
+            return redirect()->back()->with('error', 'No se pudo dar de baja la cuenta.');
         }
 
         session()->destroy();
@@ -138,14 +170,17 @@ class UsuarioController extends BaseController
     public function formularioEditar($id)
     {
         $usuarioModel = new UsuarioModel();
-        $data         = $usuarioModel->datosFormularioEditar((int) $id);
+        $usuario      = $usuarioModel->find((int) $id);
 
-        if (!$data) {
+        if (!$usuario) {
             return redirect()->to('/usuario/listar')->with('error', 'Usuario no encontrado.');
         }
 
         return view('plantillas/head', ['title' => 'Editar Usuario'])
-            . view('contenido/crud_usuario/editar_usuario', $data)
+            . view('contenido/crud_usuario/editar_usuario', [
+                'usuario' => $usuario,
+                'persona' => PersonaModel::getInstance()->find($usuario['id_persona']),
+            ])
             . view('plantillas/footer');
     }
 
@@ -180,24 +215,22 @@ class UsuarioController extends BaseController
     public function deshabilitarUsuario($id)
     {
         $usuarioModel = new UsuarioModel();
-        $resultado    = $usuarioModel->deshabilitar((int) $id);
 
-        if (!$resultado['ok']) {
-            return redirect()->to('/usuario/listar')->with('error', $resultado['mensaje']);
+        if (!$usuarioModel->deshabilitar((int) $id)) {
+            return redirect()->to('/usuario/listar')->with('error', 'Usuario no encontrado.');
         }
 
-        return redirect()->to('/usuario/listar')->with('success', $resultado['mensaje']);
+        return redirect()->to('/usuario/listar');
     }
 
     public function habilitarUsuario($id)
     {
         $usuarioModel = new UsuarioModel();
-        $resultado    = $usuarioModel->habilitar((int) $id);
 
-        if (!$resultado['ok']) {
-            return redirect()->to('/usuario/listar')->with('error', $resultado['mensaje']);
+        if (!$usuarioModel->habilitar((int) $id)) {
+            return redirect()->to('/usuario/listar')->with('error', 'Usuario no encontrado.');
         }
 
-        return redirect()->to('/usuario/listar')->with('success', $resultado['mensaje']);
+        return redirect()->to('/usuario/listar');
     }
 }

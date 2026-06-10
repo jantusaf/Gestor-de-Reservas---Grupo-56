@@ -70,11 +70,13 @@ $recintos_pagina = array_slice($recintos, $start_index, $perPage);
                                     <?php if(!$inactivo): ?>
                                         <a href="<?= site_url('recinto/editar/' . $recinto['id_recinto']) ?>"
                                            class="btn-action edit">Editar</a>
-                                        <a href="<?= site_url('recinto/deshabilitar/' . $recinto['id_recinto']) ?>"
-                                           class="btn-action delete">Deshabilitar</a>
+                                        <form method="post" action="<?= site_url('recinto/deshabilitar/' . $recinto['id_recinto']) ?>" style="display:inline;">
+                                            <button type="submit" class="btn-action delete">Deshabilitar</button>
+                                        </form>
                                     <?php else: ?>
-                                        <a href="<?= site_url('recinto/habilitar/' . $recinto['id_recinto']) ?>"
-                                           class="btn-action edit" style="background-color:#27ae60; opacity:1;">Habilitar</a>
+                                        <form method="post" action="<?= site_url('recinto/habilitar/' . $recinto['id_recinto']) ?>" style="display:inline;">
+                                            <button type="submit" class="btn-action edit" style="background-color:#27ae60; opacity:1;">Habilitar</button>
+                                        </form>
                                     <?php endif; ?>
                                 </td>
                             </tr>

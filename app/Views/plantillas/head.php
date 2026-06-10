@@ -53,6 +53,9 @@
                   
                     <?php else: ?>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" href="<?= base_url('/usuario/perfil') ?>">Mi Perfil</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" href="<?= base_url('/logout') ?>">Cerrar sesión</a>
                         </li>
                     <?php endif; ?>

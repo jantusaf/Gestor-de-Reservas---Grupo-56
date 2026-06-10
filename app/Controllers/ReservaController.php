@@ -2,20 +2,21 @@
 namespace App\Controllers;
 
 use App\Models\ReservaModel;
+use App\Models\ClienteModel;
+use App\Models\RecintoModel;
+use App\Models\HorarioModel;
+use App\Entities\Reserva;
 use CodeIgniter\Controller;
 
 class ReservaController extends Controller
 {
     public function formularioAlta()
     {
-        if (!session()->get('logged_in')) {
-            return redirect()->to('/login')->with('error', 'Debés iniciar sesión.');
-        }
-
-        $reservaModel = new ReservaModel();
-
         return view('plantillas/head')
-            . view('contenido/crud_reserva/alta_reserva', $reservaModel->datosFormulario())
+            . view('contenido/crud_reserva/alta_reserva', [
+                'clientes' => (new ClienteModel())->listarClientesActivos(),
+                'recintos' => (new RecintoModel())->listarRecintosActivos(),
+            ])
             . view('plantillas/footer');
     }
 
@@ -34,18 +35,17 @@ class ReservaController extends Controller
 
     public function guardarReserva()
     {
-        if (!session()->get('logged_in')) {
-            return redirect()->to('/login')->with('error', 'Debés iniciar sesión.');
-        }
-
         $reservaModel = new ReservaModel();
-        $resultado    = $reservaModel->crearReserva(
-            $this->request->getPost('fecha_reserva') ?? '',
-            (int) $this->request->getPost('id_cliente'),
-            (int) $this->request->getPost('id_recinto'),
-            (int) $this->request->getPost('id_horario'),
-            (int) session()->get('id_usuario'),
-        );
+
+        $reserva = new Reserva([
+            'fecha_reserva' => $this->request->getPost('fecha_reserva') ?? '',
+            'id_cliente'    => (int) $this->request->getPost('id_cliente'),
+            'id_recinto'    => (int) $this->request->getPost('id_recinto'),
+            'id_horario'    => (int) $this->request->getPost('id_horario'),
+            'id_usuario'    => (int) session()->get('id_usuario'),
+        ]);
+
+        $resultado = $reservaModel->crearReserva($reserva);
 
         if (!$resultado['ok']) {
             return redirect()->back()->withInput()->with('errors', $resultado['mensajes']);
@@ -56,10 +56,6 @@ class ReservaController extends Controller
 
     public function listarReservas()
     {
-        if (!session()->get('logged_in')) {
-            return redirect()->to('/login')->with('error', 'Debés iniciar sesión.');
-        }
-
         $reservaModel = new ReservaModel();
         $dni          = trim($this->request->getGet('dni') ?? '');
 
@@ -73,38 +69,37 @@ class ReservaController extends Controller
 
     public function formularioEditar($id)
     {
-        if (!session()->get('logged_in')) {
-            return redirect()->to('/login')->with('error', 'Debés iniciar sesión.');
-        }
-
         $reservaModel = new ReservaModel();
-        $data         = $reservaModel->datosFormularioEditar((int) $id);
+        $reserva      = $reservaModel->find((int) $id);
 
-        if (!$data) {
+        if (!$reserva) {
             return redirect()->to('/reserva/listar')->with('error', 'Reserva no encontrada.');
         }
 
         return view('plantillas/head', ['title' => 'Editar Reserva'])
-            . view('contenido/crud_reserva/editar_reserva', $data)
+            . view('contenido/crud_reserva/editar_reserva', [
+                'reserva'  => $reserva,
+                'clientes' => (new ClienteModel())->listarClientesActivos(),
+                'recintos' => (new RecintoModel())->listarRecintosActivos(),
+                'horarios' => (new HorarioModel())->listarHorarios(),
+            ])
             . view('plantillas/footer');
     }
 
     public function actualizarReserva($id)
     {
-        if (!session()->get('logged_in')) {
-            return redirect()->to('/login')->with('error', 'Debés iniciar sesión.');
-        }
-
         $reservaModel = new ReservaModel();
-        $resultado    = $reservaModel->modificarReserva(
-            (int) $id,
-            $this->request->getPost('fecha_reserva') ?? '',
-            (int) $this->request->getPost('id_cliente'),
-            (int) $this->request->getPost('id_recinto'),
-            (int) $this->request->getPost('id_horario'),
-            $this->request->getPost('estado_reserva') ?? '',
-            $this->request->getPost('estado_pago') ?? '',
-        );
+
+        $reserva = new Reserva([
+            'id_reserva'     => (int) $id,
+            'fecha_reserva'  => $this->request->getPost('fecha_reserva') ?? '',
+            'id_cliente'     => (int) $this->request->getPost('id_cliente'),
+            'id_recinto'     => (int) $this->request->getPost('id_recinto'),
+            'id_horario'     => (int) $this->request->getPost('id_horario'),
+            'estado_reserva' => $this->request->getPost('estado_reserva') ?? '',
+        ]);
+
+        $resultado = $reservaModel->modificarReserva($reserva);
 
         if (!$resultado['ok']) {
             return redirect()->back()->withInput()->with('errors', $resultado['mensajes']);
@@ -115,10 +110,6 @@ class ReservaController extends Controller
 
     public function cancelarReserva($id)
     {
-        if (!session()->get('logged_in')) {
-            return redirect()->to('/login')->with('error', 'Debés iniciar sesión.');
-        }
-
         $reservaModel = new ReservaModel();
         $resultado    = $reservaModel->cancelarReserva((int) $id);
 

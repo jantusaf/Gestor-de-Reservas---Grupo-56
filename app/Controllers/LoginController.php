@@ -23,6 +23,9 @@ class LoginController extends BaseController
         );
 
         if (!$resultado['ok']) {
+            if (isset($resultado['errores'])) {
+                return redirect()->back()->withInput()->with('errors', $resultado['errores']);
+            }
             return redirect()->back()->with('error', $resultado['mensaje']);
         }
 

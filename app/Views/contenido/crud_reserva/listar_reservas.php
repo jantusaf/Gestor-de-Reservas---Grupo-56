@@ -143,17 +143,23 @@ document.getElementById('modalPagoOk').addEventListener('click', function(e) {
             </div>
             <div class="modal-footer border-0 justify-content-center gap-2">
                 <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Volver</button>
-                <a id="btnConfirmarCancelar" href="#" class="btn btn-danger px-4">Sí, cancelar</a>
+                <button type="button" id="btnConfirmarCancelar" class="btn btn-danger px-4">Sí, cancelar</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Form oculto que ejecuta la cancelación por POST -->
+<form id="formCancelar" method="post" class="d-none"></form>
+
 <script>
     function abrirModalCancelar(url, cliente, fecha) {
         document.getElementById('modalClienteNombre').textContent = cliente;
         document.getElementById('modalFecha').textContent = fecha;
-        document.getElementById('btnConfirmarCancelar').href = url;
+        document.getElementById('formCancelar').action = url;
         new bootstrap.Modal(document.getElementById('modalCancelar')).show();
     }
+    document.getElementById('btnConfirmarCancelar').addEventListener('click', function () {
+        document.getElementById('formCancelar').submit();
+    });
 </script>

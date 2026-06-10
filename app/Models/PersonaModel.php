@@ -17,6 +17,22 @@ class PersonaModel extends Model
         return static::$instance;
     }
 
+    // Constructor protegido: impide crear instancias con "new PersonaModel()"
+    // desde afuera de la clase. La única vía de acceso es getInstance().
+    protected function __construct()
+    {
+        parent::__construct();
+    }
+
+    // Impide duplicar la instancia con "clone".
+    private function __clone() {}
+
+    // Impide reconstruir la instancia mediante deserialización.
+    public function __wakeup()
+    {
+        throw new \Exception('No se puede deserializar un Singleton.');
+    }
+
     protected $table      = 'persona';
     protected $primaryKey = 'id_persona';
 
@@ -39,7 +55,8 @@ class PersonaModel extends Model
             'nombre'           => ['label' => 'Nombre',              'rules' => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]'],
             'apellido'         => ['label' => 'Apellido',            'rules' => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]'],
             'fecha_nacimiento' => ['label' => 'Fecha de nacimiento', 'rules' => 'required|valid_date[Y-m-d]|check_past_date'],
-            'telefono'         => ['label' => 'Teléfono',            'rules' => 'permit_empty|max_length[20]'],
+'telefono' => ['label' => 'Teléfono', 'rules' => 'permit_empty|numeric|min_length[6]|max_length[20]',
+               'errors' => ['numeric' => 'El campo Teléfono debe contener solo números.', 'min_length' => 'El campo Teléfono debe tener al menos 6 caracteres.']],
             'calle'            => ['label' => 'Calle',               'rules' => 'required|min_length[3]|max_length[50]'],
             'altura'           => ['label' => 'Altura',              'rules' => 'required|max_length[10]'],
         ])->run([
@@ -76,7 +93,8 @@ class PersonaModel extends Model
             'nombre'           => ['label' => 'Nombre',              'rules' => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]'],
             'apellido'         => ['label' => 'Apellido',            'rules' => 'required|regex_match[/^[\p{L}\s]+$/u]|min_length[3]|max_length[50]'],
             'fecha_nacimiento' => ['label' => 'Fecha de nacimiento', 'rules' => 'required|valid_date[Y-m-d]|check_past_date'],
-            'telefono'         => ['label' => 'Teléfono',            'rules' => 'permit_empty|max_length[20]'],
+'telefono' => ['label' => 'Teléfono', 'rules' => 'permit_empty|numeric|min_length[6]|max_length[20]',
+               'errors' => ['numeric' => 'El campo Teléfono debe contener solo números.', 'min_length' => 'El campo Teléfono debe tener al menos 6 caracteres.']],
             'calle'            => ['label' => 'Calle',               'rules' => 'required|min_length[3]|max_length[50]'],
             'altura'           => ['label' => 'Altura',              'rules' => 'required|max_length[10]'],
         ])->run([

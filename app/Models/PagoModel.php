@@ -9,23 +9,11 @@ class PagoModel extends Model
     protected $allowedFields = [
         'fecha_pago',
         'monto_total',
+        'estado',
         'id_reserva',
         'id_medio_pago',
         'id_usuario'
     ];
-
-    public function datosFormularioAlta(int $idReserva): ?array
-    {
-        $reserva = (new ReservaModel())->find($idReserva);
-        if (!$reserva) {
-            return null;
-        }
-
-        return [
-            'reserva' => $reserva,
-            'medios'  => (new MedioPagoModel())->findAll(),
-        ];
-    }
 
     public function listarPagos(): array
     {
@@ -59,10 +47,13 @@ class PagoModel extends Model
         $reserva = $reservaModel->find($idReserva);
 
         if (!$reserva) {
-            return ['ok' => false, 'mensaje' => 'Reserva no encontrada.'];
+            return ['ok' => false, 'mensajes' => ['id_medio_pago' => 'Reserva no encontrada.']];
         }
 
-        if ($reserva['estado_pago'] === 'pagada') {
+        // El estado de pago vive en la tabla 'pago': la reserva está pagada
+        // si ya existe un pago vigente (no reembolsado) asociado.
+        $pagoVigente = $this->where('id_reserva', $idReserva)->where('estado', 'pagada')->first();
+        if ($pagoVigente) {
             return ['ok' => false, 'mensajes' => ['id_medio_pago' => 'Esta reserva ya fue pagada.']];
         }
 
@@ -70,9 +61,15 @@ class PagoModel extends Model
             return ['ok' => false, 'mensajes' => ['id_medio_pago' => 'El medio de pago es obligatorio.']];
         }
 
+        // El pago y la confirmación de la reserva deben guardarse juntos:
+        // o se registran ambos, o ninguno.
+        $db = \Config\Database::connect();
+        $db->transBegin();
+
         $this->insert([
             'id_reserva'    => $idReserva,
             'monto_total'   => $reserva['monto'],
+            'estado'        => 'pagada',
             'id_medio_pago' => $idMedioPago,
             'fecha_pago'    => date('Y-m-d'),
             'id_usuario'    => $idUsuario,
@@ -80,9 +77,14 @@ class PagoModel extends Model
 
         $reservaModel->update($idReserva, [
             'estado_reserva' => 'confirmada',
-            'estado_pago'    => 'pagada',
         ]);
 
+        if ($db->transStatus() === false) {
+            $db->transRollback();
+            return ['ok' => false, 'mensajes' => ['id_medio_pago' => 'No se pudo registrar el pago.']];
+        }
+
+        $db->transCommit();
         return ['ok' => true];
     }
 }
