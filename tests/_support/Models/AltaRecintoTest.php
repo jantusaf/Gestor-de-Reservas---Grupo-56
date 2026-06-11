@@ -5,13 +5,7 @@ namespace Tests\Support\Models;
 use App\Models\RecintoModel;
 use CodeIgniter\Test\CIUnitTestCase;
 
-/**
- * Pruebas Unitarias - Alta de Recinto
- * Método: RecintoModel::altaRecinto(string $tarifa, string $descripcion, int $idTipoRecinto)
- *
- * Pruebas FANTASMAS: no se conectan a la base de datos.
- * Se mockea insert() para simular el guardado sin tocar la BD.
- */
+
 class AltaRecintoTest extends CIUnitTestCase
 {
     private RecintoModel $model;
@@ -29,14 +23,7 @@ class AltaRecintoTest extends CIUnitTestCase
         $this->model->method('insert')->willReturn(true);
     }
 
-    // ================================================================
-    // CAMINO FELIZ
-    // ================================================================
 
-    /**
-     * @test
-     * @testdox Todos los datos válidos - Recinto registrado correctamente
-     */
     public function altaRecinto_TodosLosDatosValidos()
     {
         $this->model->expects($this->once())->method('insert');
@@ -46,10 +33,7 @@ class AltaRecintoTest extends CIUnitTestCase
         $this->assertTrue($resultado['ok']);
     }
 
-    /**
-     * @test
-     * @testdox Tarifa con decimales - Recinto registrado correctamente
-     */
+
     public function altaRecinto_TarifaConDecimales_CreaElAlta()
     {
         $this->model->expects($this->once())->method('insert');
@@ -59,14 +43,7 @@ class AltaRecintoTest extends CIUnitTestCase
         $this->assertTrue($resultado['ok']);
     }
 
-    // ================================================================
-    // VALIDACIONES DE TARIFA
-    // ================================================================
 
-    /**
-     * @test
-     * @testdox Tarifa vacía - Retorna error
-     */
     public function altaRecinto_TarifaVacia_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -77,10 +54,7 @@ class AltaRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('tarifa', $resultado['errores']);
     }
 
-    /**
-     * @test
-     * @testdox Tarifa con letras - Retorna error
-     */
+
     public function altaRecinto_TarifaConLetras_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -91,10 +65,7 @@ class AltaRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('tarifa', $resultado['errores']);
     }
 
-    /**
-     * @test
-     * @testdox Tarifa negativa - Retorna error
-     */
+
     public function altaRecinto_TarifaNegativa_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -105,10 +76,7 @@ class AltaRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('tarifa', $resultado['errores']);
     }
 
-    /**
-     * @test
-     * @testdox Tarifa igual a cero - Retorna error
-     */
+
     public function altaRecinto_TarifaCero_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -119,14 +87,7 @@ class AltaRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('tarifa', $resultado['errores']);
     }
 
-    // ================================================================
-    // VALIDACIONES DE DESCRIPCIÓN
-    // ================================================================
 
-    /**
-     * @test
-     * @testdox Descripción vacía - Retorna error
-     */
     public function altaRecinto_DescripcionVacia_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -137,10 +98,7 @@ class AltaRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('descripcion', $resultado['errores']);
     }
 
-    /**
-     * @test
-     * @testdox Descripción menor a 3 caracteres - Retorna error
-     */
+
     public function altaRecinto_DescripcionMenorA3Caracteres_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -151,10 +109,7 @@ class AltaRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('descripcion', $resultado['errores']);
     }
 
-    /**
-     * @test
-     * @testdox Descripción mayor a 50 caracteres - Retorna error
-     */
+
     public function altaRecinto_DescripcionMayorA50Caracteres_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -165,9 +120,6 @@ class AltaRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('descripcion', $resultado['errores']);
     }
 
-    // ================================================================
-    // HELPERS
-    // ================================================================
 
     private function datosRecintoValido(): array
     {
