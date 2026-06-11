@@ -5,15 +5,7 @@ namespace Tests\Support\Models;
 use App\Models\ReservaModel;
 use CodeIgniter\Test\CIUnitTestCase;
 
-/**
- * Pruebas Unitarias - Alta de Reserva
- * Método: ReservaModel::crearReserva(string $fecha, int $idCliente, int $idRecinto, int $idHorario, int $idUsuario)
- *
- * Pruebas FANTASMAS: no se conectan a la base de datos.
- * Se mockean validarReserva(), insert() y getInsertID() en ReservaModel.
- * validarReserva() concentra toda la lógica de validación y consultas a BD;
- * al mockearlo podemos probar crearReserva() de forma completamente aislada.
- */
+
 class AltaReservaTest extends CIUnitTestCase
 {
     protected function setUp(): void
