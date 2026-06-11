@@ -72,7 +72,7 @@ BEGIN
            ON medio_pago.id_medio_pago       = pago.id_medio_pago
     WHERE p_dni = '' OR persona.dni LIKE CONCAT(p_dni, '%')
     GROUP BY reserva.id_reserva
-    ORDER BY reserva.fecha_reserva DESC;
+    ORDER BY reserva.id_reserva DESC;
 END$$
 
 DELIMITER ;

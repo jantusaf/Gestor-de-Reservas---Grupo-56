@@ -71,7 +71,7 @@ class ClienteController extends BaseController
         return view('plantillas/head', ['title' => 'Editar Cliente'])
             . view('contenido/crud_cliente/editar_cliente', [
                 'cliente' => $cliente,
-                'persona' => PersonaModel::getInstance()->find($cliente['id_persona']),
+                'persona' => (new PersonaModel())->find($cliente['id_persona']),
             ])
             . view('plantillas/footer');
     }

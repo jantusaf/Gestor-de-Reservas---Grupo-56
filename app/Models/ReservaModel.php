@@ -3,6 +3,11 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use App\Models\HorarioModel;
+use App\States\Reserva\EstadoPendiente;
+use App\States\Reserva\EstadoConfirmada;
+use App\States\Reserva\EstadoCancelada;
+use App\States\Reserva\EstadoVencida;
 
 class ReservaModel extends Model
 {
@@ -71,37 +76,49 @@ class ReservaModel extends Model
         return ['ok' => true];
     }
 
-    public function cancelarReserva(int $id): array
+    /**
+     * Delega la acción al estado actual de la reserva (patrón State).
+     * Resuelve el estado desde estado_reserva, instancia la clase correspondiente
+     * y le delega pagar() o cancelar().
+     */
+    public function ejecutarAccion(int $id, string $accion, array $params = []): array
     {
         $reserva = $this->find($id);
         if (!$reserva) {
             return ['ok' => false, 'mensaje' => 'Reserva no encontrada.'];
         }
-        if ($reserva['estado_reserva'] === 'cancelada') {
-            return ['ok' => false, 'mensaje' => 'La reserva ya está cancelada.'];
+
+        $horario = (new HorarioModel())->find($reserva['id_horario']);
+
+        $inicioTurno = strtotime($reserva['fecha_reserva'] . ' ' . ($horario['horario'] ?? '23:59:59'));
+        $finTurno    = $inicioTurno + 3600;
+
+        // Cancelar solo es válido antes de que empiece el turno.
+        // Pagar es válido hasta que termina el turno (fin = inicio + 1h).
+        if ($accion === 'cancelar' && time() >= $inicioTurno) {
+            return ['ok' => false, 'mensaje' => 'No se puede cancelar una reserva una vez que el turno ya comenzó.'];
         }
 
-        // La cancelación y el reembolso deben guardarse juntos: o ambos, o ninguno.
-        $db = \Config\Database::connect();
-        $db->transBegin();
-
-        $this->update($id, ['estado_reserva' => 'cancelada']);
-
-        // El reembolso se registra como un cambio de estado del pago vigente,
-        // no como un flag en la reserva. Solo aplica si la reserva estaba pagada.
-        $pagoModel = new PagoModel();
-        $pago      = $pagoModel->where('id_reserva', $id)->where('estado', 'pagada')->first();
-        if ($pago) {
-            $pagoModel->update($pago['id_pago'], ['estado' => 'reembolsado']);
+        if (time() >= $finTurno) {
+            $estado = new EstadoVencida();
+        } elseif ($reserva['estado_reserva'] === 'confirmada') {
+            $estado = new EstadoConfirmada();
+        } elseif ($reserva['estado_reserva'] === 'cancelada') {
+            $estado = new EstadoCancelada();
+        } else {
+            $estado = new EstadoPendiente();
         }
 
-        if ($db->transStatus() === false) {
-            $db->transRollback();
-            return ['ok' => false, 'mensaje' => 'No se pudo cancelar la reserva.'];
+        if ($accion === 'pagar') {
+            return $estado->pagar($reserva, $horario, $params);
         }
 
-        $db->transCommit();
-        return ['ok' => true];
+        return $estado->cancelar($reserva, $horario, $params);
+    }
+
+    public function cancelarReserva(int $id): array
+    {
+        return $this->ejecutarAccion($id, 'cancelar');
     }
 
     public function validarReserva(string $fecha, int $idCliente, int $idRecinto, int $idHorario, int $excluirId = 0, bool $validarFechaFutura = true): array

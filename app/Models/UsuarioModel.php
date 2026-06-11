@@ -27,7 +27,7 @@ class UsuarioModel extends Model
             return ['ok' => false, 'errores' => ['contrasena' => 'El campo Contraseña es obligatorio.']];
         }
 
-        $persona = PersonaModel::getInstance()->where('dni', $dni)->first();
+        $persona = (new PersonaModel())->where('dni', $dni)->first();
         if (!$persona) {
             return ['ok' => false, 'errores' => ['dni' => 'DNI no encontrado.']];
         }
@@ -73,7 +73,7 @@ class UsuarioModel extends Model
         $db = \Config\Database::connect();
         $db->transBegin();
 
-        $personaResult = PersonaModel::getInstance()->altaPersona($persona);
+        $personaResult = (new PersonaModel())->altaPersona($persona);
 
         // Si falla la persona o las credenciales, se juntan todos los errores
         // y se aborta (no se inserta nada).
@@ -115,13 +115,14 @@ class UsuarioModel extends Model
         }
 
         // El DNI no se puede modificar desde el perfil: se conserva el actual.
-        $personaActual = PersonaModel::getInstance()->find($usuario['id_persona']);
+        $personaModel  = new PersonaModel();
+        $personaActual = $personaModel->find($usuario['id_persona']);
         $persona->dni  = $personaActual['dni'];
 
         $db = \Config\Database::connect();
         $db->transBegin();
 
-        $personaResult = PersonaModel::getInstance()->actualizarPersona($usuario['id_persona'], $persona);
+        $personaResult = $personaModel->actualizarPersona($usuario['id_persona'], $persona);
         if (!$personaResult['ok']) {
             $db->transRollback();
             return $personaResult;
@@ -179,8 +180,13 @@ class UsuarioModel extends Model
             ->getResultArray();
     }
 
-    public function modificarUsuario(int $id, Persona $persona, string $nombreUsuario, string $estadoUsuario): array
+    /**
+     * @param PersonaModel|null $personaModel  Inyectable para pruebas unitarias puras.
+     */
+    public function modificarUsuario(int $id, Persona $persona, string $nombreUsuario, string $estadoUsuario, ?PersonaModel $personaModel = null): array
     {
+        $personaModel ??= new PersonaModel();
+
         $usuario = $this->find($id);
         if (!$usuario) {
             return ['ok' => false, 'errores' => ['id' => 'Usuario no encontrado.']];
@@ -189,16 +195,30 @@ class UsuarioModel extends Model
         // Se valida ANTES de escribir nada en la base de datos.
         $validation = \Config\Services::validation();
         if (!$validation->setRules([
-            'nombre_usuario' => ['label' => 'Nombre de usuario', 'rules' => "required|min_length[3]|max_length[50]|is_unique[usuario.nombre_usuario,id_usuario,{$id}]"],
-            'estado_usuario' => ['label' => 'Estado',  'rules' => 'required|in_list[activo,inactivo]'],
+            'nombre_usuario' => ['label' => 'Nombre de usuario', 'rules' => 'required|min_length[3]|max_length[50]'],
+            'estado_usuario' => ['label' => 'Estado',            'rules' => 'required|in_list[activo,inactivo]'],
         ])->run(['nombre_usuario' => $nombreUsuario, 'estado_usuario' => $estadoUsuario])) {
             return ['ok' => false, 'errores' => $validation->getErrors()];
         }
 
+        // Unicidad del nombre de usuario excluyendo el propio usuario (mockeable en tests unitarios).
+        if ($this->where('nombre_usuario', $nombreUsuario)->where('id_usuario !=', $id)->first()) {
+            return ['ok' => false, 'errores' => ['nombre_usuario' => 'El nombre de usuario ya está registrado.']];
+        }
+
+        return $this->persistirModificacionUsuario($id, $usuario['id_persona'], $persona, $nombreUsuario, $estadoUsuario, $personaModel);
+    }
+
+    /**
+     * Ejecuta la escritura transaccional. Método separado para que las pruebas
+     * unitarias puedan mockearlo sin depender de la base de datos.
+     */
+    protected function persistirModificacionUsuario(int $id, int $idPersona, Persona $persona, string $nombreUsuario, string $estadoUsuario, PersonaModel $personaModel): array
+    {
         $db = \Config\Database::connect();
         $db->transBegin();
 
-        $personaResult = PersonaModel::getInstance()->actualizarPersona($usuario['id_persona'], $persona);
+        $personaResult = $personaModel->actualizarPersona($idPersona, $persona);
         if (!$personaResult['ok']) {
             $db->transRollback();
             return $personaResult;

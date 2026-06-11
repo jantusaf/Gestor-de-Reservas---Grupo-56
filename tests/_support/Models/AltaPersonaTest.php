@@ -5,32 +5,41 @@ namespace Tests\Support\Models;
 use App\Models\PersonaModel;
 use App\Entities\Persona;
 use CodeIgniter\Test\CIUnitTestCase;
-use CodeIgniter\Test\DatabaseTestTrait;
-use Tests\Support\Database\Seeds\ClienteSeeder;
 
 /**
  * Pruebas Unitarias - Alta de Persona
  * Método: PersonaModel::altaPersona(Persona $persona)
  *
- * El seeder ya insertó una persona con dni 99999999 (para probar el DNI duplicado).
+ * Pruebas FANTASMAS: no se conectan a la base de datos.
+ * Se mockean where(), first(), insert() y getInsertID() para simular
+ * el comportamiento de guardado sin tocar la BD.
  */
 class AltaPersonaTest extends CIUnitTestCase
 {
-    use DatabaseTestTrait;
-
-    protected $seed    = ClienteSeeder::class;
-    protected $refresh = true;
-
-    private PersonaModel $personaModel;
-
     protected function setUp(): void
     {
         parent::setUp();
-        // El servicio de validación es compartido durante todo el proceso de PHPUnit
-        // y acumula errores entre tests. Lo reseteamos para que cada prueba parta limpia
-        // y el script sea ejecutable múltiples veces sin contaminación de estado.
         \Config\Services::validation()->reset();
-        $this->personaModel = PersonaModel::getInstance();
+    }
+
+    /**
+     * Crea un mock parcial de PersonaModel con comportamiento configurable.
+     *
+     * @param array|null $firstReturn  Fila que devuelve first() (null = no hay duplicado).
+     */
+    private function makeModel(?array $firstReturn = null): PersonaModel
+    {
+        $model = $this->getMockBuilder(PersonaModel::class)
+            ->onlyMethods(['first', 'insert', 'getInsertID'])
+            ->addMethods(['where'])    // where() llega via __call() en CI4 — no es método real
+            ->getMock();
+
+        $model->method('where')->willReturnSelf();
+        $model->method('first')->willReturn($firstReturn);
+        $model->method('insert')->willReturn(true);
+        $model->method('getInsertID')->willReturn(1);
+
+        return $model;
     }
 
     // ================================================================
@@ -43,10 +52,14 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_TodosLosDatosValidos()
     {
-        $resultado = $this->personaModel->altaPersona($this->personaValida());
+        $model = $this->makeModel();
+        $model->expects($this->once())->method('insert');
+
+        $resultado = $model->altaPersona($this->personaValida());
 
         $this->assertTrue($resultado['ok']);
         $this->assertArrayHasKey('id', $resultado);
+        $this->assertEquals(1, $resultado['id']);
     }
 
     // ================================================================
@@ -59,7 +72,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_DniVacio_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['dni' => '']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['dni' => '']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('dni', $resultado['errores']);
@@ -71,7 +87,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_DniConLetras_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['dni' => 'abc123']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['dni' => 'abc123']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('dni', $resultado['errores']);
@@ -83,7 +102,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_DniMenorA7Digitos_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['dni' => '123']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['dni' => '123']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('dni', $resultado['errores']);
@@ -95,8 +117,11 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_DniDuplicado_RetornaError()
     {
-        // El seeder ya insertó una persona con dni 99999999.
-        $resultado = $this->personaModel->altaPersona($this->persona(['dni' => '99999999']));
+        // first() devuelve una fila: simula DNI ya existente en BD.
+        $model = $this->makeModel(['id_persona' => 5, 'dni' => '99999999']);
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['dni' => '99999999']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('dni', $resultado['errores']);
@@ -112,7 +137,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_NombreVacio_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['nombre' => '']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['nombre' => '']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('nombre', $resultado['errores']);
@@ -124,7 +152,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_NombreMenorA3Caracteres_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['nombre' => 'Ab']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['nombre' => 'Ab']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('nombre', $resultado['errores']);
@@ -136,7 +167,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_NombreConNumeros_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['nombre' => 'Juan123']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['nombre' => 'Juan123']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('nombre', $resultado['errores']);
@@ -152,7 +186,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_ApellidoVacio_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['apellido' => '']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['apellido' => '']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('apellido', $resultado['errores']);
@@ -164,7 +201,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_ApellidoMenorA3Caracteres_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['apellido' => 'Pe']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['apellido' => 'Pe']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('apellido', $resultado['errores']);
@@ -180,7 +220,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_FechaNacimientoVacia_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['fecha_nacimiento' => '']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['fecha_nacimiento' => '']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('fecha_nacimiento', $resultado['errores']);
@@ -192,7 +235,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_FechaNacimientoFutura_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['fecha_nacimiento' => '2030-01-01']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['fecha_nacimiento' => '2030-01-01']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('fecha_nacimiento', $resultado['errores']);
@@ -208,7 +254,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_TelefonoConLetras_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['telefono' => '379412345a']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['telefono' => '379412345a']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('telefono', $resultado['errores']);
@@ -220,7 +269,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_TelefonoMenorA6Digitos_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['telefono' => '12']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['telefono' => '12']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('telefono', $resultado['errores']);
@@ -236,7 +288,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_CalleVacia_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['calle' => '']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['calle' => '']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('calle', $resultado['errores']);
@@ -248,7 +303,10 @@ class AltaPersonaTest extends CIUnitTestCase
      */
     public function altaPersona_AlturaVacia_RetornaError()
     {
-        $resultado = $this->personaModel->altaPersona($this->persona(['altura' => '']));
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaPersona($this->persona(['altura' => '']));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('altura', $resultado['errores']);

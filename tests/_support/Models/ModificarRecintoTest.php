@@ -4,30 +4,29 @@ namespace Tests\Support\Models;
 
 use App\Models\RecintoModel;
 use CodeIgniter\Test\CIUnitTestCase;
-use CodeIgniter\Test\DatabaseTestTrait;
-use Tests\Support\Database\Seeds\RecintoSeeder;
 
 /**
  * Pruebas Unitarias - Modificar Recinto
  * Método: RecintoModel::modificarRecinto(int $id, string $tarifa, string $descripcion, int $idTipoRecinto, string $estadoRecinto)
+ *
+ * Pruebas FANTASMAS: no se conectan a la base de datos.
+ * Se mockea update() para simular la actualización sin tocar la BD.
  */
 class ModificarRecintoTest extends CIUnitTestCase
 {
-    use DatabaseTestTrait;
-
-    protected $seed    = RecintoSeeder::class;
-    protected $refresh = true;
-
-    private RecintoModel $recintoModel;
+    private RecintoModel $model;
 
     protected function setUp(): void
     {
         parent::setUp();
-        // El servicio de validación es compartido durante todo el proceso de PHPUnit
-        // y acumula errores entre tests. Lo reseteamos para que cada prueba parta limpia
-        // y el script sea ejecutable múltiples veces sin contaminación de estado.
         \Config\Services::validation()->reset();
-        $this->recintoModel = new RecintoModel();
+
+        // Mock parcial: solo se stubea update() — el resto de la lógica es real.
+        $this->model = $this->getMockBuilder(RecintoModel::class)
+            ->onlyMethods(['update'])
+            ->getMock();
+
+        $this->model->method('update')->willReturn(true);
     }
 
     // ================================================================
@@ -36,10 +35,12 @@ class ModificarRecintoTest extends CIUnitTestCase
 
     /**
      * @test
-     * @testdox Todos los datos válidos - Modifica el recinto
+     * @testdox Todos los datos válidos - Recinto modificado correctamente
      */
     public function modificarRecinto_TodosLosDatosValidos()
     {
+        $this->model->expects($this->once())->method('update');
+
         $resultado = $this->modificar();
 
         $this->assertTrue($resultado['ok']);
@@ -47,10 +48,12 @@ class ModificarRecintoTest extends CIUnitTestCase
 
     /**
      * @test
-     * @testdox Cambiar estado a inactivo - Modifica el recinto
+     * @testdox Cambiar estado a inactivo - Recinto modificado correctamente
      */
     public function modificarRecinto_CambiarEstadoAInactivo_ModificaElRecinto()
     {
+        $this->model->expects($this->once())->method('update');
+
         $resultado = $this->modificar([
             'tarifa'         => '2000',
             'descripcion'    => 'Cancha de tenis',
@@ -70,6 +73,8 @@ class ModificarRecintoTest extends CIUnitTestCase
      */
     public function modificarRecinto_TarifaVacia_RetornaError()
     {
+        $this->model->expects($this->never())->method('update');
+
         $resultado = $this->modificar(['tarifa' => '']);
 
         $this->assertFalse($resultado['ok']);
@@ -82,6 +87,8 @@ class ModificarRecintoTest extends CIUnitTestCase
      */
     public function modificarRecinto_TarifaConLetras_RetornaError()
     {
+        $this->model->expects($this->never())->method('update');
+
         $resultado = $this->modificar(['tarifa' => 'abc']);
 
         $this->assertFalse($resultado['ok']);
@@ -94,6 +101,8 @@ class ModificarRecintoTest extends CIUnitTestCase
      */
     public function modificarRecinto_TarifaNegativa_RetornaError()
     {
+        $this->model->expects($this->never())->method('update');
+
         $resultado = $this->modificar(['tarifa' => '-100']);
 
         $this->assertFalse($resultado['ok']);
@@ -106,6 +115,8 @@ class ModificarRecintoTest extends CIUnitTestCase
      */
     public function modificarRecinto_TarifaCero_RetornaError()
     {
+        $this->model->expects($this->never())->method('update');
+
         $resultado = $this->modificar(['tarifa' => '0']);
 
         $this->assertFalse($resultado['ok']);
@@ -122,6 +133,8 @@ class ModificarRecintoTest extends CIUnitTestCase
      */
     public function modificarRecinto_DescripcionVacia_RetornaError()
     {
+        $this->model->expects($this->never())->method('update');
+
         $resultado = $this->modificar(['descripcion' => '']);
 
         $this->assertFalse($resultado['ok']);
@@ -134,6 +147,8 @@ class ModificarRecintoTest extends CIUnitTestCase
      */
     public function modificarRecinto_DescripcionMenorA3Caracteres_RetornaError()
     {
+        $this->model->expects($this->never())->method('update');
+
         $resultado = $this->modificar(['descripcion' => 'Ab']);
 
         $this->assertFalse($resultado['ok']);
@@ -146,6 +161,8 @@ class ModificarRecintoTest extends CIUnitTestCase
      */
     public function modificarRecinto_DescripcionMayorA50Caracteres_RetornaError()
     {
+        $this->model->expects($this->never())->method('update');
+
         $resultado = $this->modificar(['descripcion' => str_repeat('A', 51)]);
 
         $this->assertFalse($resultado['ok']);
@@ -158,6 +175,8 @@ class ModificarRecintoTest extends CIUnitTestCase
      */
     public function modificarRecinto_EstadoInvalido_RetornaError()
     {
+        $this->model->expects($this->never())->method('update');
+
         $resultado = $this->modificar(['estado_recinto' => 'pausado']);
 
         $this->assertFalse($resultado['ok']);
@@ -170,7 +189,6 @@ class ModificarRecintoTest extends CIUnitTestCase
 
     private function datosRecintoValido(): array
     {
-        // id_recinto = 1 -> recinto sembrado por RecintoSeeder.
         return [
             'id_recinto'      => 1,
             'tarifa'          => '2000',
@@ -184,7 +202,7 @@ class ModificarRecintoTest extends CIUnitTestCase
     {
         $d = array_merge($this->datosRecintoValido(), $overrides);
 
-        return $this->recintoModel->modificarRecinto(
+        return $this->model->modificarRecinto(
             (int) $d['id_recinto'],
             (string) $d['tarifa'],
             (string) $d['descripcion'],

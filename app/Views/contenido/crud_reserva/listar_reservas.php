@@ -24,10 +24,14 @@
         </div>
 
         <?php if(session()->getFlashdata('success')): ?>
-            <div class="alert alert-success"><?= session()->getFlashdata('success') ?></div>
+            <div class="alert alert-success d-flex align-items-center gap-2">
+                <span>✓</span> <?= session()->getFlashdata('success') ?>
+            </div>
         <?php endif; ?>
         <?php if(session()->getFlashdata('error')): ?>
-            <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
+            <div class="alert alert-danger d-flex align-items-center gap-2">
+                <span>⚠</span> <?= session()->getFlashdata('error') ?>
+            </div>
         <?php endif; ?>
 
         <div class="tabla-container">
@@ -52,42 +56,103 @@
                         </tr>
                     <?php else: ?>
                         <?php foreach($reservas as $r): ?>
-                            <?php $cancelada = $r['estado_reserva'] === 'cancelada'; ?>
-                            <tr style="<?= $cancelada ? 'opacity:.55;' : '' ?>">
+                            <?php
+                                $estado        = $r['estado_reserva'];
+                                $estadoPago    = $r['estado_pago'];
+                                $inicioTurno   = strtotime($r['fecha_reserva'] . ' ' . $r['hora']);
+                                $turnoIniciado = time() >= $inicioTurno;           // ya no se puede cancelar
+                                $esPasada      = time() >= $inicioTurno + 3600;    // turno terminado, nada disponible
+                            ?>
+                            <tr style="<?= ($estado === 'cancelada' || $esPasada) ? 'background:#fafafa; color:#9ca3af;' : '' ?>">
                                 <td><?= esc($r['nombre']).' '.esc($r['apellido']) ?></td>
                                 <td><?= esc($r['nombre_tipo_recinto']).' · '.esc($r['recinto_desc']) ?></td>
                                 <td><?= esc($r['fecha_reserva']) ?></td>
                                 <td><?= esc($r['hora']) ?></td>
                                 <td>$<?= number_format($r['monto'], 2) ?></td>
                                 <td>
-                                    <span class="badge-estado badge-<?= $r['estado_reserva'] ?>">
-                                        <?= ucfirst($r['estado_reserva']) ?>
+                                    <span class="badge-estado badge-<?= $estado ?>">
+                                        <?= ucfirst($estado) ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="badge-estado badge-<?= $r['estado_pago'] ?>">
-                                        <?= ucfirst($r['estado_pago']) ?>
+                                    <span class="badge-estado badge-<?= $estadoPago ?>">
+                                        <?= ucfirst($estadoPago) ?>
                                     </span>
                                 </td>
                                 <td>
                                     <?= $r['nombre_medio_pago'] ? esc($r['nombre_medio_pago']) : '<span style="color:#aaa;font-size:13px;">—</span>' ?>
                                 </td>
+
+                                <!-- Acciones según estado (patrón State) + momento del turno -->
                                 <td class="acciones">
-                                    <?php if(!$cancelada): ?>
-                                        <a href="<?= site_url('reserva/editar/'.$r['id_reserva']) ?>"
-                                           class="btn-action edit">Editar</a>
-                                        <button class="btn-action delete"
-                                            onclick="abrirModalCancelar(
-                                                '<?= site_url('reserva/cancelar/'.$r['id_reserva']) ?>',
-                                                '<?= esc($r['nombre']).' '.esc($r['apellido']) ?>',
-                                                '<?= esc($r['fecha_reserva']) ?>'
-                                            )">Cancelar</button>
-                                        <?php if($r['estado_pago'] !== 'pagada'): ?>
-                                            <a href="<?= site_url('pago/alta/'.$r['id_reserva']) ?>"
-                                               class="btn-action success">Pagar</a>
+                                    <?php if ($esPasada): ?>
+                                        <!-- Turno terminado: sin acciones de gestión -->
+                                        <?php if ($estado === 'confirmada'): ?>
+                                            <span class="badge-estado" style="background:#dbeafe; color:#1e40af; font-size:12px; padding:4px 10px; border-radius:20px;">
+                                                Turno completado
+                                            </span>
+                                            <a href="<?= site_url('pago/factura/'.$r['id_reserva']) ?>"
+                                               class="btn-action" target="_blank"
+                                               style="background:#6366f1; color:#fff;"
+                                               title="Ver factura">Factura</a>
+                                        <?php elseif ($estado === 'cancelada'): ?>
+                                            <span class="badge-estado" style="background:#f3f4f6; color:#9ca3af; font-size:12px; padding:4px 10px; border-radius:20px;">
+                                                Cancelada
+                                            </span>
+                                        <?php else: ?>
+                                            <!-- pendiente vencida = no se presentó al turno -->
+                                            <span class="badge-estado" style="background:#fef3c7; color:#92400e; font-size:12px; padding:4px 10px; border-radius:20px;">
+                                                No se presentó
+                                            </span>
                                         <?php endif; ?>
-                                    <?php else: ?>
-                                        <span style="color:#aaa; font-size:13px;">Cancelada</span>
+
+                                    <?php elseif ($estado === 'pendiente'): ?>
+                                        <!-- PENDIENTE: Editar + Pagar siempre; Cancelar solo antes del inicio -->
+                                        <a href="<?= site_url('reserva/editar/'.$r['id_reserva']) ?>"
+                                           class="btn-action edit" title="Editar reserva">Editar</a>
+                                        <a href="<?= site_url('pago/alta/'.$r['id_reserva']) ?>"
+                                           class="btn-action success" title="Registrar pago">Pagar</a>
+                                        <?php if (!$turnoIniciado): ?>
+                                            <button class="btn-action delete"
+                                                title="Cancelar reserva (sin reembolso)"
+                                                onclick="abrirModalCancelar(
+                                                    '<?= site_url('reserva/cancelar/'.$r['id_reserva']) ?>',
+                                                    '<?= esc($r['nombre']).' '.esc($r['apellido']) ?>',
+                                                    '<?= esc($r['fecha_reserva']) ?>',
+                                                    '<?= esc($estadoPago) ?>',
+                                                    '<?= esc($r['hora']) ?>'
+                                                )">Cancelar</button>
+                                        <?php else: ?>
+                                            <span style="color:#f59e0b; font-size:12px; font-style:italic;">Turno en curso</span>
+                                        <?php endif; ?>
+
+                                    <?php elseif ($estado === 'confirmada'): ?>
+                                        <!-- CONFIRMADA: Editar + Factura siempre; Cancelar solo antes del inicio -->
+                                        <a href="<?= site_url('reserva/editar/'.$r['id_reserva']) ?>"
+                                           class="btn-action edit" title="Editar reserva">Editar</a>
+                                        <a href="<?= site_url('pago/factura/'.$r['id_reserva']) ?>"
+                                           class="btn-action" target="_blank"
+                                           style="background:#6366f1; color:#fff;"
+                                           title="Ver factura">Factura</a>
+                                        <?php if (!$turnoIniciado): ?>
+                                            <button class="btn-action delete"
+                                                title="Cancelar (reembolso según anticipación)"
+                                                onclick="abrirModalCancelar(
+                                                    '<?= site_url('reserva/cancelar/'.$r['id_reserva']) ?>',
+                                                    '<?= esc($r['nombre']).' '.esc($r['apellido']) ?>',
+                                                    '<?= esc($r['fecha_reserva']) ?>',
+                                                    '<?= esc($estadoPago) ?>',
+                                                    '<?= esc($r['hora']) ?>'
+                                                )">Cancelar</button>
+                                        <?php else: ?>
+                                            <span style="color:#f59e0b; font-size:12px; font-style:italic;">Turno en curso</span>
+                                        <?php endif; ?>
+
+                                    <?php elseif ($estado === 'cancelada'): ?>
+                                        <span class="badge-estado" style="background:#f3f4f6; color:#9ca3af; font-size:12px; padding:4px 10px; border-radius:20px;">
+                                            Sin acciones disponibles
+                                        </span>
+
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -119,7 +184,6 @@
         </div>
     </div>
 </div>
-
 <script>
 document.getElementById('modalPagoOk').addEventListener('click', function(e) {
     if (e.target === this) this.style.display = 'none';
@@ -139,6 +203,23 @@ document.getElementById('modalPagoOk').addEventListener('click', function(e) {
                 <p class="mb-1 text-muted">Estás por cancelar la reserva de</p>
                 <p class="fw-bold fs-5 mb-1" id="modalClienteNombre"></p>
                 <p class="text-muted mb-0">para el <strong id="modalFecha"></strong></p>
+
+                <!-- Aviso dinámico: se muestra según si aplica reembolso en este momento -->
+                <div id="modalAvisoConReembolso" class="mt-3 p-3 rounded" style="display:none; background:#dcfce7; border:1px solid #86efac;">
+                    <p class="mb-1 small fw-bold" style="color:#166534;">✓ Aplica reembolso</p>
+                    <p class="mb-0 small" style="color:#15803d;">
+                        Cancelás con más de 30 minutos de anticipación.<br>
+                        El pago será <strong>reembolsado</strong> automáticamente.
+                    </p>
+                </div>
+                <div id="modalAvisoSinReembolso" class="mt-3 p-3 rounded" style="display:none; background:#fef3c7; border:1px solid #f59e0b;">
+                    <p class="mb-1 small fw-bold" style="color:#92400e;">⚠ Sin reembolso</p>
+                    <p class="mb-0 small" style="color:#78350f;">
+                        Faltan 30 minutos o menos para el inicio del turno.<br>
+                        La cancelación <strong>no genera reembolso</strong>.
+                    </p>
+                </div>
+
                 <p class="mt-3 small" style="color:#dc2626;">Esta acción no se puede deshacer.</p>
             </div>
             <div class="modal-footer border-0 justify-content-center gap-2">
@@ -153,12 +234,33 @@ document.getElementById('modalPagoOk').addEventListener('click', function(e) {
 <form id="formCancelar" method="post" class="d-none"></form>
 
 <script>
-    function abrirModalCancelar(url, cliente, fecha) {
+    function abrirModalCancelar(url, cliente, fecha, estadoPago, horaInicio) {
         document.getElementById('modalClienteNombre').textContent = cliente;
         document.getElementById('modalFecha').textContent = fecha;
         document.getElementById('formCancelar').action = url;
+
+        var divConReembolso  = document.getElementById('modalAvisoConReembolso');
+        var divSinReembolso  = document.getElementById('modalAvisoSinReembolso');
+
+        divConReembolso.style.display = 'none';
+        divSinReembolso.style.display = 'none';
+
+        if (estadoPago === 'pagada') {
+            // Calcular si en este momento aplica reembolso (> 30 min antes del inicio)
+            var ahora        = new Date();
+            var inicioTurno  = new Date(fecha + 'T' + horaInicio);
+            var minutosRest  = (inicioTurno - ahora) / 60000;
+
+            if (minutosRest > 30) {
+                divConReembolso.style.display = 'block';
+            } else {
+                divSinReembolso.style.display = 'block';
+            }
+        }
+
         new bootstrap.Modal(document.getElementById('modalCancelar')).show();
     }
+
     document.getElementById('btnConfirmarCancelar').addEventListener('click', function () {
         document.getElementById('formCancelar').submit();
     });

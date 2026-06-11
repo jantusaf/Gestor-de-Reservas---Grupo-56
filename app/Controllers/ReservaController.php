@@ -105,13 +105,16 @@ class ReservaController extends Controller
 
     public function cancelarReserva($id)
     {
-        $reservaModel = new ReservaModel();
-        $resultado    = $reservaModel->cancelarReserva((int) $id);
+        $resultado = (new ReservaModel())->ejecutarAccion((int) $id, 'cancelar');
 
         if (!$resultado['ok']) {
             return redirect()->to('/reserva/listar')->with('error', $resultado['mensaje']);
         }
 
-        return redirect()->to('/reserva/listar')->with('success', 'Reserva cancelada correctamente.');
+        $msg = $resultado['reembolso']
+            ? 'Reserva cancelada. El pago será reembolsado.'
+            : 'Reserva cancelada. No corresponde reembolso.';
+
+        return redirect()->to('/reserva/listar')->with('success', $msg);
     }
 }

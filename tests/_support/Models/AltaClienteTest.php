@@ -3,40 +3,59 @@
 namespace Tests\Support\Models;
 
 use App\Models\ClienteModel;
+use App\Models\PersonaModel;
 use CodeIgniter\Test\CIUnitTestCase;
-use CodeIgniter\Test\DatabaseTestTrait;
-use Tests\Support\Database\Seeds\ClienteSeeder;
 
 /**
  * Pruebas Unitarias - Alta de Cliente
- * Método: ClienteModel::altaCliente(string $email, int $idPersona)
+ * Método: ClienteModel::altaCliente(string $email, int $idPersona, ?PersonaModel $personaModel)
  *
- * El seeder deja:
- *   - una persona (id_persona = 1)
- *   - un cliente con email 'duplicado@gmail.com' (para probar el email duplicado)
+ * Pruebas FANTASMAS: no se conectan a la base de datos.
+ * Se mockean where(), first(), insert(), getInsertID() en ClienteModel
+ * y find() en PersonaModel (inyectado como dependencia).
  */
 class AltaClienteTest extends CIUnitTestCase
 {
-    use DatabaseTestTrait;
-
-    protected $seed    = ClienteSeeder::class;
-    protected $refresh = true;
-
-    private ClienteModel $clienteModel;
-
-    // Persona existente sembrada por el seeder.
-    private const ID_PERSONA_EXISTENTE = 1;
-    // Id de persona que no existe en la base.
-    private const ID_PERSONA_INEXISTENTE = 99;
-
     protected function setUp(): void
     {
         parent::setUp();
-        // El servicio de validación es compartido durante todo el proceso de PHPUnit
-        // y acumula errores entre tests. Lo reseteamos para que cada prueba parta limpia
-        // y el script sea ejecutable múltiples veces sin contaminación de estado.
         \Config\Services::validation()->reset();
-        $this->clienteModel = new ClienteModel();
+    }
+
+    /**
+     * Crea un mock parcial de ClienteModel con comportamiento configurable.
+     *
+     * @param array|null $firstReturn   Fila que devuelve first() (null = no hay email duplicado).
+     */
+    private function makeModel(?array $firstReturn = null): ClienteModel
+    {
+        $model = $this->getMockBuilder(ClienteModel::class)
+            ->onlyMethods(['first', 'insert', 'getInsertID'])
+            ->addMethods(['where'])    // where() llega via __call() en CI4 — no es método real
+            ->getMock();
+
+        $model->method('where')->willReturnSelf();
+        $model->method('first')->willReturn($firstReturn);
+        $model->method('insert')->willReturn(true);
+        $model->method('getInsertID')->willReturn(1);
+
+        return $model;
+    }
+
+    /**
+     * Crea un mock de PersonaModel con comportamiento configurable.
+     *
+     * @param array|null $findReturn  Fila que devuelve find() (null = persona no existe).
+     */
+    private function makePersonaModel(?array $findReturn = ['id_persona' => 1, 'dni' => '30123456']): PersonaModel
+    {
+        $mock = $this->getMockBuilder(PersonaModel::class)
+            ->onlyMethods(['find'])
+            ->getMock();
+
+        $mock->method('find')->willReturn($findReturn);
+
+        return $mock;
     }
 
     // ================================================================
@@ -49,7 +68,10 @@ class AltaClienteTest extends CIUnitTestCase
      */
     public function altaCliente_DatosValidos()
     {
-        $resultado = $this->clienteModel->altaCliente('juan@gmail.com', self::ID_PERSONA_EXISTENTE);
+        $model = $this->makeModel();
+        $model->expects($this->once())->method('insert');
+
+        $resultado = $model->altaCliente('juan@gmail.com', 1, $this->makePersonaModel());
 
         $this->assertTrue($resultado['ok']);
         $this->assertArrayHasKey('id', $resultado);
@@ -65,7 +87,10 @@ class AltaClienteTest extends CIUnitTestCase
      */
     public function altaCliente_EmailVacio_RetornaError()
     {
-        $resultado = $this->clienteModel->altaCliente('', self::ID_PERSONA_EXISTENTE);
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaCliente('', 1, $this->makePersonaModel());
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('email', $resultado['errores']);
@@ -77,7 +102,10 @@ class AltaClienteTest extends CIUnitTestCase
      */
     public function altaCliente_EmailFormatoInvalido_RetornaError()
     {
-        $resultado = $this->clienteModel->altaCliente('emailinvalido', self::ID_PERSONA_EXISTENTE);
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaCliente('emailinvalido', 1, $this->makePersonaModel());
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('email', $resultado['errores']);
@@ -89,8 +117,11 @@ class AltaClienteTest extends CIUnitTestCase
      */
     public function altaCliente_EmailDuplicado_RetornaError()
     {
-        // 'duplicado@gmail.com' ya fue insertado por el seeder.
-        $resultado = $this->clienteModel->altaCliente('duplicado@gmail.com', self::ID_PERSONA_EXISTENTE);
+        // first() devuelve una fila: simula email ya existente en BD.
+        $model = $this->makeModel(['id_cliente' => 3, 'email' => 'duplicado@gmail.com']);
+        $model->expects($this->never())->method('insert');
+
+        $resultado = $model->altaCliente('duplicado@gmail.com', 1, $this->makePersonaModel());
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('email', $resultado['errores']);
@@ -102,11 +133,15 @@ class AltaClienteTest extends CIUnitTestCase
 
     /**
      * @test
-     * @testdox Persona no registrada en BD - No se puede asignar como cliente
+     * @testdox Persona no registrada - Retorna error
      */
     public function altaCliente_PersonaInexistente_RetornaError()
     {
-        $resultado = $this->clienteModel->altaCliente('juan@gmail.com', self::ID_PERSONA_INEXISTENTE);
+        $model = $this->makeModel();
+        $model->expects($this->never())->method('insert');
+
+        // PersonaModel::find() devuelve null: la persona no existe.
+        $resultado = $model->altaCliente('juan@gmail.com', 99, $this->makePersonaModel(null));
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('id_persona', $resultado['errores']);

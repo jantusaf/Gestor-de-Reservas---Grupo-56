@@ -6,7 +6,7 @@
         <div class="col-md-6">
             <div class="card-dashboard card-green h-100">
                 <div class="text-center w-100">
-                    <h3><i class="bi bi-credit-card dashboard-icon"></i> Pagos</h3>
+                    <h3><i class="bi bi-credit-card dashboard-icon"></i> Historial de Pagos</h3>
                     <p>Historial de pagos registrados</p>
                     <div class="dashboard-btns">
                         <a href="<?= base_url('pago/listar') ?>" class="btn btn-custom">

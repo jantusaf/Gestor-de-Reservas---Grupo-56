@@ -4,30 +4,29 @@ namespace Tests\Support\Models;
 
 use App\Models\RecintoModel;
 use CodeIgniter\Test\CIUnitTestCase;
-use CodeIgniter\Test\DatabaseTestTrait;
-use Tests\Support\Database\Seeds\RecintoSeeder;
 
 /**
  * Pruebas Unitarias - Alta de Recinto
  * Método: RecintoModel::altaRecinto(string $tarifa, string $descripcion, int $idTipoRecinto)
+ *
+ * Pruebas FANTASMAS: no se conectan a la base de datos.
+ * Se mockea insert() para simular el guardado sin tocar la BD.
  */
 class AltaRecintoTest extends CIUnitTestCase
 {
-    use DatabaseTestTrait;
-
-    protected $seed    = RecintoSeeder::class;
-    protected $refresh = true;
-
-    private RecintoModel $recintoModel;
+    private RecintoModel $model;
 
     protected function setUp(): void
     {
         parent::setUp();
-        // El servicio de validación es compartido durante todo el proceso de PHPUnit
-        // y acumula errores entre tests. Lo reseteamos para que cada prueba parta limpia
-        // y el script sea ejecutable múltiples veces sin contaminación de estado.
         \Config\Services::validation()->reset();
-        $this->recintoModel = new RecintoModel();
+
+        // Mock parcial: solo se stubea insert() — el resto de la lógica es real.
+        $this->model = $this->getMockBuilder(RecintoModel::class)
+            ->onlyMethods(['insert'])
+            ->getMock();
+
+        $this->model->method('insert')->willReturn(true);
     }
 
     // ================================================================
@@ -36,10 +35,12 @@ class AltaRecintoTest extends CIUnitTestCase
 
     /**
      * @test
-     * @testdox Todos los datos válidos - Crea el alta
+     * @testdox Todos los datos válidos - Recinto registrado correctamente
      */
     public function altaRecinto_TodosLosDatosValidos()
     {
+        $this->model->expects($this->once())->method('insert');
+
         $resultado = $this->alta();
 
         $this->assertTrue($resultado['ok']);
@@ -47,10 +48,12 @@ class AltaRecintoTest extends CIUnitTestCase
 
     /**
      * @test
-     * @testdox Tarifa con decimales - Crea el alta
+     * @testdox Tarifa con decimales - Recinto registrado correctamente
      */
     public function altaRecinto_TarifaConDecimales_CreaElAlta()
     {
+        $this->model->expects($this->once())->method('insert');
+
         $resultado = $this->alta(['tarifa' => '1500.50']);
 
         $this->assertTrue($resultado['ok']);
@@ -66,6 +69,8 @@ class AltaRecintoTest extends CIUnitTestCase
      */
     public function altaRecinto_TarifaVacia_RetornaError()
     {
+        $this->model->expects($this->never())->method('insert');
+
         $resultado = $this->alta(['tarifa' => '']);
 
         $this->assertFalse($resultado['ok']);
@@ -78,6 +83,8 @@ class AltaRecintoTest extends CIUnitTestCase
      */
     public function altaRecinto_TarifaConLetras_RetornaError()
     {
+        $this->model->expects($this->never())->method('insert');
+
         $resultado = $this->alta(['tarifa' => 'abc']);
 
         $this->assertFalse($resultado['ok']);
@@ -90,6 +97,8 @@ class AltaRecintoTest extends CIUnitTestCase
      */
     public function altaRecinto_TarifaNegativa_RetornaError()
     {
+        $this->model->expects($this->never())->method('insert');
+
         $resultado = $this->alta(['tarifa' => '-100']);
 
         $this->assertFalse($resultado['ok']);
@@ -102,6 +111,8 @@ class AltaRecintoTest extends CIUnitTestCase
      */
     public function altaRecinto_TarifaCero_RetornaError()
     {
+        $this->model->expects($this->never())->method('insert');
+
         $resultado = $this->alta(['tarifa' => '0']);
 
         $this->assertFalse($resultado['ok']);
@@ -118,6 +129,8 @@ class AltaRecintoTest extends CIUnitTestCase
      */
     public function altaRecinto_DescripcionVacia_RetornaError()
     {
+        $this->model->expects($this->never())->method('insert');
+
         $resultado = $this->alta(['descripcion' => '']);
 
         $this->assertFalse($resultado['ok']);
@@ -130,6 +143,8 @@ class AltaRecintoTest extends CIUnitTestCase
      */
     public function altaRecinto_DescripcionMenorA3Caracteres_RetornaError()
     {
+        $this->model->expects($this->never())->method('insert');
+
         $resultado = $this->alta(['descripcion' => 'Ab']);
 
         $this->assertFalse($resultado['ok']);
@@ -142,6 +157,8 @@ class AltaRecintoTest extends CIUnitTestCase
      */
     public function altaRecinto_DescripcionMayorA50Caracteres_RetornaError()
     {
+        $this->model->expects($this->never())->method('insert');
+
         $resultado = $this->alta(['descripcion' => str_repeat('A', 51)]);
 
         $this->assertFalse($resultado['ok']);
@@ -165,7 +182,7 @@ class AltaRecintoTest extends CIUnitTestCase
     {
         $d = array_merge($this->datosRecintoValido(), $overrides);
 
-        return $this->recintoModel->altaRecinto(
+        return $this->model->altaRecinto(
             (string) $d['tarifa'],
             (string) $d['descripcion'],
             (int) $d['id_tipo_recinto']

@@ -59,7 +59,7 @@ class UsuarioController extends BaseController
         return view('plantillas/head', ['title' => 'Mi Perfil'])
             . view('contenido/perfil_usuario', [
                 'usuario' => $usuario,
-                'persona' => PersonaModel::getInstance()->find($usuario['id_persona']),
+                'persona' => (new PersonaModel())->find($usuario['id_persona']),
             ])
             . view('plantillas/footer');
     }
@@ -76,7 +76,7 @@ class UsuarioController extends BaseController
         return view('plantillas/head', ['title' => 'Editar Mi Perfil'])
             . view('contenido/editar_perfil', [
                 'usuario' => $usuario,
-                'persona' => PersonaModel::getInstance()->find($usuario['id_persona']),
+                'persona' => (new PersonaModel())->find($usuario['id_persona']),
             ])
             . view('plantillas/footer');
     }
@@ -179,7 +179,7 @@ class UsuarioController extends BaseController
         return view('plantillas/head', ['title' => 'Editar Usuario'])
             . view('contenido/crud_usuario/editar_usuario', [
                 'usuario' => $usuario,
-                'persona' => PersonaModel::getInstance()->find($usuario['id_persona']),
+                'persona' => (new PersonaModel())->find($usuario['id_persona']),
             ])
             . view('plantillas/footer');
     }

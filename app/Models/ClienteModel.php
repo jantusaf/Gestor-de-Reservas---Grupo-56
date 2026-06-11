@@ -21,7 +21,7 @@ class ClienteModel extends Model
         $db = \Config\Database::connect();
         $db->transBegin();
 
-        $personaResult = PersonaModel::getInstance()->altaPersona($persona);
+        $personaResult = (new PersonaModel())->altaPersona($persona);
         if (!$personaResult['ok']) {
             $db->transRollback();
             return $personaResult;
@@ -49,7 +49,7 @@ class ClienteModel extends Model
         $db = \Config\Database::connect();
         $db->transBegin();
 
-        $personaResult = PersonaModel::getInstance()->actualizarPersona($cliente['id_persona'], $persona);
+        $personaResult = (new PersonaModel())->actualizarPersona($cliente['id_persona'], $persona);
         if (!$personaResult['ok']) {
             $db->transRollback();
             return $personaResult;
@@ -67,18 +67,28 @@ class ClienteModel extends Model
         return $clienteResult;
     }
 
-    public function altaCliente(string $email, int $idPersona): array
+    /**
+     * @param PersonaModel|null $personaModel  Inyectable para pruebas unitarias puras.
+     */
+    public function altaCliente(string $email, int $idPersona, ?PersonaModel $personaModel = null): array
     {
+        $personaModel ??= new PersonaModel();
+
         $validation = \Config\Services::validation();
 
         if (!$validation->setRules([
-            'email' => ['label' => 'Email', 'rules' => 'required|valid_email|max_length[100]|is_unique[cliente.email]'],
+            'email' => ['label' => 'Email', 'rules' => 'required|valid_email|max_length[100]'],
         ])->run(['email' => $email])) {
             return ['ok' => false, 'errores' => $validation->getErrors()];
         }
 
+        // Unicidad del email separada de is_unique para permitir pruebas unitarias puras (mockeable).
+        if ($this->where('email', $email)->first()) {
+            return ['ok' => false, 'errores' => ['email' => 'El email ya está registrado.']];
+        }
+
         // La persona debe existir para poder asignarla como cliente.
-        if (!PersonaModel::getInstance()->find($idPersona)) {
+        if (!$personaModel->find($idPersona)) {
             return ['ok' => false, 'errores' => ['id_persona' => 'No se puede asignar como cliente: la persona no está registrada.']];
         }
 
