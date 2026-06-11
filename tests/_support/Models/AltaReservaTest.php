@@ -33,14 +33,7 @@ class AltaReservaTest extends CIUnitTestCase
         return $model;
     }
 
-    // ================================================================
-    // CAMINO FELIZ
-    // ================================================================
 
-    /**
-     * @test
-     * @testdox Todos los datos válidos - Reserva registrada correctamente
-     */
     public function crearReserva_TodosLosDatosValidos()
     {
         $model = $this->makeModel();
@@ -53,14 +46,7 @@ class AltaReservaTest extends CIUnitTestCase
         $this->assertEquals(1, $resultado['id']);
     }
 
-    // ================================================================
-    // VALIDACIONES DE FECHA
-    // ================================================================
 
-    /**
-     * @test
-     * @testdox Fecha vacía - Retorna error
-     */
     public function crearReserva_FechaVacia_RetornaError()
     {
         $model = $this->makeModel([
@@ -75,10 +61,7 @@ class AltaReservaTest extends CIUnitTestCase
         $this->assertArrayHasKey('fecha_reserva', $resultado['mensajes']);
     }
 
-    /**
-     * @test
-     * @testdox Fecha anterior a hoy - Retorna error
-     */
+
     public function crearReserva_FechaAnteriorAHoy_RetornaError()
     {
         $model = $this->makeModel([
@@ -93,14 +76,7 @@ class AltaReservaTest extends CIUnitTestCase
         $this->assertArrayHasKey('fecha_reserva', $resultado['mensajes']);
     }
 
-    // ================================================================
-    // VALIDACIONES DE CLIENTE
-    // ================================================================
 
-    /**
-     * @test
-     * @testdox Cliente no seleccionado - Retorna error
-     */
     public function crearReserva_ClienteNoSeleccionado_RetornaError()
     {
         $model = $this->makeModel([
@@ -115,10 +91,7 @@ class AltaReservaTest extends CIUnitTestCase
         $this->assertArrayHasKey('id_cliente', $resultado['mensajes']);
     }
 
-    /**
-     * @test
-     * @testdox Cliente inactivo o inexistente - Retorna error
-     */
+
     public function crearReserva_ClienteInactivo_RetornaError()
     {
         $model = $this->makeModel([
@@ -133,14 +106,7 @@ class AltaReservaTest extends CIUnitTestCase
         $this->assertArrayHasKey('id_cliente', $resultado['mensajes']);
     }
 
-    // ================================================================
-    // VALIDACIONES DE RECINTO
-    // ================================================================
 
-    /**
-     * @test
-     * @testdox Recinto no seleccionado - Retorna error
-     */
     public function crearReserva_RecintoNoSeleccionado_RetornaError()
     {
         $model = $this->makeModel([
@@ -155,10 +121,7 @@ class AltaReservaTest extends CIUnitTestCase
         $this->assertArrayHasKey('id_recinto', $resultado['mensajes']);
     }
 
-    /**
-     * @test
-     * @testdox Recinto inválido o no habilitado - Retorna error
-     */
+
     public function crearReserva_RecintoInhabilitado_RetornaError()
     {
         $model = $this->makeModel([
@@ -173,14 +136,7 @@ class AltaReservaTest extends CIUnitTestCase
         $this->assertArrayHasKey('id_recinto', $resultado['mensajes']);
     }
 
-    // ================================================================
-    // VALIDACIONES DE HORARIO
-    // ================================================================
 
-    /**
-     * @test
-     * @testdox Horario no seleccionado - Retorna error
-     */
     public function crearReserva_HorarioNoSeleccionado_RetornaError()
     {
         $model = $this->makeModel([
@@ -195,10 +151,7 @@ class AltaReservaTest extends CIUnitTestCase
         $this->assertArrayHasKey('id_horario', $resultado['mensajes']);
     }
 
-    /**
-     * @test
-     * @testdox Horario ya reservado - Retorna error
-     */
+
     public function crearReserva_HorarioOcupado_RetornaError()
     {
         $model = $this->makeModel([
