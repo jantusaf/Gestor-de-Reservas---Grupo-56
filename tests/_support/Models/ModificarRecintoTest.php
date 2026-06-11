@@ -5,13 +5,7 @@ namespace Tests\Support\Models;
 use App\Models\RecintoModel;
 use CodeIgniter\Test\CIUnitTestCase;
 
-/**
- * Pruebas Unitarias - Modificar Recinto
- * Método: RecintoModel::modificarRecinto(int $id, string $tarifa, string $descripcion, int $idTipoRecinto, string $estadoRecinto)
- *
- * Pruebas FANTASMAS: no se conectan a la base de datos.
- * Se mockea update() para simular la actualización sin tocar la BD.
- */
+
 class ModificarRecintoTest extends CIUnitTestCase
 {
     private RecintoModel $model;
@@ -29,14 +23,7 @@ class ModificarRecintoTest extends CIUnitTestCase
         $this->model->method('update')->willReturn(true);
     }
 
-    // ================================================================
-    // CAMINO FELIZ
-    // ================================================================
 
-    /**
-     * @test
-     * @testdox Todos los datos válidos - Recinto modificado correctamente
-     */
     public function modificarRecinto_TodosLosDatosValidos()
     {
         $this->model->expects($this->once())->method('update');
@@ -46,10 +33,7 @@ class ModificarRecintoTest extends CIUnitTestCase
         $this->assertTrue($resultado['ok']);
     }
 
-    /**
-     * @test
-     * @testdox Cambiar estado a inactivo - Recinto modificado correctamente
-     */
+
     public function modificarRecinto_CambiarEstadoAInactivo_ModificaElRecinto()
     {
         $this->model->expects($this->once())->method('update');
@@ -63,14 +47,7 @@ class ModificarRecintoTest extends CIUnitTestCase
         $this->assertTrue($resultado['ok']);
     }
 
-    // ================================================================
-    // VALIDACIONES DE TARIFA
-    // ================================================================
 
-    /**
-     * @test
-     * @testdox Tarifa vacía - Retorna error
-     */
     public function modificarRecinto_TarifaVacia_RetornaError()
     {
         $this->model->expects($this->never())->method('update');
@@ -81,10 +58,7 @@ class ModificarRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('tarifa', $resultado['errores']);
     }
 
-    /**
-     * @test
-     * @testdox Tarifa con letras - Retorna error
-     */
+
     public function modificarRecinto_TarifaConLetras_RetornaError()
     {
         $this->model->expects($this->never())->method('update');
@@ -95,10 +69,7 @@ class ModificarRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('tarifa', $resultado['errores']);
     }
 
-    /**
-     * @test
-     * @testdox Tarifa negativa - Retorna error
-     */
+
     public function modificarRecinto_TarifaNegativa_RetornaError()
     {
         $this->model->expects($this->never())->method('update');
@@ -109,10 +80,7 @@ class ModificarRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('tarifa', $resultado['errores']);
     }
 
-    /**
-     * @test
-     * @testdox Tarifa igual a cero - Retorna error
-     */
+
     public function modificarRecinto_TarifaCero_RetornaError()
     {
         $this->model->expects($this->never())->method('update');
@@ -123,14 +91,7 @@ class ModificarRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('tarifa', $resultado['errores']);
     }
 
-    // ================================================================
-    // VALIDACIONES DE DESCRIPCIÓN
-    // ================================================================
 
-    /**
-     * @test
-     * @testdox Descripción vacía - Retorna error
-     */
     public function modificarRecinto_DescripcionVacia_RetornaError()
     {
         $this->model->expects($this->never())->method('update');
@@ -141,10 +102,7 @@ class ModificarRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('descripcion', $resultado['errores']);
     }
 
-    /**
-     * @test
-     * @testdox Descripción menor a 3 caracteres - Retorna error
-     */
+
     public function modificarRecinto_DescripcionMenorA3Caracteres_RetornaError()
     {
         $this->model->expects($this->never())->method('update');
@@ -155,10 +113,7 @@ class ModificarRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('descripcion', $resultado['errores']);
     }
 
-    /**
-     * @test
-     * @testdox Descripción mayor a 50 caracteres - Retorna error
-     */
+
     public function modificarRecinto_DescripcionMayorA50Caracteres_RetornaError()
     {
         $this->model->expects($this->never())->method('update');
@@ -169,10 +124,7 @@ class ModificarRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('descripcion', $resultado['errores']);
     }
 
-    /**
-     * @test
-     * @testdox Estado inválido - Retorna error
-     */
+
     public function modificarRecinto_EstadoInvalido_RetornaError()
     {
         $this->model->expects($this->never())->method('update');
@@ -183,9 +135,6 @@ class ModificarRecintoTest extends CIUnitTestCase
         $this->assertArrayHasKey('estado_recinto', $resultado['errores']);
     }
 
-    // ================================================================
-    // HELPERS
-    // ================================================================
 
     private function datosRecintoValido(): array
     {
