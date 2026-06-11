@@ -24,6 +24,10 @@ class AltaRecintoTest extends CIUnitTestCase
     }
 
 
+    /**
+     * @test
+     * @testdox Todos los datos válidos - Recinto registrado correctamente
+     */
     public function altaRecinto_TodosLosDatosValidos()
     {
         $this->model->expects($this->once())->method('insert');
@@ -34,6 +38,10 @@ class AltaRecintoTest extends CIUnitTestCase
     }
 
 
+    /**
+     * @test
+     * @testdox Tarifa con decimales - Recinto registrado correctamente
+     */
     public function altaRecinto_TarifaConDecimales_CreaElAlta()
     {
         $this->model->expects($this->once())->method('insert');
@@ -44,6 +52,10 @@ class AltaRecintoTest extends CIUnitTestCase
     }
 
 
+    /**
+     * @test
+     * @testdox Tarifa vacía - Retorna error
+     */
     public function altaRecinto_TarifaVacia_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -55,6 +67,10 @@ class AltaRecintoTest extends CIUnitTestCase
     }
 
 
+    /**
+     * @test
+     * @testdox Tarifa con letras - Retorna error
+     */
     public function altaRecinto_TarifaConLetras_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -66,6 +82,10 @@ class AltaRecintoTest extends CIUnitTestCase
     }
 
 
+    /**
+     * @test
+     * @testdox Tarifa negativa - Retorna error
+     */
     public function altaRecinto_TarifaNegativa_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -77,6 +97,10 @@ class AltaRecintoTest extends CIUnitTestCase
     }
 
 
+    /**
+     * @test
+     * @testdox Tarifa igual a cero - Retorna error
+     */
     public function altaRecinto_TarifaCero_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -88,6 +112,10 @@ class AltaRecintoTest extends CIUnitTestCase
     }
 
 
+    /**
+     * @test
+     * @testdox Descripción vacía - Retorna error
+     */
     public function altaRecinto_DescripcionVacia_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -99,6 +127,10 @@ class AltaRecintoTest extends CIUnitTestCase
     }
 
 
+    /**
+     * @test
+     * @testdox Descripción menor a 3 caracteres - Retorna error
+     */
     public function altaRecinto_DescripcionMenorA3Caracteres_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
@@ -110,6 +142,10 @@ class AltaRecintoTest extends CIUnitTestCase
     }
 
 
+    /**
+     * @test
+     * @testdox Descripción mayor a 50 caracteres - Retorna error
+     */
     public function altaRecinto_DescripcionMayorA50Caracteres_RetornaError()
     {
         $this->model->expects($this->never())->method('insert');
