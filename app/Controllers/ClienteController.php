@@ -25,13 +25,13 @@ class ClienteController extends BaseController
         $clienteModel = new ClienteModel();
 
         $persona = new Persona([
-            'dni'              => $this->request->getPost('dni')              ?? '',
-            'nombre'           => $this->request->getPost('nombre')           ?? '',
-            'apellido'         => $this->request->getPost('apellido')         ?? '',
+            'dni'  => $this->request->getPost('dni') ?? '',
+            'nombre' => $this->request->getPost('nombre') ?? '',
+            'apellido' => $this->request->getPost('apellido') ?? '',
             'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento') ?? '',
-            'telefono'         => $this->request->getPost('telefono')         ?? '',
-            'calle'            => $this->request->getPost('calle')            ?? '',
-            'altura'           => $this->request->getPost('altura')           ?? '',
+            'telefono' => $this->request->getPost('telefono') ?? '',
+            'calle'  => $this->request->getPost('calle') ?? '',
+            'altura' => $this->request->getPost('altura') ?? '',
         ]);
 
         $resultado = $clienteModel->registrarCliente(
@@ -49,11 +49,11 @@ class ClienteController extends BaseController
     public function listarClientes()
     {
         $clienteModel = new ClienteModel();
-        $dni          = trim($this->request->getGet('dni') ?? '');
+        $dni  = trim($this->request->getGet('dni') ?? '');
 
         return view('plantillas/head', ['title' => 'Listado de Clientes'])
             . view('contenido/crud_cliente/listar_clientes', [
-                'clientes'     => $clienteModel->listarClientes($dni),
+                'clientes' => $clienteModel->listarClientes($dni),
                 'dni_busqueda' => $dni,
             ])
             . view('plantillas/footer');
@@ -62,7 +62,7 @@ class ClienteController extends BaseController
     public function formularioEditar($id)
     {
         $clienteModel = new ClienteModel();
-        $cliente      = $clienteModel->find((int) $id);
+        $cliente = $clienteModel->find((int) $id);
 
         if (!$cliente) {
             return redirect()->to('/cliente/listar')->with('error', 'Cliente no encontrado.');
@@ -81,19 +81,19 @@ class ClienteController extends BaseController
         $clienteModel = new ClienteModel();
 
         $persona = new Persona([
-            'dni'              => $this->request->getPost('dni')              ?? '',
-            'nombre'           => $this->request->getPost('nombre')           ?? '',
-            'apellido'         => $this->request->getPost('apellido')         ?? '',
+            'dni'  => $this->request->getPost('dni') ?? '',
+            'nombre'  => $this->request->getPost('nombre')  ?? '',
+            'apellido'  => $this->request->getPost('apellido')?? '',
             'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento') ?? '',
-            'telefono'         => $this->request->getPost('telefono')         ?? '',
-            'calle'            => $this->request->getPost('calle')            ?? '',
-            'altura'           => $this->request->getPost('altura')           ?? '',
+            'telefono'  => $this->request->getPost('telefono') ?? '',
+            'calle'  => $this->request->getPost('calle') ?? '',
+            'altura' => $this->request->getPost('altura') ?? '',
         ]);
 
         $resultado = $clienteModel->modificarCliente(
             (int) $id,
             $persona,
-            $this->request->getPost('email')          ?? '',
+            $this->request->getPost('email')  ?? '',
             $this->request->getPost('estado_cliente') ?? '',
         );
 

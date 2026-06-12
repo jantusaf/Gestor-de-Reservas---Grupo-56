@@ -21,7 +21,7 @@ class RecintoController extends Controller
         $recintoModel = new RecintoModel();
 
         $resultado = $recintoModel->altaRecinto(
-            $this->request->getPost('tarifa')      ?? '',
+            $this->request->getPost('tarifa')?? '',
             $this->request->getPost('descripcion') ?? '',
             (int) $this->request->getPost('id_tipo_recinto')
         );
@@ -35,7 +35,7 @@ class RecintoController extends Controller
 
     public function listarRecintos()
     {
-        $recintoModel     = new RecintoModel();
+        $recintoModel = new RecintoModel();
         $data['recintos'] = $recintoModel->listarRecintos();
 
         return view('plantillas/head')
@@ -77,7 +77,7 @@ class RecintoController extends Controller
         return view('plantillas/head')
             . view('contenido/crud_recinto/editar_recinto', [
                 'recinto' => $recinto,
-                'tipos'   => $recintoModel->listarTipos(),
+                'tipos' => $recintoModel->listarTipos(),
             ])
             . view('plantillas/footer');
     }
@@ -88,10 +88,10 @@ class RecintoController extends Controller
 
         $resultado = $recintoModel->modificarRecinto(
             (int) $id,
-            $this->request->getPost('tarifa')         ?? '',
-            $this->request->getPost('descripcion')    ?? '',
+            $this->request->getPost('tarifa')?? '',
+            $this->request->getPost('descripcion')?? '',
             (int) $this->request->getPost('id_tipo_recinto'),
-            $this->request->getPost('estado_recinto') ?? ''
+            $this->request->getPost('estado_recinto')?? ''
         );
 
         if (!$resultado['ok']) {

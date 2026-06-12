@@ -5,7 +5,7 @@ use CodeIgniter\Model;
 
 class HorarioModel extends Model
 {
-    protected $table      = 'horario';
+    protected $table = 'horario';
     protected $primaryKey = 'id_horario';
 
     protected $allowedFields = [

@@ -21,7 +21,7 @@ class ReservaController extends Controller
 
     public function horasDisponibles()
     {
-        $fecha     = $this->request->getPost('fecha_reserva');
+        $fecha = $this->request->getPost('fecha_reserva');
         $idRecinto = (int) $this->request->getPost('id_recinto');
         $excluirId = (int) ($this->request->getPost('excluir_reserva') ?? 0);
 
@@ -54,11 +54,11 @@ class ReservaController extends Controller
     public function listarReservas()
     {
         $reservaModel = new ReservaModel();
-        $dni          = trim($this->request->getGet('dni') ?? '');
+        $dni = trim($this->request->getGet('dni') ?? '');
 
         return view('plantillas/head', ['title' => 'Listado de Reservas'])
             . view('contenido/crud_reserva/listar_reservas', [
-                'reservas'     => $reservaModel->listarReservas($dni),
+                'reservas' => $reservaModel->listarReservas($dni),
                 'dni_busqueda' => $dni,
             ])
             . view('plantillas/footer');
@@ -67,7 +67,7 @@ class ReservaController extends Controller
     public function formularioEditar($id)
     {
         $reservaModel = new ReservaModel();
-        $reserva      = $reservaModel->find((int) $id);
+        $reserva = $reservaModel->find((int) $id);
 
         if (!$reserva) {
             return redirect()->to('/reserva/listar')->with('error', 'Reserva no encontrada.');
@@ -75,7 +75,7 @@ class ReservaController extends Controller
 
         return view('plantillas/head', ['title' => 'Editar Reserva'])
             . view('contenido/crud_reserva/editar_reserva', [
-                'reserva'  => $reserva,
+                'reserva' => $reserva,
                 'clientes' => (new ClienteModel())->listarClientesActivos(),
                 'recintos' => (new RecintoModel())->listarRecintosActivos(),
                 'horarios' => (new HorarioModel())->listarHorarios(),

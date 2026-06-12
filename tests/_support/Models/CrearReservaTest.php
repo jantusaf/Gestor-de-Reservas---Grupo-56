@@ -6,13 +6,13 @@ use App\Models\ReservaModel;
 use CodeIgniter\Test\CIUnitTestCase;
 
 /**
- * Pruebas Unitarias - Alta de Reserva
+ * Pruebas Unitarias - Crear Reserva
  * Método: ReservaModel::crearReserva(string $fecha, int $idCliente, int $idRecinto, int $idHorario, int $idUsuario)
  *
  * Pruebas FANTASMAS: no se conectan a la base de datos.
  * Se mockean validarReserva(), insert() y getInsertID() en ReservaModel.
  */
-class AltaReservaTest extends CIUnitTestCase
+class CrearReservaTest extends CIUnitTestCase
 {
     protected function setUp(): void
     {

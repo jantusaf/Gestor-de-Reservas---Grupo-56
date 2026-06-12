@@ -46,27 +46,27 @@ class UsuarioModel extends Model
         }
 
         return [
-            'ok'    => true,
+            'ok'=> true,
             'sesion' => [
-                'id_usuario'     => $usuario['id_usuario'],
+                'id_usuario'=> $usuario['id_usuario'],
                 'nombre_usuario' => $usuario['nombre_usuario'],
-                'apellido'       => $persona['apellido'],
-                'dni_usuario'    => $persona['dni'],
-                'id_tipo'        => $usuario['id_tipo_usuario'],
-                'logged_in'      => true,
+                'apellido'=> $persona['apellido'],
+                'dni_usuario'=> $persona['dni'],
+                'id_tipo'=> $usuario['id_tipo_usuario'],
+                'logged_in'=> true,
             ],
         ];
     }
 
     public function registrarUsuario(Persona $persona, string $nombreUsuario, string $contrasena): array
     {
-        // Se validan las credenciales primero para poder mostrar TODOS los errores
-        // (persona + usuario) juntos. Los errores se capturan ACÁ, antes de que
+        // Se validan las credenciales primero para poder mostrar los errores
+        // (persona + usuario) juntos. Los errores se capturan antes de que
         // altaPersona reutilice el servicio de validación compartido.
         $validation = \Config\Services::validation();
         $credsOk = $validation->setRules([
             'nombre_usuario' => ['label' => 'Nombre de usuario', 'rules' => 'required|min_length[3]|max_length[50]|is_unique[usuario.nombre_usuario]'],
-            'contrasena'     => ['label' => 'Contraseña',        'rules' => 'required|min_length[6]|max_length[100]'],
+            'contrasena'=> ['label' => 'Contraseña','rules' => 'required|min_length[6]|max_length[100]'],
         ])->run(['nombre_usuario' => $nombreUsuario, 'contrasena' => $contrasena]);
         $credErrores = $credsOk ? [] : $validation->getErrors();
 
@@ -75,8 +75,7 @@ class UsuarioModel extends Model
 
         $personaResult = (new PersonaModel())->altaPersona($persona);
 
-        // Si falla la persona o las credenciales, se juntan todos los errores
-        // y se aborta (no se inserta nada).
+        // Si falla la persona o las credenciales, se juntan todos los errores y se aborta (no se inserta nada).
         if (!$personaResult['ok'] || !$credsOk) {
             $db->transRollback();
             return [
@@ -88,7 +87,7 @@ class UsuarioModel extends Model
         $usuarioResult = $this->altaUsuario($nombreUsuario, $contrasena, $personaResult['id']);
         if (!$usuarioResult['ok']) {
             // Si falla el alta del usuario, se revierte la persona ya insertada
-            // para no dejar registros huérfanos en la base de datos.
+           
             $db->transRollback();
             return $usuarioResult;
         }
@@ -97,8 +96,7 @@ class UsuarioModel extends Model
         return $usuarioResult;
     }
 
-    // Edición del propio perfil: actualiza los datos de la persona (excepto el DNI)
-    // y el nombre de usuario. No modifica el estado del usuario.
+    // edición del propio perfil actualiza los datos de la persona xcepto el DNImy el nombre de usuario. No modifica el estado del usuario
     public function modificarPerfil(int $id, Persona $persona, string $nombreUsuario): array
     {
         $usuario = $this->find($id);
@@ -106,7 +104,7 @@ class UsuarioModel extends Model
             return ['ok' => false, 'errores' => ['id' => 'Usuario no encontrado.']];
         }
 
-        // Se valida el nombre de usuario ANTES de escribir nada en la base de datos.
+        // Se valida el nombre de usuario antes de escribir algo  en la base de datos
         $validation = \Config\Services::validation();
         if (!$validation->setRules([
             'nombre_usuario' => ['label' => 'Nombre de usuario', 'rules' => "required|min_length[3]|max_length[50]|is_unique[usuario.nombre_usuario,id_usuario,{$id}]"],
@@ -114,7 +112,7 @@ class UsuarioModel extends Model
             return ['ok' => false, 'errores' => $validation->getErrors()];
         }
 
-        // El DNI no se puede modificar desde el perfil: se conserva el actual.
+        // El dni no se puede modificar desde el perfil: se conserva el actual
         $personaModel  = new PersonaModel();
         $personaActual = $personaModel->find($usuario['id_persona']);
         $persona->dni  = $personaActual['dni'];
@@ -139,19 +137,19 @@ class UsuarioModel extends Model
 
         if (!$validation->setRules([
             'nombre_usuario' => ['label' => 'Nombre de usuario', 'rules' => 'required|min_length[3]|max_length[50]|is_unique[usuario.nombre_usuario]'],
-            'contrasena'     => ['label' => 'Contraseña',        'rules' => 'required|min_length[6]|max_length[100]'],
+            'contrasena'=> ['label' => 'Contraseña','rules' => 'required|min_length[6]|max_length[100]'],
         ])->run([
             'nombre_usuario' => $nombreUsuario,
-            'contrasena'     => $contrasena,
+            'contrasena'=> $contrasena,
         ])) {
             return ['ok' => false, 'errores' => $validation->getErrors()];
         }
 
         $this->insert([
-            'nombre_usuario'  => $nombreUsuario,
-            'contrasena'      => password_hash($contrasena, PASSWORD_DEFAULT),
+            'nombre_usuario'=> $nombreUsuario,
+            'contrasena'=> password_hash($contrasena, PASSWORD_DEFAULT),
             'estado_usuario'  => 'activo',
-            'id_persona'      => $idPersona,
+            'id_persona'=> $idPersona,
             'id_tipo_usuario' => 2,
         ]);
 
@@ -167,7 +165,7 @@ class UsuarioModel extends Model
         $this->update($id, ['estado_usuario' => 'inactivo']);
         return true;
     }
-
+//se podria aplicar procedimientos almcacenados para las consultas
     public function listarUsuarios(): array
     {
         return \Config\Database::connect()
@@ -192,16 +190,16 @@ class UsuarioModel extends Model
             return ['ok' => false, 'errores' => ['id' => 'Usuario no encontrado.']];
         }
 
-        // Se valida ANTES de escribir nada en la base de datos.
+        // Se valida antes  de escribir algo en la bd
         $validation = \Config\Services::validation();
         if (!$validation->setRules([
             'nombre_usuario' => ['label' => 'Nombre de usuario', 'rules' => 'required|min_length[3]|max_length[50]'],
-            'estado_usuario' => ['label' => 'Estado',            'rules' => 'required|in_list[activo,inactivo]'],
+            'estado_usuario' => ['label' => 'Estado','rules' => 'required|in_list[activo,inactivo]'],
         ])->run(['nombre_usuario' => $nombreUsuario, 'estado_usuario' => $estadoUsuario])) {
             return ['ok' => false, 'errores' => $validation->getErrors()];
         }
 
-        // Unicidad del nombre de usuario excluyendo el propio usuario (mockeable en tests unitarios).
+        // (mockeable en tests unitarios).
         if ($this->where('nombre_usuario', $nombreUsuario)->where('id_usuario !=', $id)->first()) {
             return ['ok' => false, 'errores' => ['nombre_usuario' => 'El nombre de usuario ya está registrado.']];
         }

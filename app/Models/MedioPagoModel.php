@@ -4,7 +4,7 @@ use CodeIgniter\Model;
 
 class MedioPagoModel extends Model
 {
-    protected $table      = 'medio_pago';
+    protected $table = 'medio_pago';
     protected $primaryKey = 'id_medio_pago';
     protected $allowedFields = ['nombre_medio_pago'];
 }

@@ -6,7 +6,7 @@ use App\Entities\Persona;
 
 class ClienteModel extends Model
 {
-    protected $table      = 'cliente';
+    protected $table= 'cliente';
     protected $primaryKey = 'id_cliente';
 
     protected $allowedFields = [
@@ -29,8 +29,7 @@ class ClienteModel extends Model
 
         $clienteResult = $this->altaCliente($email, $personaResult['id']);
         if (!$clienteResult['ok']) {
-            // Si falla el alta del cliente, se revierte la persona ya insertada
-            // para no dejar registros huérfanos en la base de datos.
+            // si falla el alta del cliente se revierte la persona ya insertada para no dejar registros huerfanos en la bd.
             $db->transRollback();
             return $clienteResult;
         }
@@ -57,8 +56,7 @@ class ClienteModel extends Model
 
         $clienteResult = $this->actualizarCliente($id, $email, $estadoCliente);
         if (!$clienteResult['ok']) {
-            // Si la validación del cliente falla, se revierte también el cambio
-            // de persona para no dejar datos modificados a medias.
+            //si la validación del cliente falla se revierte  el cambio de persona para no dejar datos modificados a medias
             $db->transRollback();
             return $clienteResult;
         }
@@ -82,29 +80,29 @@ class ClienteModel extends Model
             return ['ok' => false, 'errores' => $validation->getErrors()];
         }
 
-        // Unicidad del email separada de is_unique para permitir pruebas unitarias puras (mockeable).
+        // unicidad del email separada de is_unique para permitir pruebas unitarias puras
         if ($this->where('email', $email)->first()) {
             return ['ok' => false, 'errores' => ['email' => 'El email ya está registrado.']];
         }
 
-        // La persona debe existir para poder asignarla como cliente.
+        // la persona debe existir para poder asignarla como cliente
         if (!$personaModel->find($idPersona)) {
             return ['ok' => false, 'errores' => ['id_persona' => 'No se puede asignar como cliente: la persona no está registrada.']];
         }
 
         $this->insert([
-            'email'          => $email,
-            'fecha_alta'     => date('Y-m-d'),
-            'estado_cliente' => 'activo',
-            'id_persona'     => $idPersona,
+            'email'=> $email,
+            'fecha_alta'=> date('Y-m-d'),
+            'estado_cliente'=> 'activo',
+            'id_persona'=> $idPersona,
         ]);
 
         return ['ok' => true, 'id' => $this->getInsertID()];
     }
-
+//se podria aplicar procedimientos almcacenados para las consultas
     public function listarClientes(string $dni = ''): array
     {
-        $db      = \Config\Database::connect();
+        $db = \Config\Database::connect();
         $builder = $db->table('cliente')
             ->select('cliente.id_cliente, cliente.email, cliente.fecha_alta, cliente.estado_cliente, cliente.id_persona,
                       persona.nombre, persona.apellido, persona.dni, persona.telefono, persona.calle, persona.altura, persona.fecha_nacimiento')
@@ -137,14 +135,14 @@ class ClienteModel extends Model
         $validation = \Config\Services::validation();
 
         if (!$validation->setRules([
-            'email'          => ['label' => 'Email',  'rules' => "required|valid_email|max_length[100]|is_unique[cliente.email,id_cliente,{$id}]"],
+            'email'=> ['label' => 'Email',  'rules' => "required|valid_email|max_length[100]|is_unique[cliente.email,id_cliente,{$id}]"],
             'estado_cliente' => ['label' => 'Estado', 'rules' => 'required|in_list[activo,inactivo]'],
         ])->run(['email' => $email, 'estado_cliente' => $estadoCliente])) {
             return ['ok' => false, 'errores' => $validation->getErrors()];
         }
 
         $this->update($id, [
-            'email'          => $email,
+            'email'=> $email,
             'estado_cliente' => $estadoCliente,
         ]);
 

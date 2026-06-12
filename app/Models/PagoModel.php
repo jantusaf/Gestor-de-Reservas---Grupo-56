@@ -4,7 +4,7 @@ use CodeIgniter\Model;
 
 class PagoModel extends Model
 {
-    protected $table      = 'pago';
+    protected $table = 'pago';
     protected $primaryKey = 'id_pago';
     protected $allowedFields = [
         'fecha_pago',
@@ -14,7 +14,7 @@ class PagoModel extends Model
         'id_medio_pago',
         'id_usuario'
     ];
-
+//se podria aplicar procedimientos almcacenados para las consultas
     public function listarPagos(): array
     {
         $db = \Config\Database::connect();
@@ -24,18 +24,18 @@ class PagoModel extends Model
                     persona.apellido,
                     medio_pago.nombre_medio_pago,
                     usuario.nombre_usuario')
-            ->join('reserva',    'reserva.id_reserva = pago.id_reserva')
-            ->join('cliente',    'cliente.id_cliente = reserva.id_cliente')
-            ->join('persona',    'persona.id_persona = cliente.id_persona')
-            ->join('medio_pago', 'medio_pago.id_medio_pago = pago.id_medio_pago')
-            ->join('usuario',    'usuario.id_usuario = pago.id_usuario')
+            ->join('reserva','reserva.id_reserva = pago.id_reserva')
+            ->join('cliente','cliente.id_cliente = reserva.id_cliente')
+            ->join('persona','persona.id_persona = cliente.id_persona')
+            ->join('medio_pago','medio_pago.id_medio_pago = pago.id_medio_pago')
+            ->join('usuario','usuario.id_usuario = pago.id_usuario')
             ->get()
             ->getResultArray();
     }
 
     public function datosFactura(int $idReserva): ?array
     {
-        $db  = \Config\Database::connect();
+        $db = \Config\Database::connect();
         $row = $db->query('CALL sp_datos_factura(?)', [$idReserva])->getRowArray();
 
         return $row ?: null;
@@ -50,8 +50,7 @@ class PagoModel extends Model
             return ['ok' => false, 'mensajes' => ['id_medio_pago' => 'Reserva no encontrada.']];
         }
 
-        // El estado de pago vive en la tabla 'pago': la reserva está pagada
-        // si ya existe un pago vigente (no reembolsado) asociado.
+        // el estado de pago vive en la tabla pago, la reserva está pagada si ya existe un pago vigente (no reembolsado) asociado
         $pagoVigente = $this->where('id_reserva', $idReserva)->where('estado', 'pagada')->first();
         if ($pagoVigente) {
             return ['ok' => false, 'mensajes' => ['id_medio_pago' => 'Esta reserva ya fue pagada.']];
@@ -61,18 +60,17 @@ class PagoModel extends Model
             return ['ok' => false, 'mensajes' => ['id_medio_pago' => 'El medio de pago es obligatorio.']];
         }
 
-        // El pago y la confirmación de la reserva deben guardarse juntos:
-        // o se registran ambos, o ninguno.
+        // el pago y la confirmacion de la reserva deben guardarse juntos, o se registran ambos o ninguno
         $db = \Config\Database::connect();
         $db->transBegin();
 
         $this->insert([
-            'id_reserva'    => $idReserva,
-            'monto_total'   => $reserva['monto'],
-            'estado'        => 'pagada',
+            'id_reserva'=> $idReserva,
+            'monto_total'=> $reserva['monto'],
+            'estado'=> 'pagada',
             'id_medio_pago' => $idMedioPago,
-            'fecha_pago'    => date('Y-m-d'),
-            'id_usuario'    => $idUsuario,
+            'fecha_pago'=> date('Y-m-d'),
+            'id_usuario'=> $idUsuario,
         ]);
 
         $reservaModel->update($idReserva, [

@@ -11,7 +11,7 @@ use App\States\Reserva\EstadoVencida;
 
 class ReservaModel extends Model
 {
-    protected $table      = 'reserva';
+    protected $table = 'reserva';
     protected $primaryKey = 'id_reserva';
 
     protected $allowedFields = [
@@ -77,7 +77,7 @@ class ReservaModel extends Model
     }
 
     /**
-     * Delega la acción al estado actual de la reserva (patrón State).
+     * Delega la acción al estado actual de la reserva
      * Resuelve el estado desde estado_reserva, instancia la clase correspondiente
      * y le delega pagar() o cancelar().
      */
@@ -93,8 +93,8 @@ class ReservaModel extends Model
         $inicioTurno = strtotime($reserva['fecha_reserva'] . ' ' . ($horario['horario'] ?? '23:59:59'));
         $finTurno    = $inicioTurno + 3600;
 
-        // Cancelar solo es válido antes de que empiece el turno.
-        // Pagar es válido hasta que termina el turno (fin = inicio + 1h).
+        // cancelar solo es valido antes de que empiece el turno
+        // pagar es valido hasta que termina el turno 
         if ($accion === 'cancelar' && time() >= $inicioTurno) {
             return ['ok' => false, 'mensaje' => 'No se puede cancelar una reserva una vez que el turno ya comenzó.'];
         }
@@ -128,18 +128,18 @@ class ReservaModel extends Model
         $reglasFecha = $validarFechaFutura ? 'required|valid_date|check_future_or_today' : 'required|valid_date';
 
         if (!$validation->setRules([
-            'fecha_reserva' => ['label' => 'Fecha',   'rules' => $reglasFecha],
-            'id_cliente'    => ['label' => 'Cliente',  'rules' => 'required|integer|greater_than[0]',
+            'fecha_reserva' => ['label' => 'Fecha','rules' => $reglasFecha],
+            'id_cliente'=> ['label' => 'Cliente','rules' => 'required|integer|greater_than[0]',
                                 'errors' => ['required' => 'El campo Cliente es obligatorio.', 'integer' => 'El campo Cliente es inválido.', 'greater_than' => 'El campo Cliente es obligatorio.']],
-            'id_recinto'    => ['label' => 'Recinto',  'rules' => 'required|integer|greater_than[0]',
+            'id_recinto'=> ['label' => 'Recinto','rules' => 'required|integer|greater_than[0]',
                                 'errors' => ['required' => 'El campo Recinto es obligatorio.', 'integer' => 'El campo Recinto es inválido.', 'greater_than' => 'El campo Recinto es obligatorio.']],
-            'id_horario'    => ['label' => 'Horario',  'rules' => 'required|integer|greater_than[0]',
+            'id_horario'=> ['label' => 'Horario','rules' => 'required|integer|greater_than[0]',
                                 'errors' => ['required' => 'El campo Horario es obligatorio.', 'integer' => 'El campo Horario es inválido.', 'greater_than' => 'El campo Horario es obligatorio.']],
         ])->run([
             'fecha_reserva' => $fecha,
-            'id_cliente'    => $idCliente,
-            'id_recinto'    => $idRecinto,
-            'id_horario'    => $idHorario,
+            'id_cliente'=> $idCliente,
+            'id_recinto'=> $idRecinto,
+            'id_horario'=> $idHorario,
         ])) {
             return ['ok' => false, 'mensajes' => $validation->getErrors()];
         }
@@ -166,38 +166,35 @@ class ReservaModel extends Model
         return ['ok' => true, 'recinto' => $recinto];
     }
 
-    // Persistencia pura (INSERT): solo la usa crearReserva() una vez validada la
-    // reserva y calculado el monto. No valida nada por sí misma.
+
     private function altaReserva(string $fecha, int $idCliente, int $idRecinto, int $idHorario, int $idUsuario, float $monto): int
     {
         $this->insert([
-            'fecha_reserva'  => $fecha,
-            'monto'          => $monto,
+            'fecha_reserva' => $fecha,
+            'monto'=> $monto,
             'estado_reserva' => 'pendiente',
-            'id_horario'     => $idHorario,
-            'id_cliente'     => $idCliente,
-            'id_recinto'     => $idRecinto,
-            'id_usuario'     => $idUsuario,
+            'id_horario'=> $idHorario,
+            'id_cliente'=> $idCliente,
+            'id_recinto'=> $idRecinto,
+            'id_usuario'=> $idUsuario,
         ]);
         return $this->getInsertID();
     }
 
-    // Persistencia pura (UPDATE): solo la usa modificarReserva() una vez validada la
-    // reserva y calculado el monto. No valida nada por sí misma.
+
     private function actualizarReserva(int $id, string $fecha, int $idCliente, int $idRecinto, int $idHorario, string $estadoReserva, float $monto): void
     {
         $this->update($id, [
-            'fecha_reserva'  => $fecha,
-            'id_cliente'     => $idCliente,
-            'id_recinto'     => $idRecinto,
-            'id_horario'     => $idHorario,
+            'fecha_reserva' => $fecha,
+            'id_cliente'=> $idCliente,
+            'id_recinto'=> $idRecinto,
+            'id_horario'=> $idHorario,
             'estado_reserva' => $estadoReserva,
-            'monto'          => $monto,
+            'monto'=> $monto,
         ]);
     }
 
-    // Ayudante interno de validarReserva(): comprueba si ese recinto+fecha+horario
-    // ya tiene una reserva no cancelada. No es una operación pública por sí misma.
+    // Ayudante interno de validarReserva(), comprueba si ese recinto+fecha+horario ya tiene una reserva no cancelada, o es una operacion publiva por si misma
     private function estaOcupado(string $fecha, int $idRecinto, int $idHorario, int $excluirId = 0): bool
     {
         $builder = $this->where('fecha_reserva', $fecha)
@@ -223,7 +220,7 @@ class ReservaModel extends Model
         }
 
         $idsOcupados = array_column($builder->findAll(), 'id_horario');
-        $todos       = (new HorarioModel())->listarHorarios();
+        $todos = (new HorarioModel())->listarHorarios();
 
         return array_values(array_filter($todos, fn($h) => !in_array($h['id_horario'], $idsOcupados)));
     }

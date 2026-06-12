@@ -26,32 +26,32 @@ class PagoController extends BaseController
             return redirect()->to('/reserva/listar')->with('error', 'Reserva no encontrada.');
         }
 
-        // Consultar el estado actual via State antes de mostrar el formulario.
+        // consultar el estado actual via state antes de mostrar el formulario
         $estadoReserva = $reserva['estado_reserva'];
         $mensajeEstado = null;
-        $puedePagar    = true;
+        $puedePagar = true;
 
-        $horario     = (new HorarioModel())->find($reserva['id_horario']);
+        $horario  = (new HorarioModel())->find($reserva['id_horario']);
         $inicioTurno = strtotime($reserva['fecha_reserva'] . ' ' . ($horario['horario'] ?? '23:59:59'));
-        $esPasada    = time() >= $inicioTurno + 3600;
+        $esPasada = time() >= $inicioTurno + 3600;
 
         if ($esPasada) {
             $mensajeEstado = 'No se puede pagar una reserva cuya fecha ya pasó.';
-            $puedePagar    = false;
+            $puedePagar = false;
         } elseif ($estadoReserva === 'confirmada') {
             $mensajeEstado = 'Esta reserva ya fue pagada.';
-            $puedePagar    = false;
+            $puedePagar = false;
         } elseif ($estadoReserva === 'cancelada') {
             $mensajeEstado = 'Esta reserva fue cancelada. Para abonar, realizá una nueva reserva.';
-            $puedePagar    = false;
+            $puedePagar = false;
         }
 
         return view('plantillas/head')
             . view('contenido/crud_pago/alta_pago', [
-                'reserva'       => $reserva,
-                'medios'        => (new MedioPagoModel())->findAll(),
-                'puedePagar'    => $puedePagar,
-                'mensajeEstado' => $mensajeEstado,
+                'reserva'=> $reserva,
+                'medios'=> (new MedioPagoModel())->findAll(),
+                'puedePagar'=> $puedePagar,
+                'mensajeEstado'=> $mensajeEstado,
             ])
             . view('plantillas/footer');
     }
@@ -61,8 +61,8 @@ class PagoController extends BaseController
         $idReserva = (int) $this->request->getPost('id_reserva');
 
         $resultado = (new ReservaModel())->ejecutarAccion($idReserva, 'pagar', [
-            'id_medio_pago' => (int) $this->request->getPost('id_medio_pago'),
-            'id_usuario'    => (int) session()->get('id_usuario'),
+            'id_medio_pago'=> (int) $this->request->getPost('id_medio_pago'),
+            'id_usuario'=> (int) session()->get('id_usuario'),
         ]);
 
         if (!$resultado['ok']) {
@@ -75,7 +75,7 @@ class PagoController extends BaseController
     public function factura($idReserva)
     {
         $pagoModel = new PagoModel();
-        $factura   = $pagoModel->datosFactura((int) $idReserva);
+        $factura = $pagoModel->datosFactura((int) $idReserva);
 
         if (!$factura) {
             return redirect()->to('/pago/listar')->with('error', 'Factura no encontrada.');

@@ -25,19 +25,19 @@ class UsuarioController extends BaseController
         $usuarioModel = new UsuarioModel();
 
         $persona = new Persona([
-            'dni'              => $this->request->getPost('dni')              ?? '',
-            'nombre'           => $this->request->getPost('nombre')           ?? '',
-            'apellido'         => $this->request->getPost('apellido')         ?? '',
+            'dni'=> $this->request->getPost('dni')?? '',
+            'nombre'=> $this->request->getPost('nombre')?? '',
+            'apellido'=> $this->request->getPost('apellido')?? '',
             'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento') ?? '',
-            'telefono'         => $this->request->getPost('telefono')         ?? '',
-            'calle'            => $this->request->getPost('calle')            ?? '',
-            'altura'           => $this->request->getPost('altura')           ?? '',
+            'telefono'=> $this->request->getPost('telefono')?? '',
+            'calle'=> $this->request->getPost('calle')?? '',
+            'altura'=> $this->request->getPost('altura')?? '',
         ]);
 
         $resultado = $usuarioModel->registrarUsuario(
             $persona,
             $this->request->getPost('nombre_usuario') ?? '',
-            $this->request->getPost('contrasena')     ?? '',
+            $this->request->getPost('contrasena')?? '',
         );
 
         if (!$resultado['ok']) {
@@ -50,7 +50,7 @@ class UsuarioController extends BaseController
     public function perfil()
     {
         $usuarioModel = new UsuarioModel();
-        $usuario      = $usuarioModel->find((int) session()->get('id_usuario'));
+        $usuario = $usuarioModel->find((int) session()->get('id_usuario'));
 
         if (!$usuario) {
             return redirect()->to('/login')->with('error', 'Usuario no encontrado.');
@@ -67,7 +67,7 @@ class UsuarioController extends BaseController
     public function formularioEditarPerfil()
     {
         $usuarioModel = new UsuarioModel();
-        $usuario      = $usuarioModel->find((int) session()->get('id_usuario'));
+        $usuario = $usuarioModel->find((int) session()->get('id_usuario'));
 
         if (!$usuario) {
             return redirect()->to('/login')->with('error', 'Usuario no encontrado.');
@@ -86,12 +86,12 @@ class UsuarioController extends BaseController
         $usuarioModel = new UsuarioModel();
 
         $persona = new Persona([
-            'nombre'           => $this->request->getPost('nombre')           ?? '',
-            'apellido'         => $this->request->getPost('apellido')         ?? '',
-            'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento') ?? '',
-            'telefono'         => $this->request->getPost('telefono')         ?? '',
-            'calle'            => $this->request->getPost('calle')            ?? '',
-            'altura'           => $this->request->getPost('altura')           ?? '',
+            'nombre'=> $this->request->getPost('nombre')?? '',
+            'apellido'=> $this->request->getPost('apellido')?? '',
+            'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento')?? '',
+            'telefono'=> $this->request->getPost('telefono')?? '',
+            'calle'=> $this->request->getPost('calle')?? '',
+            'altura'=> $this->request->getPost('altura')?? '',
         ]);
 
         $resultado = $usuarioModel->modificarPerfil(
@@ -104,7 +104,7 @@ class UsuarioController extends BaseController
             return redirect()->to('/usuario/perfil/editar')->withInput()->with('errors', $resultado['errores']);
         }
 
-        // Reflejar el nuevo nombre de usuario en la sesión.
+        // reflejar el nuevo nombre de usuario en la sesión.
         session()->set('nombre_usuario', $this->request->getPost('nombre_usuario'));
 
         return redirect()->to('/usuario/perfil')->with('success', 'Datos actualizados correctamente.');
@@ -134,19 +134,19 @@ class UsuarioController extends BaseController
         $usuarioModel = new UsuarioModel();
 
         $persona = new Persona([
-            'dni'              => $this->request->getPost('dni')              ?? '',
-            'nombre'           => $this->request->getPost('nombre')           ?? '',
-            'apellido'         => $this->request->getPost('apellido')         ?? '',
-            'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento') ?? '',
-            'telefono'         => $this->request->getPost('telefono')         ?? '',
-            'calle'            => $this->request->getPost('calle')            ?? '',
-            'altura'           => $this->request->getPost('altura')           ?? '',
+            'dni'=> $this->request->getPost('dni') ?? '',
+            'nombre'=> $this->request->getPost('nombre') ?? '',
+            'apellido'=> $this->request->getPost('apellido') ?? '',
+            'fecha_nacimiento'=> $this->request->getPost('fecha_nacimiento') ?? '',
+            'telefono'=> $this->request->getPost('telefono') ?? '',
+            'calle'=> $this->request->getPost('calle')?? '',
+            'altura'=> $this->request->getPost('altura')?? '',
         ]);
 
         $resultado = $usuarioModel->registrarUsuario(
             $persona,
             $this->request->getPost('nombre_usuario') ?? '',
-            $this->request->getPost('contrasena')     ?? '',
+            $this->request->getPost('contrasena')?? '',
         );
 
         if (!$resultado['ok']) {
@@ -170,7 +170,7 @@ class UsuarioController extends BaseController
     public function formularioEditar($id)
     {
         $usuarioModel = new UsuarioModel();
-        $usuario      = $usuarioModel->find((int) $id);
+        $usuario = $usuarioModel->find((int) $id);
 
         if (!$usuario) {
             return redirect()->to('/usuario/listar')->with('error', 'Usuario no encontrado.');
@@ -189,13 +189,13 @@ class UsuarioController extends BaseController
         $usuarioModel = new UsuarioModel();
 
         $persona = new Persona([
-            'dni'              => $this->request->getPost('dni')              ?? '',
-            'nombre'           => $this->request->getPost('nombre')           ?? '',
-            'apellido'         => $this->request->getPost('apellido')         ?? '',
-            'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento') ?? '',
-            'telefono'         => $this->request->getPost('telefono')         ?? '',
-            'calle'            => $this->request->getPost('calle')            ?? '',
-            'altura'           => $this->request->getPost('altura')           ?? '',
+            'dni'=> $this->request->getPost('dni')?? '',
+            'nombre'=> $this->request->getPost('nombre')?? '',
+            'apellido'=> $this->request->getPost('apellido')?? '',
+            'fecha_nacimiento'=> $this->request->getPost('fecha_nacimiento') ?? '',
+            'telefono'=> $this->request->getPost('telefono')?? '',
+            'calle'=> $this->request->getPost('calle')?? '',
+            'altura'=> $this->request->getPost('altura')?? '',
         ]);
 
         $resultado = $usuarioModel->modificarUsuario(

@@ -5,7 +5,7 @@ use CodeIgniter\Model;
 
 class RecintoModel extends Model
 {
-    protected $table      = 'recinto';
+    protected $table = 'recinto';
     protected $primaryKey = 'id_recinto';
 
     protected $allowedFields = [
@@ -22,7 +22,7 @@ class RecintoModel extends Model
             ->get()
             ->getResultArray();
     }
-
+//se podria aplicar procedimientos almcacenados para las consultas
     public function listarRecintos(): array
     {
         $db = \Config\Database::connect();
@@ -33,7 +33,7 @@ class RecintoModel extends Model
             ->get()
             ->getResultArray();
     }
-
+//se podria aplicar procedimientos almcacenados para las consultas
     public function listarRecintosActivos(): array
     {
         $db = \Config\Database::connect();
@@ -51,24 +51,24 @@ class RecintoModel extends Model
         $validation = \Config\Services::validation();
 
         if (!$validation->setRules([
-            'tarifa'          => ['label' => 'Tarifa por hora',  'rules' => 'required|numeric|greater_than[0]',
+            'tarifa'=> ['label' => 'Tarifa por hora',  'rules' => 'required|numeric|greater_than[0]',
                                    'errors' => ['required' => 'El campo Tarifa por hora es obligatorio.', 'numeric' => 'La tarifa debe ser un número.', 'greater_than' => 'La tarifa debe ser mayor a 0.']],
-            'descripcion'     => ['label' => 'Descripción',      'rules' => 'required|min_length[3]|max_length[50]'],
+            'descripcion'=> ['label' => 'Descripción',      'rules' => 'required|min_length[3]|max_length[50]'],
             'id_tipo_recinto' => ['label' => 'Tipo de recinto', 'rules' => 'required|integer|greater_than[0]',
                                    'errors' => ['required' => 'El campo Tipo de recinto es obligatorio.', 'integer' => 'El campo Tipo de recinto es inválido.', 'greater_than' => 'El campo Tipo de recinto es obligatorio.']],
         ])->run([
-            'tarifa'          => $tarifa,
-            'descripcion'     => $descripcion,
-            'id_tipo_recinto' => $idTipoRecinto,
+            'tarifa'=> $tarifa,
+            'descripcion'=> $descripcion,
+            'id_tipo_recinto'=> $idTipoRecinto,
         ])) {
             return ['ok' => false, 'errores' => $validation->getErrors()];
         }
 
         $this->insert([
-            'tarifa'          => number_format((float) $tarifa, 2, '.', ''),
-            'descripcion'     => $descripcion,
-            'id_tipo_recinto' => $idTipoRecinto,
-            'estado_recinto'  => 'activo',
+            'tarifa'=> number_format((float) $tarifa, 2, '.', ''),
+            'descripcion'=> $descripcion,
+            'id_tipo_recinto'=> $idTipoRecinto,
+            'estado_recinto'=> 'activo',
         ]);
 
         return ['ok' => true];
@@ -81,24 +81,24 @@ class RecintoModel extends Model
         if (!$validation->setRules([
             'tarifa' => ['label' => 'Tarifa por hora', 'rules' => 'required|numeric|greater_than[0]',
               'errors' => ['required' => 'El campo Tarifa por hora es obligatorio.', 'numeric' => 'La tarifa debe ser un número.', 'greater_than' => 'La tarifa debe ser mayor a 0.']],
-            'descripcion'     => ['label' => 'Descripción',      'rules' => 'required|min_length[3]|max_length[50]'],
+            'descripcion'=> ['label' => 'Descripción','rules' => 'required|min_length[3]|max_length[50]'],
             'id_tipo_recinto' => ['label' => 'Tipo de recinto', 'rules' => 'required|integer|greater_than[0]',
-                                   'errors' => ['required' => 'El campo Tipo de recinto es obligatorio.', 'integer' => 'El campo Tipo de recinto es inválido.', 'greater_than' => 'El campo Tipo de recinto es obligatorio.']],
-            'estado_recinto'  => ['label' => 'Estado',          'rules' => 'required|in_list[activo,inactivo]'],
+                                   'errors' => ['required'=> 'El campo Tipo de recinto es obligatorio.', 'integer' => 'El campo Tipo de recinto es inválido.', 'greater_than' => 'El campo Tipo de recinto es obligatorio.']],
+            'estado_recinto' => ['label' => 'Estado','rules' => 'required|in_list[activo,inactivo]'],
         ])->run([
-            'tarifa'          => $tarifa,
-            'descripcion'     => $descripcion,
-            'id_tipo_recinto' => $idTipoRecinto,
-            'estado_recinto'  => $estadoRecinto,
+            'tarifa'=> $tarifa,
+            'descripcion'=> $descripcion,
+            'id_tipo_recinto'=> $idTipoRecinto,
+            'estado_recinto'=> $estadoRecinto,
         ])) {
             return ['ok' => false, 'errores' => $validation->getErrors()];
         }
 
         $this->update($id, [
-            'tarifa'          => number_format((float) $tarifa, 2, '.', ''),
-            'descripcion'     => $descripcion,
-            'id_tipo_recinto' => $idTipoRecinto,
-            'estado_recinto'  => $estadoRecinto,
+            'tarifa'=> number_format((float) $tarifa, 2, '.', ''),
+            'descripcion'=> $descripcion,
+            'id_tipo_recinto'=> $idTipoRecinto,
+            'estado_recinto'=> $estadoRecinto,
         ]);
 
         return ['ok' => true];
@@ -106,7 +106,7 @@ class RecintoModel extends Model
 
     public function deshabilitar(int $id): bool
     {
-        $db  = \Config\Database::connect();
+        $db = \Config\Database::connect();
         $row = $db->query('CALL sp_deshabilitar_recinto(?)', [$id])->getRowArray();
 
         return $row && (int) $row['encontrado'] === 1;
